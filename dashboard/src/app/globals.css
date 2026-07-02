@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+:root {
+  --background: #05070d;
+  --foreground: #eef2f7;
+  --pitch: #0b3d2e;
+  --pitch-bright: #14532d;
+  --gold: #f2c94c;
+  --sky: #38bdf8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-pitch: var(--pitch);
+  --color-gold: var(--gold);
+  --color-sky: var(--sky);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-bebas);
+}
+
+body {
+  background: radial-gradient(ellipse 120% 80% at 50% -10%, #10321f 0%, #05070d 55%, #020305 100%);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+.font-display {
+  font-family: var(--font-bebas), sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Floodlight glow behind the hero */
+.glow-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Animated pitch-line grid drifting slowly in the background */
+.pitch-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  animation: drift 30s linear infinite;
+}
+
+@keyframes drift {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 48px 96px, 96px 48px; }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-14px); }
+}
+
+.floating {
+  animation: float-y 6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer-text {
+  background: linear-gradient(90deg, #f2c94c 0%, #fff6db 20%, #f2c94c 40%, #f2c94c 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 5s linear infinite;
+}
+
+.glass-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}

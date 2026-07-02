@@ -3,7 +3,8 @@
 A daily-updating "who wins the World Cup" probability tracker for the 2026 tournament,
 built as an end-to-end MLOps portfolio project.
 
-**Status:** Phase 0 (methodology validation) in progress. No live dashboard yet.
+**Status:** Phase 0 validated, live daily ingestion running, dashboard built locally
+(not yet deployed publicly).
 
 ## Methodology
 
@@ -33,7 +34,7 @@ wc26-mlops/
 │   │   ├── layer1_ensemble/
 │   │   └── layer2_simulation/
 │   └── orchestration/   # Airflow DAGs (Tier 1)
-├── dashboard/            # Streamlit app (Tier 1)
+├── dashboard/            # Next.js + Tailwind + Framer Motion app (Tier 1)
 ├── scripts/              # one-off / backtest entry points
 └── tests/
 ```
@@ -55,4 +56,17 @@ but not 2018 — see `DECISIONS.md` for the full pass/fail discussion.
 
 ## Dashboard
 
-_Link goes here once deployed (Tier 1)._
+A Next.js + Tailwind + Framer Motion site: animated hero, a live "title favorites"
+leaderboard, the win-probability-over-time chart, upcoming fixtures (model vs. bookmaker
+odds), recent results, and the Phase 0 validation numbers above, presented visually.
+
+Public deploy link goes here once it's live on Vercel (Tier 1). To run locally:
+
+```
+python scripts/export_dashboard_data.py   # refresh dashboard/data/*.json from the pipeline
+cd dashboard && npm install && npm run dev
+```
+
+Re-run the export script (and redeploy) after each `scripts/daily_update.py` run to pick
+up new predictions — the site is statically generated from those JSON snapshots, not
+live-polling (see `DECISIONS.md`).

@@ -2,6 +2,54 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-02 — Dashboard built; two bugs caught by actually looking at it
+
+Built the Next.js dashboard described in the entry below: animated hero, live favorites
+leaderboard, probability-over-time chart, upcoming-fixture cards (model vs. bookmaker),
+recent results, and the Phase 0 backtest validation section. Verified with Playwright
+screenshots (desktop + mobile, real incremental scroll so `whileInView` animations
+actually fire) rather than just a clean build -- caught two real bugs a build alone
+wouldn't have:
+
+- **Flag emoji don't render as flags on Windows Chrome** (a well-known platform gap --
+  Windows historically lacks the regional-indicator flag glyphs, showing raw two-letter
+  codes like "FR" instead). Switched to the `flag-icons` CSS/SVG library, which renders
+  identically everywhere.
+- **Hydration mismatch from `toLocaleDateString`/`toLocaleTimeString`** in the upcoming-
+  fixtures cards -- server and browser locale/timezone can differ, so React threw a
+  hydration error and had to re-render client-side. Replaced with a fixed, explicit UTC
+  formatter (`formatKickoff` in `UpcomingMatches.tsx`) so server and client output match
+  byte-for-byte.
+
+Data freshness: `scripts/export_dashboard_data.py` must be re-run (and the site
+redeployed) after each `scripts/daily_update.py` run to pick up new predictions -- see the
+"Dashboard stack reversed" entry below for the freshness model.
+
+## 2026-07-02 — Dashboard stack reversed: Next.js + Framer Motion, not Streamlit
+
+Reverses the 2026-07-01 "Streamlit first" decision below. The ask shifted from "a working
+chart" to "a genuinely impressive, animated site that amazes football fans" -- real motion
+design (smooth transitions, an animated hero, live-feeling counters) means fighting
+Streamlit's component model the whole way, and the result would still read as "a styled
+Streamlit app," not a bespoke site.
+
+**Why now, not earlier:** the original Streamlit call was explicitly about shipping
+something live *fast* under the July 4 ingestion deadline; that deadline is now handled
+(live pipeline is flowing, see the 2026-07-02 ingestion entries below), so the dashboard is
+no longer on the critical path in the same way, and it's worth spending the build time the
+better stack needs.
+
+**Approach:** Next.js (App Router, TypeScript) + Tailwind + Framer Motion for animation +
+Recharts for the probability-over-time chart, deployed on Vercel. A small Python export
+step converts `data/predictions/predictions_log.csv`, `data/backtest/*.json`, and
+`data/live/results_log.csv` into `dashboard/data/*.json` that the frontend reads at build
+time -- keeps the site self-contained for deployment (no cross-directory file reads a
+Vercel monorepo build might restrict) and avoids standing up a database for Tier 1.
+**Freshness model:** the site is statically generated at build time from those JSON
+snapshots; "daily-updating" comes from re-running the export + redeploying (via Vercel's
+git integration) each time `scripts/daily_update.py` produces new data, not from client-side
+polling -- consistent with "don't over-engineer storage" for Tier 1.
+
 ## 2026-07-02 — Live ingestion v1: Odds API only; Layer 2's own tournament-win output deferred
 
 `scripts/daily_update.py` is the first working live pipeline: pulls completed results
