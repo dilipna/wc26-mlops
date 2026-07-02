@@ -15,7 +15,7 @@ export default function Footer() {
         </a>
       </p>
       <p className="mt-4 text-xs text-white/25">
-        Bookmaker odds via The Odds API. Model probabilities are estimates, not betting
+        Market data via The Odds API. Model probabilities are estimates, not betting
         advice.
       </p>
     </footer>
