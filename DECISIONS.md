@@ -2,6 +2,42 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-02 — Live ingestion v1: Odds API only; Layer 2's own tournament-win output deferred
+
+`scripts/daily_update.py` is the first working live pipeline: pulls completed results
+(Odds API `/scores`, 3-day rolling window) into `data/live/results_log.csv`, rebuilds
+Elo/form from historical + live matches, scores every upcoming/live fixture with Layer 1,
+and logs the bookmaker's outright "wins the tournament" probabilities to
+`data/predictions/predictions_log.csv` as `(date, team, win_probability, model_version)`.
+
+**API-Football dropped entirely, not just RapidAPI.** Both the RapidAPI and the direct
+api-football.com paths hit the same wall: `"Free plans do not have access to this season,
+try from 2022 to 2024."` -- a structural free-tier restriction, not a subscription
+hiccup. The Odds API's `/scores` endpoint (already integrated, already free) covers
+fixtures + completed results well enough for daily cadence, so API-Football isn't needed
+for Tier 1. `src/ingestion/api_football.py` is left in place, updated to the correct
+direct-account host/header, in case a future need justifies revisiting it.
+
+**2026 group-stage backfill skipped, by user decision.** Wikipedia's match-result tables
+parse cleanly, but the matchday-to-date schedule table has rowspan/merged-cell issues
+that make exact per-match dates unreliable to extract automatically, and team names differ
+across historical CSV / Wikipedia / Odds API (e.g. "United States" vs "USA"), needing its
+own alias-mapping layer. Given July 4 was 2 days out, we chose to ship the daily pipeline
+now rather than keep sinking time into a fragile scrape. **Known consequence:** current
+Elo/form doesn't yet reflect the 2026 group stage, only pre-tournament history -- visible
+today as some sizeable model-vs-bookmaker disagreements (e.g. model ~50/50 on USA vs Bosnia
+& Herzegovina, bookmaker ~85/15 USA). Revisit if time allows later.
+
+**Layer 2's own P(wins World Cup) output for the live 2026 tournament is deferred**, not
+faked. The Phase 0 backtest could reconstruct the bracket tree (who meets whom in each
+future round) from *completed* results after the fact -- but live, future rounds' pairings
+aren't derivable that way until they're actually played; encoding the official bracket
+skeleton in advance (as FIFA publishes it, e.g. "Match 89: winner of Match 73 vs winner of
+Match 74") is a real one-time task, not yet done. In the meantime, the bookmaker's own
+outright market is logged in the exact `(date, team, win_probability, model_version)` shape
+Layer 2's output will eventually take, so the predictions log and dashboard time series
+start today, honestly labeled as a bookmaker baseline rather than our model.
+
 ## 2026-07-02 — API-Football blocked: RapidAPI key not subscribed to the API
 
 `API_FOOTBALL_KEY` is a valid RapidAPI key but returns `403 "You are not

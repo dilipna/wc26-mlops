@@ -1,20 +1,20 @@
-"""API-Football (RapidAPI) client for World Cup 2026 fixtures and live
-scores.
+"""API-Football client for World Cup 2026 fixtures and live scores, via a
+direct api-football.com account (api-sports.io host) rather than RapidAPI
+-- see DECISIONS.md: the RapidAPI key hit a "not subscribed" wall, and a
+direct signup avoids that friction with a genuinely free tier (100
+requests/day, no card).
 
-BLOCKED as of 2026-07-02 (see DECISIONS.md): the configured RapidAPI key
-returns 403 "You are not subscribed to this API" -- the free Basic plan
-needs to be activated on the API-FOOTBALL listing in the RapidAPI
-dashboard before any of this can be verified against a live response.
-WORLD_CUP_LEAGUE_ID is API-Football's well-documented static ID for the
-FIFA World Cup; double check it against the docs once subscribed, since
-it hasn't been possible to confirm against a real response yet.
+UNVERIFIED as of 2026-07-02: no real key has been tested against this host
+yet, so the `x-apisports-key` header name and WORLD_CUP_LEAGUE_ID (API-
+Football's commonly documented static ID for the FIFA World Cup) both need
+confirming against a live response once a key is available.
 """
 
 import os
 
 import requests
 
-BASE_URL = "https://api-football-v1.p.rapidapi.com/v3"
+BASE_URL = "https://v3.football.api-sports.io"
 WORLD_CUP_LEAGUE_ID = 1
 SEASON = 2026
 
@@ -23,7 +23,7 @@ def _headers() -> dict:
     key = os.environ.get("API_FOOTBALL_KEY")
     if not key:
         raise RuntimeError("API_FOOTBALL_KEY not set -- see .env.example")
-    return {"x-rapidapi-host": "api-football-v1.p.rapidapi.com", "x-rapidapi-key": key}
+    return {"x-apisports-key": key}
 
 
 def fetch_fixtures(league_id: int = WORLD_CUP_LEAGUE_ID, season: int = SEASON) -> list[dict]:
