@@ -39,8 +39,8 @@ export default function Home() {
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
           eyebrow="Live Tracker"
-          title="Title Favorites Today"
-          subtitle="Bookmaker-implied probability of winning the whole tournament, de-vigged across bookmakers and updated daily. Our own Layer 2 tournament-win output joins this chart once the knockout bracket is fully live -- see the note below."
+          title="The Contenders"
+          subtitle="Each team's implied chance of lifting the trophy, distilled from the global market and updated daily. Our own Layer 2 tournament simulation joins this board once the knockout bracket is fully live -- see the note below."
         />
         <FavoritesLeaderboard favorites={favorites} />
       </section>
@@ -58,7 +58,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="Up Next"
           title="Upcoming Fixtures"
-          subtitle="Our Layer 1 ensemble vs. the bookmaker's own de-vigged match odds, side by side."
+          subtitle="Our Layer 1 ensemble vs. the market's own expectations, side by side for every remaining fixture."
         />
         <UpcomingMatches matches={upcomingMatches} />
       </section>

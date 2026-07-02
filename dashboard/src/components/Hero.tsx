@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import AnimatedBackground from "./AnimatedBackground";
 import Flag from "./Flag";
+import { CelebrationFigure, DribblerFigure } from "./PlayerFigures";
 import type { PredictionRow } from "@/lib/data";
 
 export default function Hero({
@@ -15,6 +16,24 @@ export default function Hero({
   return (
     <section className="relative isolate flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-6 text-center">
       <AnimatedBackground />
+
+      {/* flanking players: dribbler stage-left, celebration stage-right */}
+      <motion.div
+        initial={{ opacity: 0, x: -60 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1.1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="pointer-events-none absolute bottom-10 left-[2vw] z-[5] hidden h-[52vh] lg:block xl:left-[5vw]"
+      >
+        <DribblerFigure className="h-full" />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: 60 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1.1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="pointer-events-none absolute bottom-10 right-[2vw] z-[5] hidden h-[52vh] lg:block xl:right-[5vw]"
+      >
+        <CelebrationFigure className="h-full" />
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
@@ -47,7 +66,7 @@ export default function Hero({
         className="relative z-10 mt-6 max-w-xl text-lg text-white/60"
       >
         A stacked ML ensemble and Monte Carlo bracket simulation, re-run every day
-        of the 2026 tournament &mdash; tracked live against bookmaker odds, and
+        of the 2026 tournament &mdash; tracked live against the global market, and
         validated against the 2018 &amp; 2022 World Cups.
       </motion.p>
 

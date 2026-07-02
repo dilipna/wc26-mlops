@@ -126,10 +126,10 @@ export default function UpcomingMatches({ matches }: { matches: UpcomingMatch[] 
               </div>
               <div>
                 <div className="text-[11px] uppercase tracking-widest text-sky-400/80 mb-1">
-                  Bookmaker odds
+                  Market consensus
                 </div>
                 <ProbabilityBar
-                  homeLabel="Bookmaker"
+                  homeLabel="Market"
                   awayLabel=""
                   homePct={bookHome}
                   awayPct={bookAway}
