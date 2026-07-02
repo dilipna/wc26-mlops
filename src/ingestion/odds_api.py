@@ -48,6 +48,20 @@ def fetch_match_odds(region: str = DEFAULT_REGION) -> list[dict]:
     return r.json()
 
 
+def fetch_scores(days_from: int = 3) -> list[dict]:
+    """Completed (and in-progress) World Cup match results from the last
+    `days_from` days -- the free tier caps this at 3 (verified: requesting
+    more returns a 422 INVALID_SCORES_DAYS_FROM error), so this only ever
+    covers a rolling recent window, not full tournament history."""
+    r = requests.get(
+        f"{BASE_URL}/sports/{MATCH_ODDS_SPORT_KEY}/scores",
+        params={"apiKey": _api_key(), "daysFrom": days_from},
+        timeout=20,
+    )
+    r.raise_for_status()
+    return r.json()
+
+
 def fetch_outright_probabilities(region: str = DEFAULT_REGION) -> dict[str, float]:
     """Bookmaker-implied P(wins World Cup) per team: average the implied
     probability (1/decimal price) across bookmakers, then de-vig (normalize
