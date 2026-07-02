@@ -19,11 +19,11 @@ export default function SectionHeading({
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className="mb-10 max-w-2xl"
     >
-      <div className="gold-rule mb-4 w-20" />
-      <span className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-400">
+      <div className="neon-rule mb-4 w-20" />
+      <span className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-400">
         {eyebrow}
       </span>
-      <h2 className="font-display mt-3 text-4xl sm:text-5xl leading-none text-white">
+      <h2 className="font-display mt-3 text-2xl font-bold sm:text-4xl leading-tight text-white">
         {title}
       </h2>
       {subtitle && (

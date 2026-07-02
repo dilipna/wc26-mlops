@@ -49,7 +49,7 @@ function ProbabilityBar({
           whileInView={{ width: `${homePct * 100}%` }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
-          className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500"
+          className="h-full bg-gradient-to-r from-cyan-400 to-cyan-500"
         />
         <motion.div
           initial={{ width: 0 }}
@@ -63,7 +63,7 @@ function ProbabilityBar({
           whileInView={{ width: `${awayPct * 100}%` }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: delay + 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="h-full bg-gradient-to-r from-sky-500 to-sky-400"
+          className="h-full bg-gradient-to-r from-fuchsia-500 to-fuchsia-400"
         />
       </div>
       <div className="flex justify-between text-[11px] text-white/40 mt-1">
@@ -112,11 +112,11 @@ export default function UpcomingMatches({ matches }: { matches: UpcomingMatch[] 
 
             <div className="space-y-3">
               <div>
-                <div className="text-[11px] uppercase tracking-widest text-emerald-400/80 mb-1">
-                  Our model
+                <div className="text-[11px] uppercase tracking-widest text-cyan-400/80 mb-1">
+                  Our AI
                 </div>
                 <ProbabilityBar
-                  homeLabel="Model"
+                  homeLabel="Our AI"
                   awayLabel=""
                   homePct={m.model.home_win}
                   awayPct={m.model.away_win}
@@ -125,11 +125,11 @@ export default function UpcomingMatches({ matches }: { matches: UpcomingMatch[] 
                 />
               </div>
               <div>
-                <div className="text-[11px] uppercase tracking-widest text-sky-400/80 mb-1">
-                  Market consensus
+                <div className="text-[11px] uppercase tracking-widest text-fuchsia-400/80 mb-1">
+                  What the world expects
                 </div>
                 <ProbabilityBar
-                  homeLabel="Market"
+                  homeLabel="World"
                   awayLabel=""
                   homePct={bookHome}
                   awayPct={bookAway}

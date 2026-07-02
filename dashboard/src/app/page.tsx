@@ -7,6 +7,7 @@ import ModelValidation from "@/components/ModelValidation";
 import MethodologySection from "@/components/MethodologySection";
 import StatsStrip from "@/components/StatsStrip";
 import ResultsTicker from "@/components/ResultsTicker";
+import TechStack from "@/components/TechStack";
 import Footer from "@/components/Footer";
 import {
   backtest,
@@ -22,10 +23,10 @@ export default function Home() {
   const chartTeams = favorites.map((f) => f.team).slice(0, 6);
 
   const stats = [
-    { label: "Live results tracked", value: String(summary.completed_results_count) },
-    { label: "Upcoming fixtures scored", value: String(summary.upcoming_matches_count) },
-    { label: "Monte Carlo sims / checkpoint", value: "10,000" },
-    { label: "Backtest tournaments", value: "2018 & 2022" },
+    { label: "Matches tracked live", value: String(summary.completed_results_count) },
+    { label: "Next matches predicted", value: String(summary.upcoming_matches_count) },
+    { label: "Tournament simulations a day", value: "10,000" },
+    { label: "Past World Cups tested", value: "2018 & 2022" },
   ];
 
   return (
@@ -39,17 +40,17 @@ export default function Home() {
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
           eyebrow="Live Tracker"
-          title="The Contenders"
-          subtitle="Each team's implied chance of lifting the trophy, distilled from the global market and updated daily. Our own Layer 2 tournament simulation joins this board once the knockout bracket is fully live -- see the note below."
+          title="Who Takes The Trophy?"
+          subtitle="Every remaining team's chance of winning it all, refreshed daily. Right now these numbers come from the global market; our own simulator's numbers join this board once the knockout bracket is locked in -- see the note below."
         />
         <FavoritesLeaderboard favorites={favorites} />
       </section>
 
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
-          eyebrow="Prediction Market"
-          title="Probability Over Time"
-          subtitle="Every day of the tournament adds one point per team to this series -- the genuine time series at the heart of this project, watched against the eventual real champion."
+          eyebrow="Day By Day"
+          title="The Race, Charted"
+          subtitle="One point per team, per day. Watch the favorites rise and fall as real results land -- and see who the data backed once the champion is crowned."
         />
         <ProbabilityChart seriesByTeam={perTeam} teams={chartTeams} />
       </section>
@@ -57,33 +58,42 @@ export default function Home() {
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
           eyebrow="Up Next"
-          title="Upcoming Fixtures"
-          subtitle="Our Layer 1 ensemble vs. the market's own expectations, side by side for every remaining fixture."
+          title="Our AI vs The World"
+          subtitle="For every upcoming match: our prediction, right next to what the rest of the world expects."
         />
         <UpcomingMatches matches={upcomingMatches} />
       </section>
 
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
-          eyebrow="Recent Results"
-          title="What Just Happened"
-          subtitle="Completed matches feeding today's ratings and predictions."
+          eyebrow="Just Finished"
+          title="Latest Results"
+          subtitle="Every final score below feeds straight into tomorrow's ratings."
         />
         <ResultsTicker results={results} />
       </section>
 
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
-          eyebrow="Phase 0 Validation"
-          title="Does This Actually Work?"
-          subtitle="Before trusting any live output, the full two-layer pipeline was backtested against the 2018 and 2022 World Cups: does the eventual champion's simulated win probability rise as the tournament goes on, and does it beat a naive FIFA-ranking baseline?"
+          eyebrow="Proof"
+          title="Tested On Real History"
+          subtitle="Before trusting it with 2026, we replayed the 2018 and 2022 World Cups from the group stage onward. The eventual champion's predicted chances climbed round after round in both -- and beat a simple world-ranking guess on average."
         />
         <ModelValidation backtest={backtest} />
       </section>
 
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
-        <SectionHeading eyebrow="How It Works" title="Two Layers, One Question" />
+        <SectionHeading eyebrow="Under the Hood" title="How It Works" />
         <MethodologySection />
+      </section>
+
+      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+        <SectionHeading
+          eyebrow="Behind The Scenes"
+          title="What Powers This Site"
+          subtitle="Every tool used to build what you're looking at -- from the models to the pixels."
+        />
+        <TechStack />
       </section>
 
       <Footer />

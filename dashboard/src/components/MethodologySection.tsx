@@ -4,22 +4,22 @@ import { motion } from "framer-motion";
 
 const STEPS = [
   {
-    icon: "🧠",
-    title: "Layer 1 — Match Predictions",
+    icon: "📈",
+    title: "Rate Every Team",
     body:
-      "A stacked ensemble of XGBoost, an Elo/logistic-regression baseline, and a FIFA-rank heuristic, blended together for every possible matchup.",
+      "Every team carries a strength score that rises and falls with each real result. Recent form counts for more than ancient history.",
+  },
+  {
+    icon: "🧠",
+    title: "Predict Every Match",
+    body:
+      "Three different predictors — a machine-learning model, a ratings model, and a world-ranking rule — each give a view, blended into one probability per match.",
   },
   {
     icon: "🎲",
-    title: "Layer 2 — Bracket Simulation",
+    title: "Play It Out 10,000 Times",
     body:
-      "10,000+ Monte Carlo simulations of the actual remaining bracket, using Layer 1's probabilities recursively, to find each team's true P(wins it all).",
-  },
-  {
-    icon: "📈",
-    title: "Daily Time Series",
-    body:
-      "Every day of the tournament, ratings update, predictions re-run, and one row per team lands in the log below — the same series driving the chart above.",
+      "The remaining tournament is simulated ten thousand times a day. Count how often each nation lifts the trophy — that's their chance of winning it all.",
   },
 ];
 

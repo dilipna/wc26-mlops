@@ -18,7 +18,7 @@ export default function StatsStrip({
           transition={{ duration: 0.5, delay: i * 0.08 }}
           className="glass-card rounded-2xl p-5 text-center"
         >
-          <div className="font-display text-3xl text-white sm:text-4xl">{s.value}</div>
+          <div className="font-display neon-num text-2xl text-white sm:text-3xl">{s.value}</div>
           <div className="mt-1 text-xs uppercase tracking-widest text-white/40">{s.label}</div>
         </motion.div>
       ))}

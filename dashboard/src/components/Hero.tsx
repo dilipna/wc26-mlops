@@ -39,11 +39,11 @@ export default function Hero({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="glass-card relative z-10 mb-8 flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-300"
+        className="glass-card relative z-10 mb-8 flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-cyan-300"
       >
         <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
         </span>
         Live &middot; updated {latestDate ?? "daily"}
       </motion.div>
@@ -52,7 +52,7 @@ export default function Hero({
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="font-display relative z-10 text-6xl leading-[0.95] text-white sm:text-8xl md:text-9xl"
+        className="font-display relative z-10 text-4xl font-bold leading-[1.05] text-white sm:text-6xl md:text-7xl"
       >
         WHO WINS
         <br />
@@ -65,9 +65,9 @@ export default function Hero({
         transition={{ duration: 0.8, delay: 0.3 }}
         className="relative z-10 mt-6 max-w-xl text-lg text-white/60"
       >
-        A stacked ML ensemble and Monte Carlo bracket simulation, re-run every day
-        of the 2026 tournament &mdash; tracked live against the global market, and
-        validated against the 2018 &amp; 2022 World Cups.
+        An AI that watches every match, re-rates every team, and plays out the
+        rest of the tournament 10,000 times a day &mdash; tested first on the
+        2018 &amp; 2022 World Cups before being trusted with 2026.
       </motion.p>
 
       {topFavorite && (
@@ -84,7 +84,7 @@ export default function Hero({
             </div>
             <div className="font-display text-2xl text-white">
               {topFavorite.team}{" "}
-              <span className="text-gold text-emerald-300">
+              <span className="neon-num text-cyan-300">
                 {(topFavorite.win_probability * 100).toFixed(1)}%
               </span>
             </div>

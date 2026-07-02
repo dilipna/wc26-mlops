@@ -22,7 +22,7 @@ function CheckpointBars({ year }: { year: BacktestYear }) {
                 whileInView={{ height: `${(modelPct / max) * 100}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="w-4 rounded-t-sm bg-gradient-to-t from-emerald-500 to-emerald-300"
+                className="w-4 rounded-t-sm bg-gradient-to-t from-cyan-500 to-cyan-300"
                 title={`Model: ${modelPct.toFixed(1)}%`}
               />
               <motion.div
@@ -35,7 +35,7 @@ function CheckpointBars({ year }: { year: BacktestYear }) {
               />
             </div>
             <div className="mt-2 text-[11px] text-white/40">{CHECKPOINT_LABELS[cp]}</div>
-            <div className="text-xs font-semibold text-emerald-300">{modelPct.toFixed(0)}%</div>
+            <div className="text-xs font-semibold text-cyan-300">{modelPct.toFixed(0)}%</div>
           </div>
         );
       })}
@@ -59,7 +59,7 @@ export default function ModelValidation({ backtest }: { backtest: Record<string,
         >
           <div className="flex items-center justify-between mb-1">
             <span className="font-display text-3xl text-white">{year.year}</span>
-            <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300">
+            <span className="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-semibold text-cyan-300">
               Backtest
             </span>
           </div>
@@ -72,10 +72,10 @@ export default function ModelValidation({ backtest }: { backtest: Record<string,
           <CheckpointBars year={year} />
           <div className="mt-5 flex items-center gap-4 text-[11px] text-white/40">
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" /> Our model
+              <span className="h-2 w-2 rounded-full bg-cyan-400" /> Our AI
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-white/30" /> FIFA-rank baseline
+              <span className="h-2 w-2 rounded-full bg-white/30" /> World-ranking guess
             </span>
           </div>
         </motion.div>
