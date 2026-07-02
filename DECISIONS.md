@@ -2,6 +2,43 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-02 — API-Football blocked: RapidAPI key not subscribed to the API
+
+`API_FOOTBALL_KEY` is a valid RapidAPI key but returns `403 "You are not
+subscribed to this API"` from `api-football-v1.p.rapidapi.com/v3/status` and
+`/fixtures`. The direct (non-RapidAPI) host `v3.football.api-sports.io` also
+rejects it, but that host needs an entirely different key from
+api-football.com's own dashboard -- not applicable here since CLAUDE.md
+specifies RapidAPI.
+
+**Why it matters:** fixtures/live-scores ingestion (the actual July 4 hard
+date) is blocked until this is resolved.
+
+**Fix (user action, not a code change):** subscribe to the free Basic plan
+on the API-FOOTBALL listing in the RapidAPI dashboard -- no new key needed,
+the existing key activates once subscribed. `src/ingestion/api_football.py`
+is written and ready but unverified against a live response until then.
+
+**Per CLAUDE.md's "flag immediately, don't silently mock" instruction:** no
+mocked fixture data has been substituted. `scripts/fetch_live_snapshot.py`
+surfaces the failure explicitly instead of masking it.
+
+## 2026-07-02 — Odds API rate limits verified; outright market is a strong baseline
+
+Checked against the live free-tier key: ~500 credits/month, and credit cost
+scales with the number of `regions` requested (1 credit per region per
+call), not with `markets`. Defaulting to a single region (`uk`) keeps each
+snapshot pull to ~2 credits (h2h + outrights) -- trivially sustainable for
+daily polling through July 19.
+
+Also found `soccer_fifa_world_cup_winner` -- an **outright "wins the
+tournament" market**, not just per-match odds. This gives a direct
+bookmaker-implied P(win World Cup) per team, which is a stronger, more
+directly comparable baseline for Layer 2's own output than the FIFA-rank
+heuristic used in the Phase 0 backtest (bookmaker odds weren't available
+for the 2018/2022 backtest itself -- see the Phase 0 backtest entry above --
+but they are available now for live 2026 comparison, as CLAUDE.md intended).
+
 ## 2026-07-01 — Phase 0 backtest complete: results and design notes
 
 Ran the full pipeline against 2018 and 2022. Results in `data/backtest/2018.json` and
