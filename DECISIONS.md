@@ -2,6 +2,37 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-01 — Phase 0 backtest complete: results and design notes
+
+Ran the full pipeline against 2018 and 2022. Results in `data/backtest/2018.json` and
+`2022.json` (per-checkpoint team probabilities, champion trajectory, baseline comparison,
+Brier/log-loss) -- see chat for the pass/fail verdict.
+
+A few implementation decisions made while building this, not called out elsewhere:
+
+- **XGBoost + Elo/logistic trained once per tournament, not per checkpoint.** Both are
+  fit on real matches from 1992 up to the tournament's first match. Only the Elo rating,
+  rolling form, and FIFA-rank features are re-queried "as of" each checkpoint date (using
+  real results up to that point) -- so predictions change checkpoint to checkpoint via
+  updated features, not via retraining. Matches CLAUDE.md's daily-cadence spirit (features
+  update, model doesn't need to retrain every day) without adding real complexity for
+  Phase 0.
+- **Bracket tree reconstructed from actual match results, not hand-typed groups/seeding.**
+  The real Round-of-16/QF/SF/Final fixture lists fully determine "who would face whom" at
+  each round, worked out bottom-up by matching each round's participants back to the
+  previous round's actual winners. No group-stage compositions or seeding rules needed to
+  be hand-entered, which also sidesteps having to encode 2026's more complex 48-team
+  seeding logic for this backtest (2018/2022 were simpler 32-team, direct-to-R16 formats).
+- **Trivial baseline = the FIFA-heuristic ensemble member, run alone.** Rather than write a
+  second "trivial baseline" formula, the baseline reuses Layer 1's own FIFA-rank heuristic
+  member in isolation (un-blended). This directly tests the question the "lift over
+  baseline" requirement is getting at: does blending in Elo + XGBoost actually help
+  over the naive rank-based heuristic alone?
+- **Match probabilities are memoized per checkpoint, not recomputed per Monte Carlo
+  iteration.** Every simulated winner is still drawn from the same ~16-32 real entrants, so
+  only a few dozen distinct matchups are ever possible within one checkpoint's bracket tree
+  -- caching keeps 10,000 sims fast without needing batched/vectorized model inference.
+
 ## 2026-07-01 — Streamlit Community Cloud sleeps after inactivity
 
 Chosen dashboard host is Streamlit Community Cloud (see "Dashboard stack" decision below).
