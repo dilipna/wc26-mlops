@@ -1,0 +1,135 @@
+{
+  "year": 2022,
+  "champion": "Argentina",
+  "n_sims": 10000,
+  "checkpoints": {
+    "post_group": {
+      "as_of": "2022-12-03",
+      "model": {
+        "team_probs": {
+          "Japan": 0.0079,
+          "Brazil": 0.3124,
+          "United States": 0.0106,
+          "Netherlands": 0.0607,
+          "Poland": 0.0045,
+          "England": 0.0812,
+          "Spain": 0.1014,
+          "Senegal": 0.0054,
+          "Morocco": 0.0097,
+          "France": 0.1058,
+          "Croatia": 0.0242,
+          "Australia": 0.0026,
+          "Portugal": 0.0563,
+          "Argentina": 0.1968,
+          "Switzerland": 0.0162,
+          "South Korea": 0.0043
+        },
+        "champion_prob": 0.1968,
+        "brier": 0.04867742625,
+        "log_loss": 1.625567294363984
+      },
+      "baseline": {
+        "team_probs": {
+          "Japan": 0.0041,
+          "Brazil": 0.3484,
+          "United States": 0.0114,
+          "Netherlands": 0.0422,
+          "Poland": 0.0024,
+          "England": 0.0935,
+          "Spain": 0.0872,
+          "Senegal": 0.0056,
+          "Morocco": 0.0047,
+          "France": 0.1491,
+          "Croatia": 0.0222,
+          "Australia": 0.0013,
+          "Portugal": 0.0343,
+          "Argentina": 0.1747,
+          "Switzerland": 0.0167,
+          "South Korea": 0.0022
+        },
+        "champion_prob": 0.1747,
+        "brier": 0.052813820000000004,
+        "log_loss": 1.7446850618421261
+      }
+    },
+    "post_r16": {
+      "as_of": "2022-12-09",
+      "model": {
+        "team_probs": {
+          "Brazil": 0.3531,
+          "Netherlands": 0.0645,
+          "England": 0.0954,
+          "Morocco": 0.0169,
+          "Croatia": 0.0281,
+          "France": 0.1213,
+          "Portugal": 0.124,
+          "Argentina": 0.1967
+        },
+        "champion_prob": 0.1967,
+        "brier": 0.1017996025,
+        "log_loss": 1.6260755535871236
+      },
+      "baseline": {
+        "team_probs": {
+          "Brazil": 0.3941,
+          "Netherlands": 0.0465,
+          "England": 0.108,
+          "Morocco": 0.0094,
+          "Croatia": 0.0232,
+          "France": 0.1682,
+          "Portugal": 0.0754,
+          "Argentina": 0.1752
+        },
+        "champion_prob": 0.1752,
+        "brier": 0.1105048875,
+        "log_loss": 1.741827100479846
+      }
+    },
+    "post_qf": {
+      "as_of": "2022-12-13",
+      "model": {
+        "team_probs": {
+          "Croatia": 0.1155,
+          "Morocco": 0.0778,
+          "Argentina": 0.4604,
+          "France": 0.3463
+        },
+        "champion_prob": 0.4604,
+        "brier": 0.10762123500000001,
+        "log_loss": 0.7756596021344095
+      },
+      "baseline": {
+        "team_probs": {
+          "Croatia": 0.0957,
+          "Morocco": 0.0437,
+          "Argentina": 0.4259,
+          "France": 0.4347
+        },
+        "champion_prob": 0.4259,
+        "brier": 0.13240577,
+        "log_loss": 0.8535507020529692
+      }
+    },
+    "post_sf": {
+      "as_of": "2022-12-18",
+      "model": {
+        "team_probs": {
+          "France": 0.407,
+          "Argentina": 0.593
+        },
+        "champion_prob": 0.593,
+        "brier": 0.165649,
+        "log_loss": 0.5225608799844117
+      },
+      "baseline": {
+        "team_probs": {
+          "France": 0.4724,
+          "Argentina": 0.5276
+        },
+        "champion_prob": 0.5276,
+        "brier": 0.22316176000000001,
+        "log_loss": 0.6394168581389776
+      }
+    }
+  }
+}
