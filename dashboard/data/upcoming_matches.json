@@ -1,0 +1,167 @@
+[
+  {
+    "commence_time": "2026-07-02T00:00:00Z",
+    "home_team": "USA",
+    "away_team": "Bosnia & Herzegovina",
+    "model": {
+      "home_win": 0.3641126821707157,
+      "draw": 0.2746793885811234,
+      "away_win": 0.36120792924816103
+    },
+    "bookmaker": {
+      "Bosnia & Herzegovina": 0.03206874428700284,
+      "USA": 0.8458067816456906,
+      "Draw": 0.12212447406730662
+    }
+  },
+  {
+    "commence_time": "2026-07-02T19:00:00Z",
+    "home_team": "Spain",
+    "away_team": "Austria",
+    "model": {
+      "home_win": 0.683337437355581,
+      "draw": 0.23026290207653288,
+      "away_win": 0.08639966056788609
+    },
+    "bookmaker": {
+      "Austria": 0.09623166001171725,
+      "Spain": 0.7189468957348083,
+      "Draw": 0.1848214442534744
+    }
+  },
+  {
+    "commence_time": "2026-07-02T23:00:00Z",
+    "home_team": "Portugal",
+    "away_team": "Croatia",
+    "model": {
+      "home_win": 0.5055943975851865,
+      "draw": 0.2553425528083332,
+      "away_win": 0.23906304960648023
+    },
+    "bookmaker": {
+      "Croatia": 0.19587648199939556,
+      "Portugal": 0.5411588712484198,
+      "Draw": 0.26296464675218467
+    }
+  },
+  {
+    "commence_time": "2026-07-03T03:00:00Z",
+    "home_team": "Switzerland",
+    "away_team": "Algeria",
+    "model": {
+      "home_win": 0.5090209384573258,
+      "draw": 0.26791824278308396,
+      "away_win": 0.22306081875959025
+    },
+    "bookmaker": {
+      "Algeria": 0.23893602146828175,
+      "Switzerland": 0.46344038453538533,
+      "Draw": 0.2976235939963329
+    }
+  },
+  {
+    "commence_time": "2026-07-03T18:00:00Z",
+    "home_team": "Australia",
+    "away_team": "Egypt",
+    "model": {
+      "home_win": 0.4270330318495354,
+      "draw": 0.2778918078157875,
+      "away_win": 0.2950751603346771
+    },
+    "bookmaker": {
+      "Australia": 0.2844802476380115,
+      "Egypt": 0.38336320914184685,
+      "Draw": 0.3321565432201417
+    }
+  },
+  {
+    "commence_time": "2026-07-03T22:00:00Z",
+    "home_team": "Argentina",
+    "away_team": "Cape Verde",
+    "model": {
+      "home_win": 0.7015744891540362,
+      "draw": 0.14837529364259597,
+      "away_win": 0.1500502172033678
+    },
+    "bookmaker": {
+      "Argentina": 0.8203667579626153,
+      "Cape Verde": 0.05180815935115525,
+      "Draw": 0.12782508268622955
+    }
+  },
+  {
+    "commence_time": "2026-07-04T01:30:00Z",
+    "home_team": "Colombia",
+    "away_team": "Ghana",
+    "model": {
+      "home_win": 0.792077944435092,
+      "draw": 0.1793953855636794,
+      "away_win": 0.028526670001228424
+    },
+    "bookmaker": {
+      "Colombia": 0.6269806465890383,
+      "Ghana": 0.12948240532934055,
+      "Draw": 0.24353694808162105
+    }
+  },
+  {
+    "commence_time": "2026-07-04T17:00:00Z",
+    "home_team": "Canada",
+    "away_team": "Morocco",
+    "model": {
+      "home_win": 0.17826248308064863,
+      "draw": 0.26713250833758273,
+      "away_win": 0.5546050085817686
+    },
+    "bookmaker": {
+      "Canada": 0.18930784773822787,
+      "Morocco": 0.5334309480522099,
+      "Draw": 0.2772612042095622
+    }
+  },
+  {
+    "commence_time": "2026-07-04T21:00:00Z",
+    "home_team": "Paraguay",
+    "away_team": "France",
+    "model": {
+      "home_win": 0.06864701733569689,
+      "draw": 0.23395010134035524,
+      "away_win": 0.6974028813239479
+    },
+    "bookmaker": {
+      "France": 0.8003786010922281,
+      "Paraguay": 0.05807495068923323,
+      "Draw": 0.1415464482185388
+    }
+  },
+  {
+    "commence_time": "2026-07-05T20:00:00Z",
+    "home_team": "Brazil",
+    "away_team": "Norway",
+    "model": {
+      "home_win": 0.6040619647622685,
+      "draw": 0.259439807583661,
+      "away_win": 0.13649822765407052
+    },
+    "bookmaker": {
+      "Brazil": 0.5048845263950316,
+      "Norway": 0.2320087360011873,
+      "Draw": 0.2631067376037811
+    }
+  },
+  {
+    "commence_time": "2026-07-06T00:00:00Z",
+    "home_team": "Mexico",
+    "away_team": "England",
+    "model": {
+      "home_win": 0.21926042012387903,
+      "draw": 0.2693346377955393,
+      "away_win": 0.5114049420805816
+    },
+    "bookmaker": {
+      "England": 0.3974296867680985,
+      "Mexico": 0.29419029083140996,
+      "Draw": 0.30838002240049156
+    }
+  }
+]
