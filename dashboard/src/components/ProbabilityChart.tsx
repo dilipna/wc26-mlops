@@ -14,7 +14,7 @@ import {
 import type { PredictionRow } from "@/lib/data";
 import Flag from "./Flag";
 
-const LINE_COLORS = ["#f2c94c", "#34d399", "#38bdf8", "#f472b6", "#a78bfa", "#fb923c"];
+const LINE_COLORS = ["#22d3ee", "#f472b6", "#a3e635", "#a78bfa", "#fbbf24", "#fb7185"];
 
 function buildChartRows(seriesByTeam: Map<string, PredictionRow[]>, teams: string[]) {
   const dateSet = new Set<string>();

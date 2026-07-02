@@ -9,7 +9,7 @@ export default function Footer() {
       <p className="mt-2">
         <a
           href="https://github.com/dilipna/wc26-mlops"
-          className="text-emerald-400 hover:text-emerald-300 transition-colors"
+          className="text-cyan-400 hover:text-cyan-300 transition-colors"
         >
           View the source on GitHub
         </a>

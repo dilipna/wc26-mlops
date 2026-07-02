@@ -1,28 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --background: #05070d;
+  --background: #04040a;
   --foreground: #eef2f7;
-  --pitch: #0b3d2e;
-  --pitch-bright: #14532d;
-  --gold: #f2c94c;
-  --sky: #38bdf8;
+  --neon-cyan: #22d3ee;
+  --neon-pink: #f472b6;
+  --neon-violet: #a78bfa;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-pitch: var(--pitch);
-  --color-gold: var(--gold);
-  --color-sky: var(--sky);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-bebas);
+  --color-neon-cyan: var(--neon-cyan);
+  --color-neon-pink: var(--neon-pink);
+  --font-sans: var(--font-rajdhani);
+  --font-display: var(--font-orbitron);
 }
 
 body {
-  background: radial-gradient(ellipse 120% 80% at 50% -10%, #0d2b1b 0%, #04060b 55%, #010203 100%);
+  background: radial-gradient(ellipse 120% 80% at 50% -10%, #0b1030 0%, #04040c 55%, #010104 100%);
   color: var(--foreground);
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  font-family: var(--font-rajdhani), Arial, Helvetica, sans-serif;
+  font-size: 1.0625rem;
   min-height: 100vh;
 }
 
@@ -44,17 +43,22 @@ body::before {
   inset: 0;
   z-index: 85;
   pointer-events: none;
-  background: radial-gradient(ellipse 90% 90% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
-}
-
-.gold-rule {
-  height: 1px;
-  background: linear-gradient(90deg, rgba(242, 201, 76, 0.6), transparent);
+  background: radial-gradient(ellipse 90% 90% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
 }
 
 .font-display {
-  font-family: var(--font-bebas), sans-serif;
-  letter-spacing: 0.02em;
+  font-family: var(--font-orbitron), sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.neon-rule {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.7), rgba(244, 114, 182, 0.35), transparent);
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+}
+
+.neon-num {
+  text-shadow: 0 0 16px rgba(34, 211, 238, 0.5);
 }
 
 /* Floodlight glow behind the hero */
@@ -62,7 +66,7 @@ body::before {
   position: absolute;
   border-radius: 9999px;
   filter: blur(80px);
-  opacity: 0.35;
+  opacity: 0.3;
   pointer-events: none;
 }
 
@@ -71,8 +75,8 @@ body::before {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(34, 211, 238, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.06) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
   animation: drift 30s linear infinite;
@@ -98,17 +102,18 @@ body::before {
 }
 
 .shimmer-text {
-  background: linear-gradient(90deg, #f2c94c 0%, #fff6db 20%, #f2c94c 40%, #f2c94c 100%);
+  background: linear-gradient(90deg, #22d3ee 0%, #e0faff 22%, #22d3ee 40%, #f472b6 75%, #22d3ee 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: shimmer 5s linear infinite;
+  animation: shimmer 6s linear infinite;
+  filter: drop-shadow(0 0 22px rgba(34, 211, 238, 0.35));
 }
 
 .glass-card {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(160deg, rgba(34, 211, 238, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(34, 211, 238, 0.14);
   backdrop-filter: blur(14px);
 }
 
@@ -119,6 +124,6 @@ body::before {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(34, 211, 238, 0.25);
   border-radius: 9999px;
 }

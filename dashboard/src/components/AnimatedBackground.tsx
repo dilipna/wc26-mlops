@@ -15,15 +15,15 @@ export default function AnimatedBackground() {
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className="pitch-grid" />
       <div
-        className="glow-orb bg-emerald-400"
+        className="glow-orb bg-cyan-400"
         style={{ width: 500, height: 500, top: "-15%", left: "-10%" }}
       />
       <div
-        className="glow-orb bg-sky-400"
+        className="glow-orb bg-fuchsia-500"
         style={{ width: 420, height: 420, top: "10%", right: "-12%" }}
       />
       <div
-        className="glow-orb bg-amber-300"
+        className="glow-orb bg-violet-500"
         style={{ width: 320, height: 320, bottom: "-10%", left: "30%", opacity: 0.18 }}
       />
 

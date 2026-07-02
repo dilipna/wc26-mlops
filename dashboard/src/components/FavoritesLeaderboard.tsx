@@ -6,10 +6,10 @@ import Flag from "./Flag";
 import type { PredictionRow } from "@/lib/data";
 
 const BAR_COLORS = [
-  "from-amber-300 to-yellow-500",
-  "from-emerald-300 to-emerald-500",
-  "from-sky-300 to-sky-500",
+  "from-cyan-300 to-cyan-500",
   "from-fuchsia-300 to-fuchsia-500",
+  "from-lime-300 to-lime-500",
+  "from-violet-300 to-violet-500",
   "from-rose-300 to-rose-500",
 ];
 

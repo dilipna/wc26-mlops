@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Bebas_Neue } from "next/font/google";
+import { Orbitron, Rajdhani } from "next/font/google";
 import "flag-icons/css/flag-icons.min.css";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const rajdhani = Rajdhani({
+  variable: "--font-rajdhani",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
-const bebas = Bebas_Neue({
-  variable: "--font-bebas",
-  weight: "400",
+const orbitron = Orbitron({
+  variable: "--font-orbitron",
+  weight: ["500", "700", "900"],
   subsets: ["latin"],
 });
 
@@ -28,7 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${bebas.variable} h-full antialiased`}
+      className={`${rajdhani.variable} ${orbitron.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
