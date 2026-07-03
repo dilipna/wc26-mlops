@@ -28,7 +28,11 @@ dashboard/           # Next.js site; dashboard/data/*.json is its only data sour
 tests/               # 4 pytest files, 6 tests, all passing
 k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned only
 .env                 # ODDS_API_KEY (works), API_FOOTBALL_KEY (useless, see #7)
-.obsidian/, graphify-out/, Untitled.md  # user's note-tooling artifacts, not part of the system (uncertain purpose)
+.obsidian/, graphify-out/, Untitled.md  # NOT part of this system. Confirmed via graphify-out/.graphify_detect.json:
+                     # user ran the `graphifyy` CLI (installed via `uv tool install`) against this repo;
+                     # it scanned 71 files (~16k words) and concluded "needs_graph: false" (fits one
+                     # context window). .obsidian/ is an Obsidian vault config; Untitled.md is empty.
+                     # These are the user's own context-tooling, unrelated to the WC26 pipeline/dashboard.
 ```
 
 # 4. CORE PIPELINE LOGIC
@@ -72,7 +76,7 @@ k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned on
 - Bracket reconstructed from real results, not hand-typed seeding (sidesteps 2026 48-team seeding rules for backtests)
 - Train once per tournament; predictions change via as-of features, not retraining
 - Trivial baseline = ensemble's own heuristic member alone
-- API-Football abandoned (free-tier season lock), Odds API is sole live source; region=uk keeps cost ~2 credits/snapshot of ~500/mo
+- API-Football abandoned (free-tier season lock), Odds API is sole live source; each daily_update.py run makes 3 paid calls (fetch_scores + fetch_match_odds + fetch_outright_probabilities); the latter two use region="uk" (1 region = ~1 credit each per DECISIONS.md finding that cost scales with regions, not markets), so a daily run costs roughly 2-3 credits against a ~500/month budget
 - Dashboard: Next.js chosen over Streamlit (reversal, logged); no real player photos (copyright/likeness) → original SVG silhouettes; results_log.csv git-tracked because the 3-day API window makes it the only cumulative record
 - Secrets in .env (gitignored); .env.example committed
 
