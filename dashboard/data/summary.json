@@ -1,38 +1,38 @@
 {
-  "generated_at": "2026-07-02T01:19:50.244614+00:00",
-  "latest_predictions_date": "2026-07-02",
+  "generated_at": "2026-07-03T18:21:01.197923+00:00",
+  "latest_predictions_date": "2026-07-03",
   "top_favorites": [
     {
-      "date": "2026-07-02",
+      "date": "2026-07-03",
       "team": "France",
-      "win_probability": 0.30720020786441393,
+      "win_probability": 0.3078332124074377,
       "model_version": "bookmaker_outright_baseline_v1"
     },
     {
-      "date": "2026-07-02",
+      "date": "2026-07-03",
+      "team": "France",
+      "win_probability": 0.3078332124074377,
+      "model_version": "bookmaker_outright_baseline_v1"
+    },
+    {
+      "date": "2026-07-03",
+      "team": "France",
+      "win_probability": 0.307815328471407,
+      "model_version": "bookmaker_outright_baseline_v1"
+    },
+    {
+      "date": "2026-07-03",
+      "team": "France",
+      "win_probability": 0.307815328471407,
+      "model_version": "bookmaker_outright_baseline_v1"
+    },
+    {
+      "date": "2026-07-03",
       "team": "Argentina",
-      "win_probability": 0.17235128545120368,
-      "model_version": "bookmaker_outright_baseline_v1"
-    },
-    {
-      "date": "2026-07-02",
-      "team": "Spain",
-      "win_probability": 0.10444540284751892,
-      "model_version": "bookmaker_outright_baseline_v1"
-    },
-    {
-      "date": "2026-07-02",
-      "team": "England",
-      "win_probability": 0.09941464452755086,
-      "model_version": "bookmaker_outright_baseline_v1"
-    },
-    {
-      "date": "2026-07-02",
-      "team": "Brazil",
-      "win_probability": 0.06985893939773845,
+      "win_probability": 0.17123783360740266,
       "model_version": "bookmaker_outright_baseline_v1"
     }
   ],
-  "completed_results_count": 8,
-  "upcoming_matches_count": 11
+  "completed_results_count": 12,
+  "upcoming_matches_count": 9
 }
