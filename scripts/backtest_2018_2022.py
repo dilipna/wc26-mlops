@@ -25,6 +25,7 @@ from src.features.data_loading import (  # noqa: E402
 )
 from src.features.team_timeline import build_timelines  # noqa: E402
 from src.models.layer1_ensemble.ensemble import Layer1Ensemble  # noqa: E402
+from src.models.layer1_ensemble.tracking import log_backtest_run  # noqa: E402
 from src.models.layer2_simulation.bracket import build_bracket  # noqa: E402
 from src.models.layer2_simulation.monte_carlo import simulate_champion_probabilities  # noqa: E402
 
@@ -84,6 +85,29 @@ def run_backtest_for_year(year: int, matches, timelines, rankings, shootouts) ->
                 "log_loss": log_loss_champion(baseline_probs, bracket.champion),
             },
         }
+
+    log_backtest_run(
+        ensemble,
+        run_name=f"backtest_{year}",
+        params={
+            "year": year,
+            "champion": bracket.champion,
+            "train_start": TRAIN_START.isoformat(),
+            "train_end": tournament_start.isoformat(),
+            "n_sims": N_SIMS,
+            "cv_folds": ensemble.stack.cv,
+        },
+        checkpoint_metrics=[
+            {
+                "model_brier": checkpoints[name]["model"]["brier"],
+                "model_log_loss": checkpoints[name]["model"]["log_loss"],
+                "baseline_brier": checkpoints[name]["baseline"]["brier"],
+                "baseline_log_loss": checkpoints[name]["baseline"]["log_loss"],
+                "model_champion_prob": checkpoints[name]["model"]["champion_prob"],
+            }
+            for _, name in CHECKPOINTS
+        ],
+    )
 
     return {
         "year": year,

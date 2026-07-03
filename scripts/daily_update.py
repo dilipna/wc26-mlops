@@ -26,6 +26,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from dotenv import load_dotenv  # noqa: E402
+from sklearn.metrics import log_loss  # noqa: E402
 
 load_dotenv()
 
@@ -33,6 +34,7 @@ from src.features.data_loading import load_fifa_rankings, load_results  # noqa: 
 from src.features.team_timeline import build_timelines  # noqa: E402
 from src.ingestion import live_results_store, odds_api  # noqa: E402
 from src.models.layer1_ensemble.ensemble import Layer1Ensemble  # noqa: E402
+from src.models.layer1_ensemble.tracking import log_run  # noqa: E402
 
 LIVE_DIR = Path(__file__).resolve().parent.parent / "data" / "live"
 PREDICTIONS_LOG = Path(__file__).resolve().parent.parent / "data" / "predictions" / "predictions_log.csv"
@@ -79,6 +81,22 @@ def main():
     timelines = build_timelines(all_matches)
 
     ensemble = Layer1Ensemble(all_matches, timelines, rankings, TRAIN_START, today)
+
+    train_probs = ensemble.stack.predict_proba(ensemble.X_train_)
+    log_run(
+        ensemble,
+        run_name=f"daily_{today.isoformat()}",
+        params={
+            "train_start": TRAIN_START.isoformat(),
+            "train_end": today.isoformat(),
+            "n_training_rows": len(ensemble.y_train_),
+            "cv_folds": ensemble.stack.cv,
+        },
+        metrics={
+            "train_set_insample_log_loss": log_loss(ensemble.y_train_, train_probs, labels=[0, 1, 2]),
+        },
+        register=True,
+    )
 
     match_odds_events = odds_api.fetch_match_odds()
     match_predictions = []

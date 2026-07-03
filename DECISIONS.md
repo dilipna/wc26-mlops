@@ -2,6 +2,125 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-03 — Stacked meta-learner, heuristic draw-rate fix, MLflow; two bugs caught by
+actually running it
+
+Closed two items explicitly approved in the 2026-07-02 late-night follow-up (see
+`.claude` memory / next-session-plan): the ensemble's equal-weight blending and the
+FIFA-heuristic's flat 25% draw rate, both logged there as known gaps. Bundled with
+standing up MLflow, since retraining the ensemble is a natural place to log an
+experiment.
+
+**Stacked meta-learner** (`src/models/layer1_ensemble/ensemble.py`): replaced the
+hand-rolled `sum(members.values()) / len(members)` equal-weight average with sklearn's
+`StackingClassifier` (5-fold CV, `stack_method="predict_proba"`, `LogisticRegression`
+final estimator). The FIFA heuristic isn't a fitted sklearn model, so it's wrapped in a
+tiny `_FifaHeuristicEstimator(BaseEstimator, ClassifierMixin)` with a no-op `fit()` so it
+can sit inside the stack next to XGBoost and the Elo/logreg member. Chose sklearn's
+built-in stacking over hand-rolling the out-of-fold CV logic myself -- it's the
+canonical, battle-tested implementation of exactly this pattern, so less custom code to
+get subtly wrong. Result, re-running the Phase 0 backtest: avg Brier delta -0.0003 →
+-0.0035, avg log-loss delta -0.0524 → -0.0987 (both more negative = bigger win over
+baseline), same rising-trend and semifinal-checkpoint results as before -- a genuine
+improvement, not a regression risk.
+
+**Heuristic draw-rate fix** (`src/models/layer1_ensemble/heuristic.py`): flat 25%
+`FIXED_DRAW_RATE` replaced with a Gaussian decay in the rank-points gap -- `PEAK_DRAW_RATE`
+0.30 at an even match, `FLOOR_DRAW_RATE` 0.06 as the gap widens. XGBoost and the logistic
+member already learned this shape from data; only the heuristic assumed a constant.
+
+**MLflow** (`docker/mlflow/Dockerfile`, `docker-compose.airflow.yml`, new
+`src/models/layer1_ensemble/tracking.py`): tracking server in the same compose file as
+Airflow (same Docker network, reachable at `http://mlflow:5000` from the scheduler
+container), sqlite backend store, `mlflow-artifacts:/` proxied artifact serving (see bug
+below). Wired into two places: `backtest_2018_2022.py` logs one run per year with
+per-checkpoint Brier/log-loss as step-indexed metrics (so the UI plots the trend across
+the tournament); `daily_update.py` logs one run per day and registers the model
+(`wc26-layer1-stacked-ensemble` in the Model Registry) -- the natural split between
+"experiment tracking" (backtest, rich held-out metrics) and "production model
+versioning" (daily, registry). Every call is wrapped in a **fast TCP preflight
+(`_is_reachable`, 1.5s timeout, IPv4-only)** before touching the mlflow SDK at all, and a
+broad try/except around the logging itself -- MLflow is supplementary, never allowed to
+block or fail the actual pipeline run.
+
+**Bug 1 -- artifact PermissionError, caught by actually triggering the DAG, not just
+building the image:** first version of `docker/mlflow/Dockerfile` set
+`--default-artifact-root /mlflow/artifacts` (a plain local path). The client
+(`mlflow.sklearn.log_model`) resolves the experiment's artifact location and tries to
+write there *directly from whichever container is running the client* -- which for
+`daily_update.py` is the airflow-scheduler container, where `/mlflow` doesn't exist at
+all. Fixed by switching to MLflow's proxied-artifact mode: `--default-artifact-root
+mlflow-artifacts:/` + `--artifacts-destination /mlflow/artifacts` + `--serve-artifacts`,
+so all artifact reads/writes go through the tracking server's own REST API instead of
+requiring direct filesystem/volume access from every client container. Had to delete and
+recreate the `mlflow-data` volume once, since `--default-artifact-root` only affects
+newly-created experiments, not ones already registered under the old scheme.
+
+**Bug 2 -- stuck `RUNNING` runs, caught by checking the MLflow API after "success," not
+trusting the console output:** running `backtest_2018_2022.py` locally on Windows (not
+in a container) crashed with `UnicodeEncodeError` on the emoji MLflow's fluent API prints
+("🏃 View run..."), because Windows' default console codepage can't encode it. The crash
+landed inside `with mlflow.start_run()`, after params/metrics/model had already logged
+successfully but before the run could be marked `FINISHED` -- so the run sat as an
+invisible zombie in `RUNNING` status server-side even though the broad try/except made
+the script itself exit cleanly. Fixed at the source in `tracking.py`:
+`sys.stdout.reconfigure(encoding="utf-8", errors="replace")` on import, so this whole
+class of "library prints Unicode, Windows console can't encode it" bug can't recur for
+any future addition to this module. Only visible by querying the MLflow REST API for run
+status after the fact, not from "the script ran without an exception."
+
+## 2026-07-03 — Airflow via Docker Desktop, LocalExecutor, not the full Celery stack
+
+Round of 16 (July 4) is the stated automation deadline and `daily_update.py` +
+`export_dashboard_data.py` were still being run by hand. Airflow doesn't run
+natively on Windows (Linux/WSL only), and this machine had neither WSL nor
+Docker installed. Considered three options: (a) Task Scheduler now + Airflow
+later, (b) install WSL2/Docker and go straight to Airflow, (c) GitHub Actions
+cron instead of Airflow. User chose (b), specifically via Docker Desktop
+(which installs/enables WSL2 itself during setup, so no separate `wsl
+--install` + reboot cycle was needed first).
+
+Built a `docker-compose.airflow.yml` with **LocalExecutor**, not the official
+Celery+Redis multi-worker compose file Airflow publishes -- this is a
+single-DAG portfolio pipeline, not a multi-tenant cluster; LocalExecutor runs
+tasks as subprocesses in the scheduler container, which is sufficient and
+avoids standing up Redis + worker replicas for no benefit (Tier 1 spirit:
+real automation, not gold-plated infra).
+
+Design:
+- `docker/airflow/Dockerfile` -- `apache/airflow:2.9.3-python3.10` + this
+  repo's `requirements.txt` (extracted from `pip freeze` since none existed
+  yet -- see below).
+- Whole repo mounted read-write at `/opt/airflow/project` (not just `src/`)
+  so the two scripts' `Path(__file__).resolve().parent.parent`-relative
+  paths into `data/` and `dashboard/data/` resolve identically to a local
+  run -- no code changes needed to make the scripts container-aware.
+- `.env` loaded via `env_file` on every Airflow service, since
+  `odds_api.py` reads `ODDS_API_KEY` via `os.environ.get` directly (no
+  path assumptions to work around).
+- DAG (`src/orchestration/dags/wc26_daily_pipeline.py`): two chained
+  `BashOperator` tasks, `schedule="0 6 * * *"` (06:00 UTC -- after the
+  prior day's matches have concluded), `catchup=False`, 1 retry / 10 min.
+  `BashOperator` over `PythonOperator` so the DAG stays a thin wrapper and
+  the scripts remain independently runnable exactly as documented in
+  PROJECT_BRAIN.md #10, with zero Airflow-specific imports in `scripts/`.
+
+Added a root `requirements.txt` as a side effect (pinned from the working
+`pip freeze` versions) -- didn't exist before since local dev never needed
+one; now required for a reproducible Docker build.
+
+**Verified live, same day:** built the image, ran `airflow-init` (db migrate +
+admin user), brought up `postgres` + `airflow-webserver` + `airflow-scheduler`.
+DAG parsed with zero import errors. Unpausing it (with `catchup=False`)
+triggered an automatic backfill run for the most recent past interval
+(2026-07-02) which succeeded; a manual trigger for 2026-07-03 also succeeded.
+Both runs appended real rows to `predictions_log.csv`, a real new result
+(Switzerland 2-0 Algeria) landed in `results_log.csv`, and all 5
+`dashboard/data/*.json` files regenerated with fresh data -- confirming the
+container's mounted-volume write-back to the host works exactly as designed.
+Containers run `restart: unless-stopped`, so the 06:00 UTC daily fire is now
+unattended as long as Docker Desktop is running, including July 4 (Round of 16).
+
 ## 2026-07-02 — Dashboard built; two bugs caught by actually looking at it
 
 Built the Next.js dashboard described in the entry below: animated hero, live favorites
