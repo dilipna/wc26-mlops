@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-07-04T15:41:25.820583+00:00",
+  "graded_matches": [],
+  "summary": {
+    "n_graded": 0,
+    "model_accuracy": null,
+    "model_avg_brier": null,
+    "n_bookmaker_graded": 0,
+    "bookmaker_accuracy": null,
+    "bookmaker_avg_brier": null
+  },
+  "calibration": [
+    {
+      "bucket_label": "0-20%",
+      "predicted_mid": 0.1,
+      "n": 0,
+      "actual_rate": null
+    },
+    {
+      "bucket_label": "20-40%",
+      "predicted_mid": 0.30000000000000004,
+      "n": 0,
+      "actual_rate": null
+    },
+    {
+      "bucket_label": "40-60%",
+      "predicted_mid": 0.5,
+      "n": 0,
+      "actual_rate": null
+    },
+    {
+      "bucket_label": "60-80%",
+      "predicted_mid": 0.7,
+      "n": 0,
+      "actual_rate": null
+    },
+    {
+      "bucket_label": "80-100%",
+      "predicted_mid": 0.9,
+      "n": 0,
+      "actual_rate": null
+    }
+  ]
+}

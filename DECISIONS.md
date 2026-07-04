@@ -2,6 +2,72 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-04 — "Model vs reality" proof tracker
+
+Dilip's explicit highest-value ask (PROJECT_BRAIN #12 item 3): an auditable track record
+showing the model's pre-match call against what actually happened, not just aggregate
+backtest numbers. Two pieces:
+
+**Logic lives in `src/verification/proof_tracker.py`, not `scripts/`** — unlike
+`daily_update.py` (which has no unit tests and is only integration-verified via live runs),
+the join/grading/calibration logic here is pure and easy to get subtly wrong (which
+snapshot to grade, how to score a 3-way outcome), so it got 6 pytest tests
+(`tests/test_proof_tracker.py`) before touching real data. `scripts/verify_predictions.py`
+is a thin I/O wrapper: fetch from Supabase, read the results CSV, call `build_report`,
+write JSON. Matches the existing `src/` = logic, `scripts/` = entry point split.
+
+**Grading uses the LAST pre-kickoff snapshot per fixture, not the first.** A fixture
+shows up in `match_predictions` once per daily run for as long as it's still upcoming
+(append-only table), so the same match can have several snapshots taken days apart.
+Grading the one closest to kickoff is the model's most-informed call and the one that
+best supports the "model said X right before kickoff" framing Dilip asked for; the
+earlier ones are still in Supabase for anyone who wants the full evolution.
+
+**Why Supabase and not the local JSON snapshots for predictions:** `data/live/
+match_predictions_<ts>.json` is gitignored and each file only covers whatever was
+upcoming on ONE run, so nothing durable survives locally across days once a fixture is
+predicted, played, and rotates out of "upcoming." Supabase's `match_predictions` table
+(added earlier today, append-only by design for exactly this reason) is the only place
+the full pre-kickoff history exists. Results, by contrast, already had a durable local
+source (`results_log.csv`, git-tracked) — no reason to add a second read path for those.
+
+**Best-effort, not fail-open with empty data:** if Supabase is unreachable, the script
+leaves any existing `dashboard/data/proof_tracker.json` untouched rather than overwriting
+it with an empty one — a transient outage shouldn't make a previously-populated dashboard
+regress to "no graded matches yet." Only writes an empty placeholder the very first time,
+when no file exists at all (so the dashboard build never 404s on a missing import).
+
+**Live-verified the join is correct, not just untested-but-plausible:** ran the script
+against real Supabase data and got 0 graded matches. Confirmed this is the actual state of
+the world (not a name-matching bug) by pulling both tables directly: all 8 predictions
+logged today are for fixtures dated July 4–7 that haven't finished yet; the two completed
+matches in `results_log.csv` predate the Supabase table's existence entirely (predictions
+only started logging today, after those matches were already done, so they were never
+"upcoming" and never got a snapshot). This will self-populate once the first predicted
+knockout match completes.
+
+**Calibration is built incrementally, every run, not just once at the end.** CLAUDE.md's
+Tier 1 spec asks for a calibration/reliability diagram in the FINAL summary after July 19;
+building the bucketing logic now (5 buckets by the model's confidence in whatever it
+picked, `n` and hit-rate per bucket) means that final artifact is just "run the same
+function on the full season" rather than new code written under deadline pressure later.
+
+**Dashboard:** new `ProofTracker.tsx` section ("Live Track Record" / "Our AI vs Reality"),
+placed right after the live results ticker and before the historical 2018/2022 backtest
+section (renamed that section's eyebrow "Proof" → "Backtested" to avoid two sections both
+claiming to be "the proof" — this one is live/current, that one is retrospective/historical).
+Verified by temporarily swapping in synthetic graded-match data and checking the rendered
+SSR HTML for the expected content (team names, confidence numbers, ✓/✗ markers, calibration
+caption) — no Playwright browser available in this environment, so no pixel screenshot.
+`npm run build` and `npm run lint` both pass clean against the real (currently-empty)
+`proof_tracker.json`, exercising the same empty-state code path the live site will show
+until the first knockout match finishes.
+
+Wired as the second task in the Airflow DAG: `daily_update >> verify_predictions >>
+export_dashboard_data` (needs `daily_update`'s fresh results/predictions; must run before
+`export_dashboard_data` regenerates the dashboard's data folder, though in practice the two
+write disjoint files so ordering only matters for keeping one clean commit-worthy state).
+
 ## 2026-07-04 — Live Layer 2: the model's own P(champion) now flows daily
 
 The single biggest honesty gap in the system is closed: `predictions_log.csv` (and the

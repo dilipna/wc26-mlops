@@ -3,6 +3,7 @@ import SectionHeading from "@/components/SectionHeading";
 import FavoritesLeaderboard from "@/components/FavoritesLeaderboard";
 import ProbabilityChart from "@/components/ProbabilityChart";
 import UpcomingMatches from "@/components/UpcomingMatches";
+import ProofTracker from "@/components/ProofTracker";
 import ModelValidation from "@/components/ModelValidation";
 import MethodologySection from "@/components/MethodologySection";
 import StatsStrip from "@/components/StatsStrip";
@@ -11,6 +12,7 @@ import TechStack from "@/components/TechStack";
 import Footer from "@/components/Footer";
 import {
   backtest,
+  proofTracker,
   results,
   seriesByTeam,
   summary,
@@ -75,7 +77,16 @@ export default function Home() {
 
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
-          eyebrow="Proof"
+          eyebrow="Live Track Record"
+          title="Our AI vs Reality"
+          subtitle="Every pre-kickoff prediction is logged before the match starts. Once it finishes, we grade it here -- no cherry-picking, no hindsight."
+        />
+        <ProofTracker data={proofTracker} />
+      </section>
+
+      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+        <SectionHeading
+          eyebrow="Backtested"
           title="Tested On Real History"
           subtitle="Before trusting it with 2026, we replayed the 2018 and 2022 World Cups from the group stage onward. The eventual champion's predicted chances climbed round after round in both -- and beat a simple world-ranking guess on average."
         />
