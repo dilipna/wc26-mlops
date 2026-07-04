@@ -41,11 +41,13 @@ data/live/           # results_log.csv (cumulative, git-tracked, 87 rows/48 team
                      # + timestamped odds/prediction snapshots (gitignored, transient)
 data/predictions/    # predictions_log.csv -- (date, team, win_probability, model_version)
 data/tuning/         # Optuna output lands here if present; currently EMPTY on purpose (see #6)
+data/monitoring/     # drift_report.json (git-tracked) + drift_report.html (gitignored, ~3MB)
 src/features/        # data loading, FIFA-ranking as-of lookups, incremental Elo + rolling form
 src/ingestion/       # Odds API client, live results store, Supabase client, team-name canonicalization
 src/models/layer1_ensemble/  # feature rows, FIFA heuristic, stacked ensemble, MLflow tracking, tuning hooks
 src/models/layer2_simulation/  # bracket reconstruction (backtest) + live bracket (2026) + Monte Carlo
 src/verification/    # proof_tracker.py -- pure grading/calibration logic (tested)
+src/monitoring/       # drift_report.py -- Evidently data-drift check (tested)
 src/serving/         # FastAPI app + OpenTelemetry instrumentation
 src/orchestration/dags/  # Airflow DAG
 scripts/             # all runnable entry points, see #10
@@ -53,7 +55,7 @@ dashboard/           # Next.js 16 App Router site, statically generated from das
                      # LIVE at https://fifa2026mlops.vercel.app (also .../dashboard-hazel-kappa-52.vercel.app)
 docker/{airflow,mlflow,serving}/Dockerfile
 tests/               # 9 pytest files, 24 tests, all passing
-k8s/, src/monitoring/  # still EMPTY -- planned only (Tier 2/3)
+k8s/                 # still EMPTY -- planned only (Tier 2)
 .env                 # ODDS_API_KEY, SUPABASE_URL/KEY, (API_FOOTBALL_KEY unused, see #7)
 .obsidian/, graphify-out/, Untitled.md, "WC26 Dark*.{html,pdf}"  # NOT part of this system --
                      # user's own tooling / the design mockup source file (see #6). Leave alone.
@@ -149,6 +151,22 @@ applied to player-likeness silhouettes). Sections: hero, stats strip, live leade
 country lookup, day-by-day chart, upcoming fixtures, results ticker, live track record
 (proof tracker), backtested history (2018/2022), methodology, tech stack, footer.
 
+**Evidently drift monitoring (2026-07-04, Tier 2):** `src/monitoring/drift_report.py` +
+`scripts/check_drift.py` -- Evidently `DataDriftPreset` over Layer 1's 5 numeric features,
+reference = 2016->2026 matches, current = 2026 matches so far. Writes
+`data/monitoring/drift_report.json` (git-tracked) + `drift_report.html` (gitignored, ~3MB).
+Pinned `evidently==0.4.40`, not latest (0.7.x pulls in a litestar UI stack that conflicts
+with a pre-existing `python-multipart` install and breaks on import -- see DECISIONS.md).
+
+**Bug found + fixed this session: historical/live match double-counting.**
+`data/historical/results.csv` is periodically refreshed upstream and already contained 74
+of the 87 real 2026 WC matches the live ingestion log also tracks; three call sites
+(`daily_update.py`, `src/serving/app.py`, `tune_layer1.py`) merged historical+live with no
+dedup, so those 74 matches fed Elo/training **twice** (measured: Elo overstated +12 to +35
+points for teams with several 2026 results). Fixed via
+`live_results_store.load_combined_matches()`, a single deduped loader now used by all four
+call sites (the new drift script included). See DECISIONS.md for the full writeup.
+
 **"Check your country" dropdown:** `CountryLookup.tsx` — all 48 teams (roster derived from
 `results_log.csv`, not hand-maintained), alive/eliminated status reused from
 `live_bracket`, current P(champion) or last-tracked value, hand-rolled SVG sparkline.
@@ -188,8 +206,8 @@ In priority order for the next session:
    (no cloud-compute touchpoint besides Vercel's static hosting + Supabase's DB-as-a-service).
 2. **Chatbot** (floating widget, FIFA/match Q&A backed by this system's own data via the
    FastAPI layer) — **BLOCKED on an LLM API key from Dilip (Anthropic).** Ask for it early.
-3. **Evidently drift monitoring** (Tier 2) — data (Elo/rank feature distributions over
-   time) already exists, should be cheap to add.
+3. ~~Evidently drift monitoring~~ — **DONE 2026-07-04**, see #6. Also surfaced and fixed a
+   real historical/live match double-counting bug in the process (see #6, DECISIONS.md).
 4. **kind/minikube K8s manifests** for the FastAPI service (Tier 2) — deploy the same
    Docker image locally with plain manifests, no KServe (explicitly rejected, see #9).
 5. **Calibration/reliability diagram, final version** (Tier 1, due after July 19) — the
@@ -243,8 +261,9 @@ python scripts/backfill_2026_group_stage.py # one-time (already run): Wikipedia 
 python scripts/verify_predictions.py        # grades finished fixtures -> dashboard/data/proof_tracker.json
 python scripts/export_dashboard_data.py     # logs -> dashboard/data/*.json (run after daily_update + verify_predictions)
 python scripts/tune_layer1.py               # Optuna tuning pass (see #6: hasn't beaten defaults yet)
+python scripts/check_drift.py               # Evidently drift check -> data/monitoring/drift_report.{json,html}
 python scripts/fetch_live_snapshot.py       # raw odds/fixtures snapshot (superseded by daily_update)
-python -m pytest tests/ -q                  # 24 tests
+python -m pytest tests/ -q                  # 26 tests
 uvicorn src.serving.app:app --port 8000     # FastAPI serving layer -- docs at localhost:8000/docs
 cd dashboard && npm run dev                 # local dev server at localhost:3000
 
@@ -257,6 +276,6 @@ docker compose -f docker-compose.airflow.yml up -d   # Postgres + Airflow + MLfl
 # FastAPI serving: pending Render deploy (render.yaml ready, see #8 item 1)
 ```
 Requires: Python 3.10 (pandas, numpy, sklearn, xgboost, mlflow, fastapi, uvicorn,
-opentelemetry-*, optuna, supabase -- see requirements.txt), Node 24, `.env` with
+opentelemetry-*, optuna, evidently, supabase -- see requirements.txt), Node 24, `.env` with
 `ODDS_API_KEY`/`SUPABASE_URL`/`SUPABASE_KEY`, Docker Desktop (for local Airflow/MLflow/
 serving only -- NOT required for the live Vercel dashboard, which is fully static).

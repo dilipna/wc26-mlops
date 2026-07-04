@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-07-04",
+  "reference_window": [
+    "2016-01-01",
+    "2026-01-01"
+  ],
+  "current_window": [
+    "2026-01-01",
+    "2026-07-04"
+  ],
+  "reference_rows": 19282,
+  "current_rows": 804,
+  "dataset_drift": false,
+  "share_of_drifted_columns": 0.2,
+  "number_of_drifted_columns": 1,
+  "number_of_columns": 5,
+  "columns": {
+    "elo_diff": {
+      "drift_detected": true,
+      "drift_score": 0.103503020573179,
+      "stattest_name": "Wasserstein distance (normed)"
+    },
+    "form_goals_against_diff": {
+      "drift_detected": false,
+      "drift_score": 0.0863659405119859,
+      "stattest_name": "Wasserstein distance (normed)"
+    },
+    "form_goals_for_diff": {
+      "drift_detected": false,
+      "drift_score": 0.066262652967901,
+      "stattest_name": "Wasserstein distance (normed)"
+    },
+    "form_win_rate_diff": {
+      "drift_detected": false,
+      "drift_score": 0.031299341435748786,
+      "stattest_name": "Wasserstein distance (normed)"
+    },
+    "rank_points_diff": {
+      "drift_detected": false,
+      "drift_score": 0.09518891796578904,
+      "stattest_name": "Wasserstein distance (normed)"
+    }
+  }
+}

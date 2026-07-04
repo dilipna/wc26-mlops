@@ -38,7 +38,7 @@ import xgboost as xgb  # noqa: E402
 from sklearn.metrics import log_loss  # noqa: E402
 from sklearn.model_selection import StratifiedKFold  # noqa: E402
 
-from src.features.data_loading import load_fifa_rankings, load_results  # noqa: E402
+from src.features.data_loading import load_fifa_rankings  # noqa: E402
 from src.features.team_timeline import build_timelines  # noqa: E402
 from src.ingestion import live_results_store  # noqa: E402
 from src.models.layer1_ensemble import tracking  # noqa: E402
@@ -93,9 +93,7 @@ def main():
     today = datetime.now(timezone.utc).date()
     print(f"=== Optuna tuning: Layer 1 XGBoost member ({args.trials} trials, {args.cv_folds}-fold CV) ===")
 
-    historical = load_results()
-    live = live_results_store.load_live_matches()
-    matches = sorted(historical + live, key=lambda m: m.date)
+    matches = live_results_store.load_combined_matches()
     rankings = load_fifa_rankings()
     timelines = build_timelines(matches)
 

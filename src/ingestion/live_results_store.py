@@ -9,7 +9,7 @@ import csv
 from datetime import datetime
 from pathlib import Path
 
-from src.features.data_loading import Match
+from src.features.data_loading import Match, load_results
 from src.ingestion import supabase_store
 from src.ingestion.team_names import canonical
 
@@ -89,3 +89,25 @@ def load_live_matches() -> list[Match]:
             )
     matches.sort(key=lambda m: m.date)
     return matches
+
+
+def load_combined_matches() -> list[Match]:
+    """Historical CSV + live-ingested 2026 results, deduplicated and
+    chronologically sorted.
+
+    `data/historical/results.csv` is refreshed periodically from its
+    upstream source and can end up containing the same real 2026 fixtures
+    this module separately logs from the Odds API -- without dedup, every
+    such match's Elo delta and training row gets counted twice. On a
+    collision the historical row wins (it carries a real neutral/venue
+    flag; this module always hardcodes `neutral=True`, see
+    `load_live_matches`)."""
+    seen = set()
+    combined = []
+    for m in sorted(load_results() + load_live_matches(), key=lambda m: m.date):
+        key = (m.date, m.home_team, m.away_team)
+        if key in seen:
+            continue
+        seen.add(key)
+        combined.append(m)
+    return combined
