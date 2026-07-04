@@ -32,7 +32,7 @@ from sklearn.metrics import log_loss  # noqa: E402
 
 load_dotenv()
 
-from src.features.data_loading import load_fifa_rankings, load_results  # noqa: E402
+from src.features.data_loading import load_fifa_rankings  # noqa: E402
 from src.features.team_timeline import build_timelines  # noqa: E402
 from src.ingestion import live_results_store, odds_api, supabase_store  # noqa: E402
 from src.ingestion.team_names import canonical  # noqa: E402
@@ -80,9 +80,8 @@ def main():
     added = live_results_store.append_new_results(score_events)
     print(f"Live results log: {added} new completed match(es) appended")
 
-    historical = load_results()
+    all_matches = live_results_store.load_combined_matches()
     live = live_results_store.load_live_matches()
-    all_matches = sorted(historical + live, key=lambda m: m.date)
     rankings = load_fifa_rankings()
     timelines = build_timelines(all_matches)
 

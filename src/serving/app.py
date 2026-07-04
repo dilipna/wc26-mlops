@@ -24,7 +24,7 @@ load_dotenv()
 from fastapi import Depends, FastAPI, HTTPException, Request  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
-from src.features.data_loading import load_fifa_rankings, load_results  # noqa: E402
+from src.features.data_loading import load_fifa_rankings  # noqa: E402
 from src.features.team_timeline import build_timelines  # noqa: E402
 from src.ingestion import live_results_store  # noqa: E402
 from src.ingestion.team_names import canonical  # noqa: E402
@@ -45,9 +45,7 @@ class ModelState:
 
     def __init__(self) -> None:
         self.today = datetime.now(timezone.utc).date()
-        historical = load_results()
-        live = live_results_store.load_live_matches()
-        self.matches = sorted(historical + live, key=lambda m: m.date)
+        self.matches = live_results_store.load_combined_matches()
         self.rankings = load_fifa_rankings()
         self.timelines = build_timelines(self.matches)
 

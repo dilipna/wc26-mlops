@@ -2,6 +2,47 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-04 — Evidently drift monitoring + a real double-counting bug it exposed
+
+**Evidently drift check (Tier 2, PROJECT_BRAIN #8 item 3).** `src/monitoring/drift_report.py`
++ `scripts/check_drift.py` run Evidently's `DataDriftPreset` over Layer 1's five numeric
+feature columns (`elo_diff`, `form_goals_for_diff`, `form_goals_against_diff`,
+`form_win_rate_diff`, `rank_points_diff` -- `neutral` excluded, it's a fixed 0/1 flag, not
+a distribution), reference = matches from 2016 up to 2026-01-01, current = matches from
+2026-01-01 to today. Output: `data/monitoring/drift_report.json` (small, git-tracked,
+dashboard-consumable later) + a full `drift_report.html` (gitignored, ~3MB, regenerated
+per run). **Package pin note:** `evidently` latest (0.7.x) transitively pulls in a full
+`litestar`-based UI/server stack that eagerly imports on `import evidently` and collided
+with an unrelated `python-multipart`/`multipart` package-name clash already present in this
+machine's global site-packages (same class of issue as the `websockets` conflict noted
+below) -- broke the import entirely. Pinned `evidently==0.4.40` instead: same
+`Report`/`DataDriftPreset` API, doesn't eagerly import the UI submodule, no conflict.
+Verified: `import evidently; from evidently.report import Report` clean, full test suite
+(26 tests) still green.
+
+**Bug this exposed, found while sanity-checking `check_drift.py`'s row counts: historical
+results.csv and the live 2026 log were double-counting real matches.** `data/historical/
+results.csv` is periodically refreshed from its upstream source and, as of this session,
+already contains 74 of the 87 real 2026 World Cup matches the live ingestion pipeline
+(`live_results_store`) separately logs from the Odds API -- confirmed by exact
+`(date, home_team, away_team)` overlap. Three production call sites
+(`scripts/daily_update.py`, `src/serving/app.py`, `scripts/tune_layer1.py`) all did
+`sorted(historical + live, key=...)` with no cross-source dedup, so every one of those 74
+finished matches fed the Elo/form timeline builder and Layer 1's training set **twice** --
+right as R16 kicks off. Measured impact before the fix: Elo overstated by +11 to +35 points
+for teams with several 2026 results already (France +35.4, Argentina +18.8, Norway +17.2,
+Mexico +11.8) -- not catastrophic, but a real, directional, silently-compounding bias in
+exactly the live window CLAUDE.md flags as highest-stakes.
+
+**Fix:** `live_results_store.load_combined_matches()` -- one shared loader, historical +
+live, deduplicated by `(date, home_team, away_team)` keeping the historical row on a
+collision (it carries the real neutral/venue flag; the live log always hardcodes
+`neutral=True`). All four call sites (`daily_update.py`, `src/serving/app.py`,
+`scripts/tune_layer1.py`, `scripts/check_drift.py`) now use it instead of duplicating the
+`historical = load_results(); live = ...; sorted(historical + live, ...)` pattern inline.
+Backtests (`scripts/backtest_2018_2022.py`, `bracket.py`) are unaffected -- they only ever
+read `load_results()` alone, never merge in the live log.
+
 ## 2026-07-04 — Vercel auto-deploy was silently broken since day one
 
 Found while verifying the country-dropdown deploy: `vercel ls` showed the last THREE
