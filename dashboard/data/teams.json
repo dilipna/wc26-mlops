@@ -1,0 +1,242 @@
+[
+  {
+    "team": "Algeria",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Argentina",
+    "status": "alive",
+    "current_probability": 0.2534
+  },
+  {
+    "team": "Australia",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Austria",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Belgium",
+    "status": "alive",
+    "current_probability": 0.0334
+  },
+  {
+    "team": "Bosnia and Herzegovina",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Brazil",
+    "status": "alive",
+    "current_probability": 0.1025
+  },
+  {
+    "team": "Canada",
+    "status": "alive",
+    "current_probability": 0.0079
+  },
+  {
+    "team": "Cape Verde",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Colombia",
+    "status": "alive",
+    "current_probability": 0.0501
+  },
+  {
+    "team": "Croatia",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Cura\u00e7ao",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Czech Republic",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "DR Congo",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Ecuador",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Egypt",
+    "status": "alive",
+    "current_probability": 0.003
+  },
+  {
+    "team": "England",
+    "status": "alive",
+    "current_probability": 0.0478
+  },
+  {
+    "team": "France",
+    "status": "alive",
+    "current_probability": 0.2004
+  },
+  {
+    "team": "Germany",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Ghana",
+    "status": "alive",
+    "current_probability": 0.0001
+  },
+  {
+    "team": "Haiti",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Iran",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Iraq",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Ivory Coast",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Japan",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Jordan",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Mexico",
+    "status": "alive",
+    "current_probability": 0.0259
+  },
+  {
+    "team": "Morocco",
+    "status": "alive",
+    "current_probability": 0.029
+  },
+  {
+    "team": "Netherlands",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "New Zealand",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Norway",
+    "status": "alive",
+    "current_probability": 0.009
+  },
+  {
+    "team": "Panama",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Paraguay",
+    "status": "alive",
+    "current_probability": 0.0048
+  },
+  {
+    "team": "Portugal",
+    "status": "alive",
+    "current_probability": 0.043
+  },
+  {
+    "team": "Qatar",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Saudi Arabia",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Scotland",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Senegal",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "South Africa",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "South Korea",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Spain",
+    "status": "alive",
+    "current_probability": 0.1659
+  },
+  {
+    "team": "Sweden",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Switzerland",
+    "status": "alive",
+    "current_probability": 0.0194
+  },
+  {
+    "team": "Tunisia",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Turkey",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "United States",
+    "status": "alive",
+    "current_probability": 0.0044
+  },
+  {
+    "team": "Uruguay",
+    "status": "eliminated",
+    "current_probability": null
+  },
+  {
+    "team": "Uzbekistan",
+    "status": "eliminated",
+    "current_probability": null
+  }
+]

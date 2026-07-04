@@ -1,0 +1,19 @@
+# Render Blueprint for the FastAPI model-serving layer (src/serving/app.py).
+# Deploy: connect this repo at dashboard.render.com -> "New +" -> "Blueprint".
+# No env vars are required -- MLFLOW_TRACKING_URI defaults to an unreachable
+# localhost, so the service falls back to training Layer 1 locally at
+# startup (~10s), same best-effort behavior as everywhere else in this
+# project. Free plan services spin down after 15 min idle; the first
+# request after a sleep will be slow (container cold start + local
+# training) -- expected free-tier behavior, not a bug.
+services:
+  - type: web
+    name: wc26-serving
+    runtime: docker
+    dockerfilePath: ./docker/serving/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000

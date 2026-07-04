@@ -5,6 +5,7 @@ import FavoritesLeaderboard from "@/components/FavoritesLeaderboard";
 import ProbabilityChart from "@/components/ProbabilityChart";
 import UpcomingMatches from "@/components/UpcomingMatches";
 import ProofTracker from "@/components/ProofTracker";
+import CountryLookup from "@/components/CountryLookup";
 import ModelValidation from "@/components/ModelValidation";
 import MethodologySection from "@/components/MethodologySection";
 import StatsStrip from "@/components/StatsStrip";
@@ -17,6 +18,7 @@ import {
   results,
   seriesByTeam,
   summary,
+  teams,
   upcomingMatches,
 } from "@/lib/data";
 
@@ -48,6 +50,15 @@ export default function Home() {
           subtitle="Every remaining team's chance of winning it all, refreshed daily. Right now these numbers come from the global market; our own simulator's numbers join this board once the knockout bracket is locked in -- see the note below."
         />
         <FavoritesLeaderboard favorites={favorites} />
+      </section>
+
+      <section id="country" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+        <SectionHeading
+          eyebrow="Find Your Team"
+          title="Check Your Country"
+          subtitle="Every one of the 48 teams: still alive or eliminated, and how their odds have moved."
+        />
+        <CountryLookup teams={teams} />
       </section>
 
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">

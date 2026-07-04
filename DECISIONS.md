@@ -2,6 +2,48 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-04 — "Check your country" dropdown + Render deploy blueprint
+
+**Country dropdown (PROJECT_BRAIN #12 item 4).** Scoped to the 48 teams that actually
+qualified for 2026, not a full ~211-country FIFA list with a "not qualified" state for the
+other ~160 -- `flags.ts` only ever mapped the WC26 field + backtest opponents anyway, and
+building out flag/roster entries for every non-qualified country to show them all as
+"not qualified" is low-value busywork, not a real feature. Roster is derived from `data/live/
+results_log.csv` (every team that's played a logged 2026 match) rather than a
+hand-maintained "48 qualified teams" list -- confirmed it resolves to exactly 48. Status
+(alive/eliminated) comes straight from `live_bracket.build_2026_tree` + `alive_teams`,
+the same functions `daily_update.py` and the FastAPI `/champions` endpoint already use --
+no reimplementation. New `export_teams()` in `export_dashboard_data.py` writes `dashboard/
+data/teams.json`: `{team, status, current_probability}`, with `current_probability: null`
+for eliminated teams that have no probability to show.
+
+**Per-team series fallback, not the app-wide one.** `seriesByTeam()` (used everywhere
+else) picks ONE series for the whole app -- the model's own Layer 2 series once it exists,
+which is true globally as of 2026-07-04. But a team eliminated in the group stage (most
+of them) never got a model-series row at all, only bookmaker-series rows from before
+2026-07-04. A global pick would silently show nothing for those teams. Added
+`seriesForTeam(team)` in `data.ts`: falls back to the bookmaker series per-team, not
+app-wide, so early-eliminated teams still show whatever trajectory they have.
+
+**Sparkline is hand-rolled SVG, not Recharts** -- a 2-point-minimum polyline in a fixed
+160x44 box doesn't need a charting library; keeps the component dependency-free.
+
+**Flag.tsx/flags.ts get their first real use since the redesign** (they were kept unused
+specifically for this, see the redesign's DECISIONS.md entry) -- `Iraq` isn't in
+`COUNTRY_CODES`, falls back to the ⚽ placeholder gracefully rather than crashing, exactly
+as `Flag.tsx` was designed to do.
+
+**Render blueprint (`render.yaml`) for the FastAPI serving layer.** Chose Render over
+Fly.io: Fly's CLI installer is a `curl|iex`-style remote script the sandbox correctly
+blocks without explicit user approval, and re-prompting for that felt like the wrong
+tradeoff against a git-connected, zero-CLI Blueprint deploy that needs no new tooling at
+all. No env vars required -- `MLFLOW_TRACKING_URI` defaults to an unreachable localhost in
+the cloud, so the service falls back to local training at startup, same best-effort
+pattern as everywhere else. Free-tier services spin down after 15 min idle; documented
+that the first request after a sleep is slow (cold start + ~10s local training), not a bug.
+**Not yet deployed** -- needs Dilip to connect the repo via Render's dashboard once
+(no CLI/API-key path existed to fully automate this one).
+
 ## 2026-07-04 — Optuna tuning: built it, ran it, defaults still win (honest negative result)
 
 Added after Dilip's "best possible model performance" ask + the MLOps-gap audit found no

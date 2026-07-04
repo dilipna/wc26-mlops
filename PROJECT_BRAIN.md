@@ -51,6 +51,21 @@ k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned on
 - **MLflow experiment tracking + model registry (2026-07-03, live-verified):** `backtest_2018_2022.py` logs one run/year with step-indexed per-checkpoint Brier/log-loss; `daily_update.py` logs one run/day and registers the model as `wc26-layer1-stacked-ensemble`. Tracking server: `docker/mlflow/Dockerfile` + `mlflow` service in `docker-compose.airflow.yml`, sqlite backend, `mlflow-artifacts:/` proxied artifact serving (localhost:5000). `src/models/layer1_ensemble/tracking.py` fast-fails (1.5s TCP preflight) if the server's down so it never blocks the pipeline. Two bugs found and fixed live — see DECISIONS.md 2026-07-03 entry: (1) artifact PermissionError from non-proxied local-path artifact root, (2) runs stuck `RUNNING` from a Windows-console UnicodeEncodeError on mlflow's own emoji print, fixed via `sys.stdout.reconfigure(encoding="utf-8")`.
 
 # 6. WHAT IS IMPLEMENTED
+- **"Check your country" dropdown (2026-07-04):** `CountryLookup.tsx` -- native `<select>`
+  of all 48 teams (roster derived from `results_log.csv`, not hand-maintained), each
+  showing alive/eliminated status (from `live_bracket.build_2026_tree`/`alive_teams`,
+  reused not reimplemented) + current P(champion) or last-tracked value + a hand-rolled SVG
+  sparkline. New `export_teams()` in `export_dashboard_data.py` writes `dashboard/data/
+  teams.json`. New `seriesForTeam()` in `data.ts` falls back to the bookmaker series
+  per-team (most teams were eliminated before the model's own series existed 2026-07-04).
+  `Flag.tsx`/`flags.ts` back in use for the first time since the redesign. Verified: 48
+  options render, default (Algeria, eliminated, no data) shows the honest "—" placeholder
+  correctly, build/lint clean.
+- **Render deploy blueprint (2026-07-04):** `render.yaml` for the FastAPI serving layer,
+  zero env vars needed (falls back to local training in the cloud, same as everywhere
+  else). Chose Render over Fly.io since Fly's CLI needs a `curl|iex`-style install the
+  sandbox blocks. **NOT YET DEPLOYED** -- needs Dilip to connect the repo via Render's
+  dashboard (no CLI/API path to fully automate this one). See DECISIONS.md 2026-07-04.
 - **Optuna tuning capability (2026-07-04) -- built, run, honest negative result.**
   `scripts/tune_layer1.py` (30-trial Optuna study, 3-fold CV, tunes only the XGBoost member),
   `Layer1Ensemble(xgb_params=...)` override + `load_tuned_xgb_params()` best-effort loader,
@@ -205,11 +220,10 @@ accuracy / Brier / calibration stats. Built as `src/verification/proof_tracker.p
 ("Live Track Record"). Currently 0 graded matches (real, not a bug -- today's logged predictions haven't kicked
 off/finished yet); will populate automatically as R16 matches complete.
 
-**4. "Check your country's prediction" dropdown.**
-Dashboard feature: dropdown of all national teams (with flag-icons, aliases in flags.ts/rankings.py) → shows that
-team's current P(champion), probability-over-time sparkline, status (alive/eliminated/not qualified). Data source:
-predictions log (via Supabase or the exported JSON). Note: only teams still alive have current rows — eliminated
-teams need an "eliminated" state, not a blank.
+**4. "Check your country's prediction" dropdown — DONE 2026-07-04, see #6.**
+Scoped to the 48-team 2026 field (derived from data, not a global 211-country list) --
+picking a non-2026 country was never really "not qualified" so much as "not a real
+dropdown option," a deliberate scope call, see DECISIONS.md 2026-07-04.
 
 **5. Chatbot button (bottom-right corner) for FIFA/match questions.**
 Floating chat widget on the dashboard; answers from THIS system's data (current predictions, results, backtest) —
