@@ -65,16 +65,27 @@ def export_upcoming_matches():
     return matches
 
 
+MODEL_SERIES = "stacked_l2_montecarlo_v1"
+BOOKMAKER_SERIES = "bookmaker_outright_baseline_v1"
+
+
 def export_summary(predictions_rows, results_rows, upcoming_matches):
-    latest_date = max((r["date"] for r in predictions_rows), default=None)
+    # The hero/leaderboard show the MODEL's own numbers once its series
+    # exists (live Layer 2, 2026-07-04); bookmaker outright is the fallback
+    # for the days before that.
+    primary = [r for r in predictions_rows if r["model_version"] == MODEL_SERIES]
+    if not primary:
+        primary = [r for r in predictions_rows if r["model_version"] == BOOKMAKER_SERIES]
+    latest_date = max((r["date"] for r in primary), default=None)
     top_favorites = []
     if latest_date:
-        latest = [r for r in predictions_rows if r["date"] == latest_date]
+        latest = [r for r in primary if r["date"] == latest_date]
         top_favorites = sorted(latest, key=lambda r: -r["win_probability"])[:5]
 
     summary = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "latest_predictions_date": latest_date,
+        "primary_series": MODEL_SERIES if primary and primary[0]["model_version"] == MODEL_SERIES else BOOKMAKER_SERIES,
         "top_favorites": top_favorites,
         "completed_results_count": len(results_rows),
         "upcoming_matches_count": len(upcoming_matches),

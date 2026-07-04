@@ -9,10 +9,12 @@ scope). For each run:
    alongside the bookmaker's own implied match probabilities.
 4. Pull the bookmaker "wins the tournament" outright market and append it
    to the predictions log as (date, team, win_probability, model_version)
-   -- a real timestamped series today, ahead of Layer 2's own tournament-
-   win output (deferred: needs the actual knockout bracket skeleton, which
-   isn't safely derivable until enough of the live bracket has actually
-   been played -- see DECISIONS.md).
+   -- the benchmark series.
+5. Run live Layer 2: resolve the official 2026 bracket skeleton against
+   real results so far, Monte Carlo the remaining bracket with Layer 1's
+   probabilities, and append the MODEL'S OWN P(wins World Cup) per alive
+   team to the predictions log (plus the heuristic-member baseline, same
+   convention as the Phase 0 backtest).
 
 Run: python scripts/daily_update.py
 """
@@ -32,14 +34,18 @@ load_dotenv()
 
 from src.features.data_loading import load_fifa_rankings, load_results  # noqa: E402
 from src.features.team_timeline import build_timelines  # noqa: E402
-from src.ingestion import live_results_store, odds_api  # noqa: E402
+from src.ingestion import live_results_store, odds_api, supabase_store  # noqa: E402
+from src.ingestion.team_names import canonical  # noqa: E402
 from src.models.layer1_ensemble.ensemble import Layer1Ensemble  # noqa: E402
 from src.models.layer1_ensemble.tracking import log_run  # noqa: E402
+from src.models.layer2_simulation import live_bracket  # noqa: E402
 
 LIVE_DIR = Path(__file__).resolve().parent.parent / "data" / "live"
 PREDICTIONS_LOG = Path(__file__).resolve().parent.parent / "data" / "predictions" / "predictions_log.csv"
 TRAIN_START = date(1992, 1, 1)
 MODEL_VERSION_BASELINE = "bookmaker_outright_baseline_v1"
+MODEL_VERSION_MODEL = "stacked_l2_montecarlo_v1"
+MODEL_VERSION_HEURISTIC = "heuristic_l2_montecarlo_v1"
 
 
 def append_predictions_log(today: date, team_probs: dict[str, float], model_version: str):
@@ -60,7 +66,7 @@ def devig_match_odds(event: dict) -> dict[str, float]:
             if market["key"] != "h2h":
                 continue
             for outcome in market["outcomes"]:
-                outcome_prices.setdefault(outcome["name"], []).append(1.0 / outcome["price"])
+                outcome_prices.setdefault(canonical(outcome["name"]), []).append(1.0 / outcome["price"])
     return odds_api.devig(outcome_prices)
 
 
@@ -101,7 +107,7 @@ def main():
     match_odds_events = odds_api.fetch_match_odds()
     match_predictions = []
     for event in match_odds_events:
-        home, away = event["home_team"], event["away_team"]
+        home, away = canonical(event["home_team"]), canonical(event["away_team"])
         p_loss, p_draw, p_win = ensemble.match_probs(home, away, today, neutral=True)
         bookmaker_probs = devig_match_odds(event)
         match_predictions.append(
@@ -119,15 +125,39 @@ def main():
     match_pred_path = LIVE_DIR / f"match_predictions_{timestamp}.json"
     match_pred_path.write_text(json.dumps(match_predictions, indent=2))
     print(f"Wrote {match_pred_path} ({len(match_predictions)} upcoming/live fixtures scored)")
+    supabase_store.insert_match_predictions(match_predictions)
 
-    outright_probs = odds_api.fetch_outright_probabilities()
+    outright_probs = {canonical(team): p for team, p in odds_api.fetch_outright_probabilities().items()}
     append_predictions_log(today, outright_probs, MODEL_VERSION_BASELINE)
+    supabase_store.upsert_tournament_predictions(today, outright_probs, MODEL_VERSION_BASELINE)
     print(
         f"Appended {len(outright_probs)} team rows to {PREDICTIONS_LOG} "
         f"(model_version={MODEL_VERSION_BASELINE})"
     )
     top5 = sorted(outright_probs.items(), key=lambda kv: -kv[1])[:5]
     print("Bookmaker-implied tournament favorites today:", top5)
+
+    # Live Layer 2: the model's OWN P(wins World Cup), simulated over the
+    # actual remaining 2026 bracket. `live` was reloaded above and already
+    # includes today's newly appended results; upcoming fixtures double as
+    # the shootout-winner inference source (see live_bracket docstring).
+    fixtures = [(home, away) for e in match_odds_events
+                for home, away in [(canonical(e["home_team"]), canonical(e["away_team"]))]]
+    tree = live_bracket.build_2026_tree(live, fixtures)
+    model_champ = live_bracket.simulate_champion_probabilities(
+        tree, lambda a, b: ensemble.advance_probability(a, b, today)
+    )
+    heuristic_champ = live_bracket.simulate_champion_probabilities(
+        tree, lambda a, b: ensemble.baseline_advance_probability(a, b, today)
+    )
+    append_predictions_log(today, model_champ, MODEL_VERSION_MODEL)
+    supabase_store.upsert_tournament_predictions(today, model_champ, MODEL_VERSION_MODEL)
+    append_predictions_log(today, heuristic_champ, MODEL_VERSION_HEURISTIC)
+    supabase_store.upsert_tournament_predictions(today, heuristic_champ, MODEL_VERSION_HEURISTIC)
+    print(f"Live Layer 2: {len(model_champ)} alive teams simulated "
+          f"(model_version={MODEL_VERSION_MODEL}, +heuristic baseline)")
+    top5_model = sorted(model_champ.items(), key=lambda kv: -kv[1])[:5]
+    print("MODEL tournament favorites today:", top5_model)
 
 
 if __name__ == "__main__":

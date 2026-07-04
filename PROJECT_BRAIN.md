@@ -51,6 +51,18 @@ k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned on
 - **MLflow experiment tracking + model registry (2026-07-03, live-verified):** `backtest_2018_2022.py` logs one run/year with step-indexed per-checkpoint Brier/log-loss; `daily_update.py` logs one run/day and registers the model as `wc26-layer1-stacked-ensemble`. Tracking server: `docker/mlflow/Dockerfile` + `mlflow` service in `docker-compose.airflow.yml`, sqlite backend, `mlflow-artifacts:/` proxied artifact serving (localhost:5000). `src/models/layer1_ensemble/tracking.py` fast-fails (1.5s TCP preflight) if the server's down so it never blocks the pipeline. Two bugs found and fixed live — see DECISIONS.md 2026-07-03 entry: (1) artifact PermissionError from non-proxied local-path artifact root, (2) runs stuck `RUNNING` from a Windows-console UnicodeEncodeError on mlflow's own emoji print, fixed via `sys.stdout.reconfigure(encoding="utf-8")`.
 
 # 6. WHAT IS IMPLEMENTED
+- **Live Layer 2 (2026-07-04, live-verified):** official 2026 remaining-bracket skeleton encoded
+  (`src/models/layer2_simulation/live_bracket.py`, match numbers verified from Wikipedia RAW wikitext — QF pairing
+  is 97=W89vW90, 98=W93vW94, 99=W91vW92, 100=W95vW96, NOT sequential), partial-state tree resolution (drawn ties
+  stay pending until the shootout winner appears in a later-round fixture), Monte Carlo over the remaining bracket.
+  `daily_update.py` now logs THREE series daily: `stacked_l2_montecarlo_v1` (the model's own P(champion) — the
+  mission's centerpiece), `heuristic_l2_montecarlo_v1` (baseline), `bookmaker_outright_baseline_v1`. Dashboard
+  hero/chart prefer the model series. First run: model says Argentina .253 / France .200 / Spain .166 vs bookmaker
+  France .314 / Argentina .162.
+- **2026 Elo backfill + name canonicalization (2026-07-04):** all 72 group matches + June 28 R32 opener parsed from
+  Wikipedia raw wikitext into `results_log.csv` (87 rows total, 48 teams) via `scripts/backfill_2026_group_stage.py`;
+  `src/ingestion/team_names.py` maps Odds API names → historical-dataset names at every ingestion point (the "USA"
+  vs "United States" split had live USA results feeding a fresh default-1500 Elo team — now fixed, old rows migrated).
 - Phase 0 backtest end-to-end, passing agreed success bar
 - Odds API ingestion: h2h odds, outright winner market (de-vig = mean implied price, normalized), `/scores` results
 - Cumulative live results log with dedup; leakage-safe feature pipeline
@@ -69,15 +81,12 @@ k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned on
   Round of 16) as long as Docker Desktop is running. Airflow UI: localhost:8080 (admin/admin).
 
 # 7. WHAT IS PARTIALLY DONE
-- `predictions_log.csv`: only 1 day of rows, all bookmaker-baseline — the model's OWN tournament-win numbers are not in it (see #8)
 - `api_football.py`: code exists (direct api-sports.io host) but free tier rejects season 2026 on both RapidAPI and direct ("try from 2022 to 2024") — dropped from pipeline, kept for reference
 - Dashboard freshness: static-at-build; requires re-running export + rebuild to update (documented in DECISIONS.md)
 
 # 8. WHAT IS MISSING
-- Live Layer 2: bracket.py only reconstructs COMPLETED brackets; 2026 future-round skeleton not encoded → model's own P(champion) not produced live (bookmaker outright stands in, labeled)
-- 2026 group-stage results not backfilled into Elo/form (ratings end ~2024 + 8 live results; visible model-vs-market gaps, e.g. USA match)
-- Flat 50/50 knockout draw split (unchanged; stacking + heuristic draw-rate fix done 2026-07-03, see #5/#6)
-- FastAPI, DVC, Evidently, Prometheus/Grafana, Kubernetes, chatbot (empty dirs / not started) — Airflow, Docker, MLflow now done, see #6
+- Flat 50/50 knockout draw split (unchanged; stacking + heuristic draw-rate fix done 2026-07-03, see #5/#6). Live Layer 2 + Elo backfill DONE 2026-07-04, see #6.
+- FastAPI, DVC, Evidently, Prometheus/Grafana, Kubernetes, chatbot (empty dirs / not started) — Airflow, Docker, MLflow, Supabase now done, see #6
 - Public deploy (Vercel planned), calibration/reliability diagram (Tier 1 requirement for final summary), README screenshot/GIF
 
 # 9. KEY DESIGN DECISIONS (FROM CODE / DECISIONS.md)
@@ -95,7 +104,8 @@ k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned on
 ```
 python scripts/fetch_historical_data.py    # one-time: pull 3 historical CSVs
 python scripts/backtest_2018_2022.py       # Phase 0 backtest → data/backtest/*.json + console summary
-python scripts/daily_update.py             # THE daily job: results→features→L1 scoring→predictions log
+python scripts/daily_update.py             # THE daily job: results→features→L1 scoring→L2 Monte Carlo→predictions log
+python scripts/backfill_2026_group_stage.py # one-time (already run 2026-07-04): Wikipedia group-stage backfill
 python scripts/export_dashboard_data.py    # logs → dashboard/data/*.json (run after daily_update)
 python scripts/fetch_live_snapshot.py      # raw odds/fixtures snapshot (superseded by daily_update)
 python -m pytest tests/ -q                 # 6 tests
@@ -119,13 +129,16 @@ Requires: Python 3.10 (pandas, numpy, sklearn, xgboost, requests, python-dotenv,
 
 Suggested build order (dependency-driven: storage first, then API, then the three UI features that need them):
 
-**1. Supabase as the durable predictions/results store (YES, feasible; free tier).**
-Replaces/extends the CSV+JSON logs. Tables: `match_predictions` (timestamped pre-match model+bookmaker probs),
-`match_results`, `tournament_predictions` (the daily P(champion) log). CRITICAL gap it fixes: the per-match
-prediction snapshots (`data/live/match_predictions_*.json`) are currently **gitignored and only on Dilip's disk** —
-they're the raw material for the proof tracker (item 3) and must become durable first. `daily_update.py` gets a
-"write to Supabase too" step (keep CSV writes as fallback; supabase-py client, SUPABASE_URL + SUPABASE_KEY in .env).
-Also unlocks: dashboard reads live data instead of static-at-build JSON (fixes the freshness limitation in #7).
+**1. Supabase as the durable predictions/results store — DONE and LIVE-VERIFIED 2026-07-04.**
+`supabase/schema.sql` (3 tables: `match_results`, `match_predictions` append-only, `tournament_predictions`),
+`src/ingestion/supabase_store.py` (best-effort client, no-op if unconfigured), wired into
+`live_results_store.append_new_results` + `daily_update.py`. All 6 tests still pass. Live-verified 2026-07-04:
+a real `daily_update.py` run wrote 2 `match_results`, 8 `match_predictions`, 17 `tournament_predictions` rows,
+confirmed via direct Supabase queries. Two bugs caught during setup (credentials pasted into the wrong .env
+fields, outdated global `websockets` package) — see DECISIONS.md 2026-07-04 entry.
+Next: dashboard reading live Supabase data instead of static-at-build JSON (fixes #7's freshness gap) is not
+yet done -- the dashboard still reads `dashboard/data/*.json` via the export script. Revisit once the FastAPI
+serving layer (item 2) or a direct Supabase read path is in place.
 
 **2. FastAPI serving layer (goes WITH Supabase, not instead of it — different layers).**
 Decision discussed 2026-07-03: FastAPI = the model-serving service (score any fixture on demand, current

@@ -47,14 +47,26 @@ export const upcomingMatches = upcomingRaw as unknown as UpcomingMatch[];
 export const summary = summaryRaw as unknown as {
   generated_at: string;
   latest_predictions_date: string | null;
+  primary_series?: string;
   top_favorites: PredictionRow[];
   completed_results_count: number;
   upcoming_matches_count: number;
 };
 
-export function seriesByTeam(): Map<string, PredictionRow[]> {
+// The predictions log holds several timestamped series side by side,
+// keyed by model_version. The model's own Layer 2 output is the
+// centerpiece; the bookmaker outright market is the benchmark (and the
+// only series that existed before 2026-07-04).
+export const MODEL_SERIES = "stacked_l2_montecarlo_v1";
+export const BOOKMAKER_SERIES = "bookmaker_outright_baseline_v1";
+
+export function seriesByTeam(modelVersion?: string): Map<string, PredictionRow[]> {
+  const version =
+    modelVersion ??
+    (predictions.some((r) => r.model_version === MODEL_SERIES) ? MODEL_SERIES : BOOKMAKER_SERIES);
   const map = new Map<string, PredictionRow[]>();
   for (const row of predictions) {
+    if (row.model_version !== version) continue;
     const list = map.get(row.team) ?? [];
     list.push(row);
     map.set(row.team, list);

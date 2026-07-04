@@ -1,38 +1,39 @@
 {
-  "generated_at": "2026-07-03T18:21:01.197923+00:00",
-  "latest_predictions_date": "2026-07-03",
+  "generated_at": "2026-07-04T02:22:28.980476+00:00",
+  "latest_predictions_date": "2026-07-04",
+  "primary_series": "stacked_l2_montecarlo_v1",
   "top_favorites": [
     {
-      "date": "2026-07-03",
-      "team": "France",
-      "win_probability": 0.3078332124074377,
-      "model_version": "bookmaker_outright_baseline_v1"
-    },
-    {
-      "date": "2026-07-03",
-      "team": "France",
-      "win_probability": 0.3078332124074377,
-      "model_version": "bookmaker_outright_baseline_v1"
-    },
-    {
-      "date": "2026-07-03",
-      "team": "France",
-      "win_probability": 0.307815328471407,
-      "model_version": "bookmaker_outright_baseline_v1"
-    },
-    {
-      "date": "2026-07-03",
-      "team": "France",
-      "win_probability": 0.307815328471407,
-      "model_version": "bookmaker_outright_baseline_v1"
-    },
-    {
-      "date": "2026-07-03",
+      "date": "2026-07-04",
       "team": "Argentina",
-      "win_probability": 0.17123783360740266,
-      "model_version": "bookmaker_outright_baseline_v1"
+      "win_probability": 0.2534,
+      "model_version": "stacked_l2_montecarlo_v1"
+    },
+    {
+      "date": "2026-07-04",
+      "team": "France",
+      "win_probability": 0.2004,
+      "model_version": "stacked_l2_montecarlo_v1"
+    },
+    {
+      "date": "2026-07-04",
+      "team": "Spain",
+      "win_probability": 0.1659,
+      "model_version": "stacked_l2_montecarlo_v1"
+    },
+    {
+      "date": "2026-07-04",
+      "team": "Brazil",
+      "win_probability": 0.1025,
+      "model_version": "stacked_l2_montecarlo_v1"
+    },
+    {
+      "date": "2026-07-04",
+      "team": "Colombia",
+      "win_probability": 0.0501,
+      "model_version": "stacked_l2_montecarlo_v1"
     }
   ],
-  "completed_results_count": 12,
-  "upcoming_matches_count": 9
+  "completed_results_count": 87,
+  "upcoming_matches_count": 8
 }
