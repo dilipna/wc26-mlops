@@ -24,7 +24,7 @@ from src.features.data_loading import (  # noqa: E402
     world_cup_matches,
 )
 from src.features.team_timeline import build_timelines  # noqa: E402
-from src.models.layer1_ensemble.ensemble import Layer1Ensemble  # noqa: E402
+from src.models.layer1_ensemble.ensemble import Layer1Ensemble, load_tuned_xgb_params  # noqa: E402
 from src.models.layer1_ensemble.tracking import log_backtest_run  # noqa: E402
 from src.models.layer2_simulation.bracket import build_bracket  # noqa: E402
 from src.models.layer2_simulation.monte_carlo import simulate_champion_probabilities  # noqa: E402
@@ -57,7 +57,9 @@ def run_backtest_for_year(year: int, matches, timelines, rankings, shootouts) ->
     bracket = build_bracket(wc_matches, shootouts)
     tournament_start = min(m.date for m in wc_matches)
 
-    ensemble = Layer1Ensemble(matches, timelines, rankings, TRAIN_START, tournament_start)
+    ensemble = Layer1Ensemble(
+        matches, timelines, rankings, TRAIN_START, tournament_start, xgb_params=load_tuned_xgb_params()
+    )
 
     checkpoints = {}
     for start_round, checkpoint_name in CHECKPOINTS:

@@ -6,7 +6,9 @@ equal-weight averaging the three members either -- the meta-learner learns
 how much to trust each one (see DECISIONS.md: "stacked meta-learner").
 """
 
+import json
 from datetime import date
+from pathlib import Path
 
 import numpy as np
 import xgboost as xgb
@@ -26,6 +28,27 @@ from src.models.layer1_ensemble.features import (
 from src.models.layer1_ensemble.heuristic import fifa_heuristic_probs
 
 STACK_CV_FOLDS = 5
+
+DEFAULT_XGB_PARAMS = {
+    "n_estimators": 200,
+    "max_depth": 4,
+    "learning_rate": 0.1,
+}
+
+TUNED_PARAMS_PATH = Path(__file__).resolve().parent.parent.parent.parent / "data" / "tuning" / "best_xgb_params.json"
+
+
+def load_tuned_xgb_params() -> dict | None:
+    """Best-effort load of scripts/tune_layer1.py's Optuna output. Missing
+    or unreadable -> None, so callers fall back to DEFAULT_XGB_PARAMS --
+    tuning is supplementary, never required to produce a prediction (same
+    convention as MLflow tracking, Supabase, etc.)."""
+    if not TUNED_PARAMS_PATH.exists():
+        return None
+    try:
+        return json.loads(TUNED_PARAMS_PATH.read_text())["params"]
+    except Exception:
+        return None
 
 
 class _FifaHeuristicEstimator(BaseEstimator, ClassifierMixin):
@@ -59,6 +82,7 @@ class Layer1Ensemble:
         train_start: date,
         train_end: date,
         stack: StackingClassifier | None = None,
+        xgb_params: dict | None = None,
     ):
         self.timelines = timelines
         self.rankings = rankings
@@ -86,10 +110,8 @@ class Layer1Ensemble:
             xgb_member = xgb.XGBClassifier(
                 objective="multi:softprob",
                 num_class=3,
-                n_estimators=200,
-                max_depth=4,
-                learning_rate=0.1,
                 eval_metric="mlogloss",
+                **{**DEFAULT_XGB_PARAMS, **(xgb_params or {})},
             )
             heuristic_member = _FifaHeuristicEstimator()
 

@@ -29,7 +29,7 @@ from src.features.team_timeline import build_timelines  # noqa: E402
 from src.ingestion import live_results_store  # noqa: E402
 from src.ingestion.team_names import canonical  # noqa: E402
 from src.models.layer1_ensemble import tracking  # noqa: E402
-from src.models.layer1_ensemble.ensemble import Layer1Ensemble  # noqa: E402
+from src.models.layer1_ensemble.ensemble import Layer1Ensemble, load_tuned_xgb_params  # noqa: E402
 from src.models.layer2_simulation import live_bracket  # noqa: E402
 from src.serving.otel import instrument  # noqa: E402
 
@@ -54,7 +54,13 @@ class ModelState:
         stack, source = tracking.load_latest_stack()
         self.model_source = source
         self.ensemble = Layer1Ensemble(
-            self.matches, self.timelines, self.rankings, TRAIN_START, self.today, stack=stack
+            self.matches,
+            self.timelines,
+            self.rankings,
+            TRAIN_START,
+            self.today,
+            stack=stack,
+            xgb_params=load_tuned_xgb_params(),
         )
 
         self._champion_cache: dict | None = None

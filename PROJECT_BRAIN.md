@@ -51,6 +51,21 @@ k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned on
 - **MLflow experiment tracking + model registry (2026-07-03, live-verified):** `backtest_2018_2022.py` logs one run/year with step-indexed per-checkpoint Brier/log-loss; `daily_update.py` logs one run/day and registers the model as `wc26-layer1-stacked-ensemble`. Tracking server: `docker/mlflow/Dockerfile` + `mlflow` service in `docker-compose.airflow.yml`, sqlite backend, `mlflow-artifacts:/` proxied artifact serving (localhost:5000). `src/models/layer1_ensemble/tracking.py` fast-fails (1.5s TCP preflight) if the server's down so it never blocks the pipeline. Two bugs found and fixed live — see DECISIONS.md 2026-07-03 entry: (1) artifact PermissionError from non-proxied local-path artifact root, (2) runs stuck `RUNNING` from a Windows-console UnicodeEncodeError on mlflow's own emoji print, fixed via `sys.stdout.reconfigure(encoding="utf-8")`.
 
 # 6. WHAT IS IMPLEMENTED
+- **Optuna tuning capability (2026-07-04) -- built, run, honest negative result.**
+  `scripts/tune_layer1.py` (30-trial Optuna study, 3-fold CV, tunes only the XGBoost member),
+  `Layer1Ensemble(xgb_params=...)` override + `load_tuned_xgb_params()` best-effort loader,
+  wired into `daily_update.py`/`backtest_2018_2022.py`/`src/serving/app.py`. Ran it for
+  real: improved isolated XGBoost CV log-loss (0.9194→0.9167) but made the FULL backtest
+  metric that actually matters marginally WORSE (Brier delta -0.0026 vs -0.0035 defaults,
+  log-loss delta -0.0924 vs -0.0987 defaults) -- proxy-metric-vs-true-objective mismatch,
+  see DECISIONS.md 2026-07-04. Deleted the regressing `data/tuning/best_xgb_params.json` so
+  the pipeline still runs on `DEFAULT_XGB_PARAMS` (verified: re-ran backtest, numbers exactly
+  match the pre-tuning documented baseline below). **The untuned defaults are still what's
+  live** -- don't assume tuning improved the shipped model, it didn't (yet). 4 new pytest
+  tests cover the loader's file-I/O edge cases (missing/corrupt/malformed JSON), not the
+  slow real-training path. Also found (not fixed, out of scope): no `random_state` on
+  `XGBClassifier`/`StackingClassifier` in `ensemble.py`, so re-running the backtest at all
+  produces slightly different per-team probabilities each time even with identical params.
 - **FastAPI model-serving layer + OpenTelemetry (2026-07-04):** `src/serving/app.py` --
   `POST /predict` (score any fixture), `GET /champions` (live Layer 2 P(champion) per
   team, cached), `GET /health` (model source), auto docs at `/docs`. Loads the fitted
@@ -115,7 +130,7 @@ k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned on
 
 # 8. WHAT IS MISSING
 - Flat 50/50 knockout draw split (unchanged; stacking + heuristic draw-rate fix done 2026-07-03, see #5/#6). Live Layer 2 + Elo backfill DONE 2026-07-04, see #6.
-- Optuna hyperparameter tuning (no tuning step exists at all yet, fit-and-ship only — next up), DVC, Evidently, Prometheus/Grafana, Kubernetes, chatbot (empty dir / not started, blocked on an LLM API key), country-prediction dropdown — Airflow, Docker, MLflow, Supabase, FastAPI+OTel now done, see #6
+- DVC, Evidently, Prometheus/Grafana, Kubernetes, chatbot (empty dir / not started, blocked on an LLM API key), country-prediction dropdown — Airflow, Docker, MLflow, Supabase, FastAPI+OTel now done, see #6. Optuna tuning capability built+run 2026-07-04 but found no real improvement yet (see #6) -- model performance itself is still an open item if "best possible" is the bar
 - Public deploy: DONE 2026-07-04, see #6 in the Supabase/Layer2 entry above and the dashboard redesign entry — live at https://dashboard-hazel-kappa-52.vercel.app, auto-deploys on push to main
 - FastAPI serving deployed to a real cloud host (Render/Cloud Run free tier) — built and live-verified locally 2026-07-04, NOT yet deployed publicly
 - calibration/reliability diagram (Tier 1 requirement for final summary) — the proof tracker's per-run calibration buckets (2026-07-04) are the building block for this, not the final artifact itself; README screenshot/GIF
@@ -140,7 +155,8 @@ python scripts/backfill_2026_group_stage.py # one-time (already run 2026-07-04):
 python scripts/verify_predictions.py       # grades finished fixtures vs their last pre-kickoff prediction → dashboard/data/proof_tracker.json
 python scripts/export_dashboard_data.py    # logs → dashboard/data/*.json (run after daily_update + verify_predictions)
 python scripts/fetch_live_snapshot.py      # raw odds/fixtures snapshot (superseded by daily_update)
-python -m pytest tests/ -q                 # 20 tests
+python scripts/tune_layer1.py              # Optuna tuning pass -> data/tuning/best_xgb_params.json (see #6: didn't beat defaults 2026-07-04)
+python -m pytest tests/ -q                 # 24 tests
 cd dashboard && npm run dev                # site at localhost:3000 -- LIVE at https://dashboard-hazel-kappa-52.vercel.app
 uvicorn src.serving.app:app --port 8000    # FastAPI serving layer -- docs at localhost:8000/docs
 
