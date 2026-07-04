@@ -1,17 +1,30 @@
 import type { Metadata } from "next";
-import { Orbitron, Rajdhani } from "next/font/google";
+import { Big_Shoulders, IBM_Plex_Mono, Lora, Manrope } from "next/font/google";
 import "flag-icons/css/flag-icons.min.css";
 import "./globals.css";
 
-const rajdhani = Rajdhani({
-  variable: "--font-rajdhani",
-  weight: ["400", "500", "600", "700"],
+const manrope = Manrope({
+  variable: "--font-manrope",
+  weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
 });
 
-const orbitron = Orbitron({
-  variable: "--font-orbitron",
-  weight: ["500", "700", "900"],
+const bigShoulders = Big_Shoulders({
+  variable: "--font-big-shoulders",
+  weight: ["600", "700", "800", "900"],
+  subsets: ["latin"],
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+});
+
+const lora = Lora({
+  variable: "--font-lora",
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 
@@ -29,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${rajdhani.variable} ${orbitron.variable} h-full antialiased`}
+      className={`${manrope.variable} ${bigShoulders.variable} ${plexMono.variable} ${lora.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

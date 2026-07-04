@@ -19,15 +19,14 @@ export default function SectionHeading({
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className="mb-10 max-w-2xl"
     >
-      <div className="neon-rule mb-4 w-20" />
-      <span className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-400">
+      <span className="font-mono text-xs uppercase tracking-[0.18em] text-accent">
         {eyebrow}
       </span>
-      <h2 className="font-display mt-3 text-2xl font-bold sm:text-4xl leading-tight text-white">
+      <h2 className="font-display mt-3 text-[clamp(28px,5vw,44px)] font-extrabold uppercase leading-[1] text-foreground">
         {title}
       </h2>
       {subtitle && (
-        <p className="mt-4 text-base text-white/60 leading-relaxed">{subtitle}</p>
+        <p className="font-serif mt-4 max-w-[560px] text-[15px] leading-relaxed text-foreground/55">{subtitle}</p>
       )}
     </motion.div>
   );

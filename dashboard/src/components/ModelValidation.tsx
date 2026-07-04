@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Flag from "./Flag";
 import { CHECKPOINT_LABELS, CHECKPOINT_ORDER, type BacktestYear } from "@/lib/data";
 
 function CheckpointBars({ year }: { year: BacktestYear }) {
@@ -22,7 +21,8 @@ function CheckpointBars({ year }: { year: BacktestYear }) {
                 whileInView={{ height: `${(modelPct / max) * 100}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="w-4 rounded-t-sm bg-gradient-to-t from-cyan-500 to-cyan-300"
+                className="w-4 rounded-t-sm"
+                style={{ background: "var(--accent)" }}
                 title={`Model: ${modelPct.toFixed(1)}%`}
               />
               <motion.div
@@ -30,12 +30,12 @@ function CheckpointBars({ year }: { year: BacktestYear }) {
                 whileInView={{ height: `${(baselinePct / max) * 100}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: i * 0.1 + 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="w-4 rounded-t-sm bg-white/25"
+                className="w-4 rounded-t-sm bg-foreground/25"
                 title={`Baseline: ${baselinePct.toFixed(1)}%`}
               />
             </div>
-            <div className="mt-2 text-[11px] text-white/40">{CHECKPOINT_LABELS[cp]}</div>
-            <div className="text-xs font-semibold text-cyan-300">{modelPct.toFixed(0)}%</div>
+            <div className="font-mono mt-2 text-[10px] uppercase tracking-[0.06em] text-foreground/40">{CHECKPOINT_LABELS[cp]}</div>
+            <div className="font-mono text-[15px] font-semibold text-foreground">{modelPct.toFixed(0)}%</div>
           </div>
         );
       })}
@@ -57,25 +57,19 @@ export default function ModelValidation({ backtest }: { backtest: Record<string,
           transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="glass-card rounded-2xl p-6"
         >
-          <div className="flex items-center justify-between mb-1">
-            <span className="font-display text-3xl text-white">{year.year}</span>
-            <span className="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-semibold text-cyan-300">
-              Backtest
-            </span>
-          </div>
-          <div className="mb-5 flex items-center gap-2 text-white/60">
-            <Flag team={year.champion} className="text-xl" />
-            <span>
-              Champion: <span className="text-white font-medium">{year.champion}</span>
+          <div className="flex items-baseline justify-between mb-[22px]">
+            <span className="font-display text-2xl font-extrabold text-foreground">{year.year}</span>
+            <span className="font-mono text-xs text-foreground/50">
+              Champion: <span className="text-foreground">{year.champion}</span>
             </span>
           </div>
           <CheckpointBars year={year} />
-          <div className="mt-5 flex items-center gap-4 text-[11px] text-white/40">
+          <div className="mt-5 flex items-center gap-4 text-[11px] text-foreground/40">
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-cyan-400" /> Our AI
+              <span className="h-2 w-2 rounded-full" style={{ background: "var(--accent)" }} /> Our AI
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-white/30" /> World-ranking guess
+              <span className="h-2 w-2 rounded-full bg-foreground/30" /> World-ranking guess
             </span>
           </div>
         </motion.div>

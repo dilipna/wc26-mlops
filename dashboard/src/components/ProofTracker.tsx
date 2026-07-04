@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Flag from "./Flag";
 import StatsStrip from "./StatsStrip";
 import type { GradedMatch, ProofTrackerData } from "@/lib/data";
 
@@ -46,39 +45,33 @@ function GradedCard({ match, delay }: { match: GradedMatch; delay: number }) {
       transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
       className="glass-card rounded-2xl p-5"
     >
-      <div className="flex items-center justify-between text-xs text-white/40 mb-3">
+      <div className="font-mono flex items-center justify-between text-xs text-foreground/40 mb-3">
         <span>Predicted {formatUTC(match.logged_at)}</span>
-        <span className={match.model_correct ? "text-emerald-400" : "text-rose-400"}>
+        <span style={{ color: match.model_correct ? "var(--accent)" : "var(--accent-deep)" }}>
           {match.model_correct ? "✓ Correct" : "✗ Missed"}
         </span>
       </div>
 
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Flag team={match.home_team} className="text-2xl" />
-          <span className="font-semibold text-white">{match.home_team}</span>
-        </div>
-        <span className="font-display text-lg text-white">
+      <div className="flex items-baseline justify-between mb-4">
+        <span className="font-display font-bold text-foreground">{match.home_team}</span>
+        <span className="font-display text-lg text-foreground">
           {match.home_score} - {match.away_score}
         </span>
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-white">{match.away_team}</span>
-          <Flag team={match.away_team} className="text-2xl" />
-        </div>
+        <span className="font-display font-bold text-foreground">{match.away_team}</span>
       </div>
 
       <div className="space-y-1.5 text-sm">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] uppercase tracking-widest text-cyan-400/80">Our AI said</span>
-          <span className="text-white/80">
-            {modelPick} <span className="text-cyan-300">{modelConfidence.toFixed(0)}%</span>
+          <span className="font-mono text-[11px] uppercase tracking-widest text-accent/80">Our AI said</span>
+          <span className="text-foreground/80">
+            {modelPick} <span className="font-mono text-accent">{modelConfidence.toFixed(0)}%</span>
           </span>
         </div>
         {bookmakerPick && (
           <div className="flex items-center justify-between">
-            <span className="text-[11px] uppercase tracking-widest text-fuchsia-400/80">World expected</span>
-            <span className="text-white/60">
-              {bookmakerPick} <span className="text-fuchsia-300">{bookmakerConfidence!.toFixed(0)}%</span>
+            <span className="font-mono text-[11px] uppercase tracking-widest text-foreground/45">World expected</span>
+            <span className="text-foreground/60">
+              {bookmakerPick} <span className="font-mono text-foreground/70">{bookmakerConfidence!.toFixed(0)}%</span>
             </span>
           </div>
         )}
@@ -93,7 +86,7 @@ function CalibrationChart({ calibration }: { calibration: ProofTrackerData["cali
 
   return (
     <div className="glass-card rounded-2xl p-6">
-      <div className="mb-4 text-[11px] uppercase tracking-widest text-white/40">
+      <div className="font-mono mb-4 text-[11px] uppercase tracking-widest text-foreground/40">
         Calibration -- when our AI says X%, does it happen X% of the time?
       </div>
       <div className="grid grid-cols-5 gap-3">
@@ -105,7 +98,7 @@ function CalibrationChart({ calibration }: { calibration: ProofTrackerData["cali
                 whileInView={{ height: `${bucket.predicted_mid * 100}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: i * 0.08 }}
-                className="w-3.5 rounded-t-sm bg-white/25"
+                className="w-3.5 rounded-t-sm bg-foreground/25"
                 title={`Predicted ~${(bucket.predicted_mid * 100).toFixed(0)}%`}
               />
               <motion.div
@@ -113,21 +106,22 @@ function CalibrationChart({ calibration }: { calibration: ProofTrackerData["cali
                 whileInView={{ height: bucket.actual_rate !== null ? `${bucket.actual_rate * 100}%` : "0%" }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: i * 0.08 + 0.1 }}
-                className="w-3.5 rounded-t-sm bg-gradient-to-t from-cyan-500 to-cyan-300"
+                className="w-3.5 rounded-t-sm"
+                style={{ background: "var(--accent)" }}
                 title={bucket.actual_rate !== null ? `Actual ${(bucket.actual_rate * 100).toFixed(0)}%` : "No data yet"}
               />
             </div>
-            <div className="mt-2 text-[11px] text-white/40">{bucket.bucket_label}</div>
-            <div className="text-[11px] text-white/30">n={bucket.n}</div>
+            <div className="font-mono mt-2 text-[11px] text-foreground/40">{bucket.bucket_label}</div>
+            <div className="font-mono text-[11px] text-foreground/30">n={bucket.n}</div>
           </div>
         ))}
       </div>
-      <div className="mt-4 flex items-center gap-4 text-[11px] text-white/40">
+      <div className="font-mono mt-4 flex items-center gap-4 text-[11px] text-foreground/40">
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-white/30" /> Predicted confidence
+          <span className="h-2 w-2 rounded-full bg-foreground/30" /> Predicted confidence
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-cyan-400" /> Actually correct
+          <span className="h-2 w-2 rounded-full" style={{ background: "var(--accent)" }} /> Actually correct
         </span>
       </div>
     </div>
@@ -139,7 +133,7 @@ export default function ProofTracker({ data }: { data: ProofTrackerData }) {
 
   if (summary.n_graded === 0) {
     return (
-      <div className="glass-card rounded-2xl p-8 text-center text-white/50">
+      <div className="font-serif glass-card rounded-2xl p-8 text-center text-foreground/50">
         No completed knockout matches graded yet -- every pre-kickoff prediction is already logged, so the first
         finished match will land here automatically on the next daily run.
       </div>

@@ -1,10 +1,45 @@
 "use client";
 
 import { motion } from "framer-motion";
-import AnimatedBackground from "./AnimatedBackground";
-import Flag from "./Flag";
-import { CelebrationFigure, DribblerFigure } from "./PlayerFigures";
+import { teamCode } from "@/lib/teamCode";
 import type { PredictionRow } from "@/lib/data";
+
+// The mockup (WC26 Dark Standalone.html) used a rotating-earth JPEG texture
+// of unknown provenance/license -- same copyright caution the project
+// already applied to player likenesses (see DECISIONS.md), so this is a
+// from-scratch CSS/SVG globe impression instead of that image asset.
+function HeroGlobe() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 flex items-center justify-center"
+      style={{ zIndex: 0 }}
+    >
+      <div
+        className="relative aspect-square w-[min(54vw,460px)]"
+        style={{ animation: "wc-drift 14s ease-in-out infinite" }}
+      >
+        <div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background:
+              "conic-gradient(from 0deg, #1b2a4a, #24406e, #1b2a4a 35%, #12203a 60%, #1b2a4a 100%)",
+            animation: "wc-spin 60s linear infinite",
+            filter: "brightness(0.85) saturate(0.95)",
+          }}
+        />
+        <div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle at 32% 28%, rgba(150,190,255,0.20), transparent 46%), radial-gradient(circle at 50% 50%, transparent 50%, rgba(4,6,14,0.5) 76%, rgba(2,3,8,0.92) 100%)",
+            boxShadow:
+              "inset -34px -28px 80px rgba(0,0,0,0.8), inset 10px 10px 44px rgba(120,170,255,0.12), 0 0 100px rgba(80,130,255,0.22), 0 0 28px rgba(120,170,255,0.2)",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function Hero({
   topFavorite,
@@ -14,36 +49,53 @@ export default function Hero({
   latestDate: string | null;
 }) {
   return (
-    <section className="relative isolate flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-6 text-center">
-      <AnimatedBackground />
-
-      {/* flanking players: dribbler stage-left, celebration stage-right */}
-      <motion.div
-        initial={{ opacity: 0, x: -60 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1.1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="pointer-events-none absolute bottom-10 left-[2vw] z-[5] hidden h-[52vh] lg:block xl:left-[5vw]"
-      >
-        <DribblerFigure className="h-full" />
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, x: 60 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1.1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="pointer-events-none absolute bottom-10 right-[2vw] z-[5] hidden h-[52vh] lg:block xl:right-[5vw]"
-      >
-        <CelebrationFigure className="h-full" />
-      </motion.div>
+    <section className="relative isolate flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-36 text-center">
+      {/* layered depth background */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "repeating-linear-gradient(115deg, rgba(232,228,220,0.05) 0px, rgba(232,228,220,0.05) 2px, transparent 2px, transparent 26px), radial-gradient(120% 90% at 50% 15%, rgba(232,228,220,0.10), transparent 60%), linear-gradient(180deg, #100f0d 0%, #0d0c0a 55%, #0a0908 100%)",
+        }}
+      />
+      <HeroGlobe />
+      <div
+        className="absolute inset-0 z-[1]"
+        style={{ background: "radial-gradient(50% 44% at 50% 46%, rgba(10,10,12,0.42), transparent 72%)" }}
+      />
+      <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center opacity-50">
+        <svg width="900" height="900" viewBox="0 0 900 900" className="max-w-none" style={{ animation: "wc-drift 14s ease-in-out infinite" }}>
+          <circle cx="450" cy="450" r="330" fill="none" stroke="#e8e4dc" strokeOpacity="0.1" strokeWidth="1" />
+          <circle
+            cx="450"
+            cy="450"
+            r="230"
+            fill="none"
+            stroke="#e8e4dc"
+            strokeOpacity="0.14"
+            strokeWidth="1"
+            strokeDasharray="6 10"
+            style={{ animation: "wc-dash 10s linear infinite" }}
+          />
+        </svg>
+      </div>
+      <div
+        className="absolute inset-x-0 bottom-0 z-[1] h-[40%]"
+        style={{ background: "linear-gradient(180deg, transparent, #0d0c0a 85%)" }}
+      />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="glass-card relative z-10 mb-8 flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-cyan-300"
+        className="relative z-10 mb-7 inline-flex items-center gap-2 overflow-hidden rounded-full border border-foreground/20 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground"
+        style={{ background: "linear-gradient(180deg, #7A5A44, #28211a)" }}
       >
-        <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
+        <span className="relative flex h-1.5 w-1.5">
+          <span
+            className="inline-block h-1.5 w-1.5 rounded-full bg-accent"
+            style={{ animation: "wc-pulse 1.8s ease-in-out infinite" }}
+          />
         </span>
         Live &middot; updated {latestDate ?? "daily"}
       </motion.div>
@@ -52,22 +104,21 @@ export default function Hero({
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="font-display relative z-10 text-4xl font-bold leading-[1.05] text-white sm:text-6xl md:text-7xl"
+        className="font-display relative z-10 text-[clamp(32px,7vw,110px)] font-black uppercase leading-[1.05] tracking-tight text-foreground"
       >
-        WHO WINS
-        <br />
-        <span className="shimmer-text">THE WORLD CUP?</span>
+        <div className="whitespace-nowrap">Who Wins</div>
+        <div className="whitespace-nowrap font-extrabold italic text-accent">The World Cup?</div>
       </motion.h1>
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
-        className="relative z-10 mt-6 max-w-xl text-lg text-white/60"
+        className="font-serif relative z-10 mt-9 max-w-xl text-[17px] leading-relaxed text-foreground/65"
       >
-        An AI that watches every match, re-rates every team, and plays out the
-        rest of the tournament 10,000 times a day &mdash; tested first on the
-        2018 &amp; 2022 World Cups before being trusted with 2026.
+        A stacked ensemble model rates every team, scores every match, then plays out the
+        rest of the tournament 10,000 times a day &mdash; tested first on the 2018 &amp;
+        2022 World Cups before being trusted with 2026.
       </motion.p>
 
       {topFavorite && (
@@ -75,16 +126,22 @@ export default function Hero({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="glass-card floating relative z-10 mt-10 flex items-center gap-4 rounded-2xl px-6 py-4"
+          className="relative z-10 mt-10 flex items-center gap-4 rounded-2xl border border-foreground/15 px-6 py-4"
+          style={{ background: "rgba(232,228,220,0.03)" }}
         >
-          <Flag team={topFavorite.team} className="text-4xl" />
+          <div
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-foreground/15 font-mono text-xs text-accent"
+            style={{ background: "#1c1a15" }}
+          >
+            {teamCode(topFavorite.team)}
+          </div>
           <div className="text-left">
-            <div className="text-xs uppercase tracking-widest text-white/50">
+            <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/40">
               Current favorite
             </div>
-            <div className="font-display text-2xl text-white">
+            <div className="font-display text-2xl font-extrabold text-foreground">
               {topFavorite.team}{" "}
-              <span className="neon-num text-cyan-300">
+              <span className="font-mono text-accent">
                 {(topFavorite.win_probability * 100).toFixed(1)}%
               </span>
             </div>
@@ -93,11 +150,10 @@ export default function Hero({
       )}
 
       <motion.div
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-8 z-10 text-white/40"
+        className="relative z-10 mt-14 font-mono text-[11px] tracking-[0.1em] text-foreground/35"
+        style={{ animation: "wc-pulse 2.4s ease-in-out infinite" }}
       >
-        ↓ scroll
+        &darr; SCROLL
       </motion.div>
     </section>
   );

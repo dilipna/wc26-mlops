@@ -1,3 +1,4 @@
+import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import SectionHeading from "@/components/SectionHeading";
 import FavoritesLeaderboard from "@/components/FavoritesLeaderboard";
@@ -33,13 +34,14 @@ export default function Home() {
 
   return (
     <main className="relative">
+      <Nav />
       <Hero topFavorite={favorites[0]} latestDate={summary.latest_predictions_date} />
 
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-20">
         <StatsStrip stats={stats} />
       </section>
 
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section id="leaderboard" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
           eyebrow="Live Tracker"
           title="Who Takes The Trophy?"
@@ -57,7 +59,7 @@ export default function Home() {
         <ProbabilityChart seriesByTeam={perTeam} teams={chartTeams} />
       </section>
 
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section id="fixtures" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
           eyebrow="Up Next"
           title="Our AI vs The World"
@@ -84,7 +86,7 @@ export default function Home() {
         <ProofTracker data={proofTracker} />
       </section>
 
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section id="backtest" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
           eyebrow="Backtested"
           title="Tested On Real History"
@@ -98,7 +100,7 @@ export default function Home() {
         <MethodologySection />
       </section>
 
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section id="stack" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
           eyebrow="Behind The Scenes"
           title="What Powers This Site"
