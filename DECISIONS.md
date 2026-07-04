@@ -2,6 +2,54 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-04 — Optuna tuning: built it, ran it, defaults still win (honest negative result)
+
+Added after Dilip's "best possible model performance" ask + the MLOps-gap audit found no
+tuning step anywhere in the pipeline. `scripts/tune_layer1.py` runs a 30-trial Optuna study
+(3-fold stratified CV, `neg_log_loss`) over the XGBoost member's hyperparameters only --
+the elo/logreg baseline has 2 features and the FIFA heuristic isn't fit to data at all, so
+neither has anything meaningful to search. `Layer1Ensemble` gained an optional `xgb_params`
+override (merged over `DEFAULT_XGB_PARAMS`) and `load_tuned_xgb_params()` reads
+`data/tuning/best_xgb_params.json` best-effort (missing/corrupt -> `None` -> defaults),
+wired into `daily_update.py`, `backtest_2018_2022.py`, and `src/serving/app.py`'s
+fallback-training path.
+
+**Ran it for real, and the result is an honest miss.** The winning trial improved isolated
+XGBoost CV log-loss (0.9194 -> 0.9167, on the exact same folds). Plugged into the FULL
+stacked ensemble and re-run through `backtest_2018_2022.py` -- the metric that actually
+matters per CLAUDE.md's Phase 0 gate -- the tuned params came out marginally *worse* than
+the untuned defaults: avg Brier delta vs baseline -0.0026 (defaults: -0.0035), avg log-loss
+delta -0.0924 (defaults: -0.0987). Both still beat baseline, but by less.
+
+**Why, and what I did about it:** classic proxy-metric-vs-true-objective mismatch --
+match-level predictive log-loss (what Optuna optimized) and tournament-level champion-
+probability calibration across 4 knockout checkpoints in 2 backtested World Cups (what
+actually gets reported) are related but not the same target, and the meta-learner
+re-weights the three stacked members anyway, so a "better" XGBoost in isolation doesn't
+guarantee a better blend. Rather than ship a regression, **I deleted the generated
+`data/tuning/best_xgb_params.json`** so `load_tuned_xgb_params()` falls back to
+`DEFAULT_XGB_PARAMS` (confirmed by re-running the backtest: numbers exactly match the
+pre-tuning documented baseline). The tuning *capability* ships (script, override plumbing,
+4 new pytest tests on the loader's file-I/O edge cases); this run's specific numbers don't.
+
+**Also hit, unrelated to tuning:** `xgb.XGBClassifier`/`StackingClassifier` have no
+`random_state` set anywhere in `ensemble.py`, so re-running the backtest at all (even with
+identical hyperparameters) produces slightly different per-team probabilities each time
+(same teams, different noise-level values) -- caught this because re-running the backtest
+to confirm the defaults-revert produced a git diff on `data/backtest/*.json` that looked
+like a real change but wasn't. Restored the committed files rather than commit re-run
+noise. Not fixing the missing seed now (out of scope for this task, and determinism wasn't
+broken by anything I changed) -- flagging it here so a future session doesn't waste time
+debugging "why did the backtest numbers move" when nothing substantive changed.
+
+**Honest next step, not done here:** if tuning is revisited, the more correct (and more
+expensive) objective would optimize the real backtest metric directly -- refit the full
+`StackingClassifier` per trial per tournament year and re-run the Monte Carlo checkpoints --
+rather than the cheap XGBoost-only CV proxy used this time. Estimated a full StackingClassifier
+fit (cv=5, 3 members) is meaningfully slower per trial than a lone XGBoost fit, which is why
+the cheap proxy was tried first; parked rather than built given the negative result already
+found with the cheap version didn't justify the extra build time in this session.
+
 ## 2026-07-04 — FastAPI model-serving layer + OpenTelemetry
 
 PROJECT_BRAIN #12 item 2. `src/serving/app.py`: `POST /predict` scores any fixture on

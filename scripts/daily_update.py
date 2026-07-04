@@ -36,7 +36,7 @@ from src.features.data_loading import load_fifa_rankings, load_results  # noqa: 
 from src.features.team_timeline import build_timelines  # noqa: E402
 from src.ingestion import live_results_store, odds_api, supabase_store  # noqa: E402
 from src.ingestion.team_names import canonical  # noqa: E402
-from src.models.layer1_ensemble.ensemble import Layer1Ensemble  # noqa: E402
+from src.models.layer1_ensemble.ensemble import Layer1Ensemble, load_tuned_xgb_params  # noqa: E402
 from src.models.layer1_ensemble.tracking import log_run  # noqa: E402
 from src.models.layer2_simulation import live_bracket  # noqa: E402
 
@@ -86,7 +86,9 @@ def main():
     rankings = load_fifa_rankings()
     timelines = build_timelines(all_matches)
 
-    ensemble = Layer1Ensemble(all_matches, timelines, rankings, TRAIN_START, today)
+    ensemble = Layer1Ensemble(
+        all_matches, timelines, rankings, TRAIN_START, today, xgb_params=load_tuned_xgb_params()
+    )
 
     train_probs = ensemble.stack.predict_proba(ensemble.X_train_)
     log_run(
