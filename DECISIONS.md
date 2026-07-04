@@ -2,6 +2,25 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-04 — requests pin broke the Render Docker build (evidently conflict)
+
+Dilip's first real Render deploy attempt failed at `pip install -r requirements.txt` inside
+the Docker build: `evidently==0.4.40` needs `requests>=2.32.0`, but `requests==2.31.0` was
+still pinned from before this session's Evidently work. **Why this passed locally but not
+on Render:** I installed `evidently` directly on this machine earlier (not via
+`pip install -r requirements.txt`), which silently let pip bump the already-installed
+`requests` to 2.34.2 to satisfy it -- the local environment quietly drifted out of sync
+with what `requirements.txt` actually declares, and only a from-scratch install (exactly
+what Render's Docker build does) caught the mismatch. Fixed by bumping the pin to
+`requests==2.32.4` (satisfies both evidently's `>=2.32.0` and
+`opentelemetry-exporter-otlp-proto-http`'s `~=2.7`). **Verified properly this time:** built
+a throwaway venv and ran `pip install --no-cache-dir -r requirements.txt` from scratch
+(same command the Dockerfile runs) rather than trusting the polluted local site-packages
+again -- resolved cleanly, `pip check` clean, all 26 tests still pass. **Lesson:** installing
+a package directly on a shared, non-venv'd machine can mask a pin conflict that only a
+truly clean install (Docker, CI, a fresh venv) will surface -- verify against a clean
+environment, not just "it imports here."
+
 ## 2026-07-04 — Evidently drift monitoring + a real double-counting bug it exposed
 
 **Evidently drift check (Tier 2, PROJECT_BRAIN #8 item 3).** `src/monitoring/drift_report.py`
