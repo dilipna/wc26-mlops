@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Flag from "./Flag";
 import type { UpcomingMatch } from "@/lib/data";
 
 const MONTHS = [
@@ -22,53 +21,54 @@ function formatKickoff(iso: string): string {
 }
 
 function ProbabilityBar({
-  homeLabel,
-  awayLabel,
+  label,
+  labelColor,
   homePct,
   awayPct,
   drawPct,
+  fillColor,
   delay,
 }: {
-  homeLabel: string;
-  awayLabel: string;
+  label: string;
+  labelColor: string;
   homePct: number;
   awayPct: number;
   drawPct: number;
+  fillColor: string;
   delay: number;
 }) {
   return (
     <div>
-      <div className="flex justify-between text-xs text-white/50 mb-1">
-        <span>{(homePct * 100).toFixed(0)}%</span>
-        {drawPct > 0 && <span>draw {(drawPct * 100).toFixed(0)}%</span>}
-        <span>{(awayPct * 100).toFixed(0)}%</span>
+      <div className="font-mono mb-1.5 flex justify-between text-[11px]" style={{ color: labelColor }}>
+        <span>{label}</span>
+        <span>
+          {(homePct * 100).toFixed(0)}% &middot; {(awayPct * 100).toFixed(0)}%
+        </span>
       </div>
-      <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-white/10">
+      <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${homePct * 100}%` }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
-          className="h-full bg-gradient-to-r from-cyan-400 to-cyan-500"
+          className="h-full"
+          style={{ background: fillColor }}
         />
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${drawPct * 100}%` }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: delay + 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="h-full bg-white/20"
+          className="h-full bg-foreground/15"
         />
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${awayPct * 100}%` }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: delay + 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="h-full bg-gradient-to-r from-fuchsia-500 to-fuchsia-400"
+          className="h-full"
+          style={{ background: fillColor, opacity: 0.4 }}
         />
-      </div>
-      <div className="flex justify-between text-[11px] text-white/40 mt-1">
-        <span>{homeLabel}</span>
-        <span>{awayLabel}</span>
       </div>
     </div>
   );
@@ -91,52 +91,37 @@ export default function UpcomingMatches({ matches }: { matches: UpcomingMatch[] 
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: (i % 4) * 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="glass-card rounded-2xl p-5 hover:scale-[1.01] transition-transform"
+            className="glass-card rounded-2xl p-5"
           >
-            <div className="flex items-center justify-between text-xs text-white/40 mb-3">
+            <div className="font-mono flex items-center justify-between text-[11px] text-foreground/40 mb-4">
               <span>{formatKickoff(m.commence_time)}</span>
-              <span className="uppercase tracking-widest">Round of 32</span>
             </div>
 
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Flag team={m.home_team} className="text-2xl" />
-                <span className="font-semibold text-white">{m.home_team}</span>
-              </div>
-              <span className="font-display text-white/30">VS</span>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-white">{m.away_team}</span>
-                <Flag team={m.away_team} className="text-2xl" />
-              </div>
+            <div className="flex items-baseline justify-between mb-[18px]">
+              <span className="font-display text-[19px] font-bold text-foreground">{m.home_team}</span>
+              <span className="font-mono text-[11px] text-foreground/35">VS</span>
+              <span className="font-display text-[19px] font-bold text-foreground">{m.away_team}</span>
             </div>
 
-            <div className="space-y-3">
-              <div>
-                <div className="text-[11px] uppercase tracking-widest text-cyan-400/80 mb-1">
-                  Our AI
-                </div>
-                <ProbabilityBar
-                  homeLabel="Our AI"
-                  awayLabel=""
-                  homePct={m.model.home_win}
-                  awayPct={m.model.away_win}
-                  drawPct={m.model.draw}
-                  delay={0.1}
-                />
-              </div>
-              <div>
-                <div className="text-[11px] uppercase tracking-widest text-fuchsia-400/80 mb-1">
-                  What the world expects
-                </div>
-                <ProbabilityBar
-                  homeLabel="World"
-                  awayLabel=""
-                  homePct={bookHome}
-                  awayPct={bookAway}
-                  drawPct={bookDraw}
-                  delay={0.2}
-                />
-              </div>
+            <div className="space-y-2.5">
+              <ProbabilityBar
+                label="MODEL"
+                labelColor="var(--accent)"
+                homePct={m.model.home_win}
+                awayPct={m.model.away_win}
+                drawPct={m.model.draw}
+                fillColor="var(--accent)"
+                delay={0.1}
+              />
+              <ProbabilityBar
+                label="MARKET"
+                labelColor="rgba(242,237,224,0.45)"
+                homePct={bookHome}
+                awayPct={bookAway}
+                drawPct={bookDraw}
+                fillColor="rgba(242,237,224,0.5)"
+                delay={0.2}
+              />
             </div>
           </motion.div>
         );

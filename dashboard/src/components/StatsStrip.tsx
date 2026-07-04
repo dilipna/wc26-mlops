@@ -8,7 +8,10 @@ export default function StatsStrip({
   stats: { label: string; value: string }[];
 }) {
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div
+      className="grid gap-px border-y border-foreground/10"
+      style={{ gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", background: "rgba(242,237,224,0.08)" }}
+    >
       {stats.map((s, i) => (
         <motion.div
           key={s.label}
@@ -16,10 +19,10 @@ export default function StatsStrip({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: i * 0.08 }}
-          className="glass-card rounded-2xl p-5 text-center"
+          className="bg-background px-5 py-7 text-center"
         >
-          <div className="font-display neon-num text-2xl text-white sm:text-3xl">{s.value}</div>
-          <div className="mt-1 text-xs uppercase tracking-widest text-white/40">{s.label}</div>
+          <div className="font-mono text-[clamp(28px,4vw,40px)] font-semibold text-foreground">{s.value}</div>
+          <div className="mt-2 text-xs tracking-[0.06em] text-foreground/50">{s.label}</div>
         </motion.div>
       ))}
     </div>

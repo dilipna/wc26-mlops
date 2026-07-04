@@ -12,9 +12,8 @@ import {
   YAxis,
 } from "recharts";
 import type { PredictionRow } from "@/lib/data";
-import Flag from "./Flag";
 
-const LINE_COLORS = ["#22d3ee", "#f472b6", "#a3e635", "#a78bfa", "#fbbf24", "#fb7185"];
+const LINE_COLORS = ["#C2D588", "#e8e4dc", "#7A5A44", "#a3c9a8", "#c9a86a", "#8a9a6e"];
 
 function buildChartRows(seriesByTeam: Map<string, PredictionRow[]>, teams: string[]) {
   const dateSet = new Set<string>();
@@ -45,15 +44,14 @@ function CustomTooltip({
   if (!active || !payload?.length) return null;
   return (
     <div className="glass-card rounded-xl px-4 py-3 text-sm">
-      <div className="mb-1 text-xs uppercase tracking-widest text-white/50">{label}</div>
+      <div className="font-mono mb-1 text-xs uppercase tracking-widest text-foreground/50">{label}</div>
       {payload
         .slice()
         .sort((a, b) => b.value - a.value)
         .map((entry) => (
           <div key={entry.name} className="flex items-center gap-2 py-0.5">
-            <Flag team={entry.name} />
-            <span className="text-white/80">{entry.name}</span>
-            <span className="ml-auto font-semibold" style={{ color: entry.color }}>
+            <span className="text-foreground/80">{entry.name}</span>
+            <span className="font-mono ml-auto font-semibold" style={{ color: entry.color }}>
               {entry.value.toFixed(1)}%
             </span>
           </div>
@@ -82,29 +80,23 @@ export default function ProbabilityChart({
       <div className="h-[380px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={rows} margin={{ top: 10, right: 20, bottom: 0, left: -10 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
+            <CartesianGrid stroke="rgba(242,237,224,0.08)" vertical={false} />
             <XAxis
               dataKey="date"
-              stroke="rgba(255,255,255,0.35)"
-              tick={{ fontSize: 12, fill: "rgba(255,255,255,0.5)" }}
+              stroke="rgba(242,237,224,0.35)"
+              tick={{ fontSize: 12, fill: "rgba(242,237,224,0.5)", fontFamily: "var(--font-plex-mono), monospace" }}
               tickLine={false}
             />
             <YAxis
-              stroke="rgba(255,255,255,0.35)"
-              tick={{ fontSize: 12, fill: "rgba(255,255,255,0.5)" }}
+              stroke="rgba(242,237,224,0.35)"
+              tick={{ fontSize: 12, fill: "rgba(242,237,224,0.5)", fontFamily: "var(--font-plex-mono), monospace" }}
               tickLine={false}
               unit="%"
               width={44}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
-              wrapperStyle={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}
-              formatter={(value: string) => (
-                <span className="inline-flex items-center gap-1.5">
-                  <Flag team={value} />
-                  {value}
-                </span>
-              )}
+              wrapperStyle={{ fontSize: 13, color: "rgba(242,237,224,0.7)", fontFamily: "var(--font-plex-mono), monospace" }}
             />
             {teams.map((team, i) => (
               <Line
