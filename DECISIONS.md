@@ -2,6 +2,24 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-04 — Vercel auto-deploy was silently broken since day one
+
+Found while verifying the country-dropdown deploy: `vercel ls` showed the last THREE
+GitHub-triggered auto-deploys (redesign, FastAPI, Optuna commits) had all failed with
+"Couldn't find any `pages` or `app` directory" -- yet the live site looked fine, because
+the production alias just stayed pinned to the last successful *manual* `vercel --prod`
+run from earlier in the day. Root cause: this repo is a monorepo (the Next.js app lives in
+`dashboard/`, not the repo root); manual CLI deploys worked because they were run from
+inside `dashboard/`, but the git integration builds from the repo root and needs the
+project's "Root Directory" setting pointed at `dashboard` -- there's no CLI flag or
+`vercel.json` field for this, it's a dashboard-only (or REST API) project setting. Asked
+Dilip to set it once via Settings -> General -> Root Directory; confirmed via `vercel
+project inspect dashboard` afterward. Also ran one more manual `vercel --prod` to get the
+actually-current code live immediately rather than wait. **Lesson: `git push` succeeding
+and CI passing does NOT mean the site is actually updated when a host's git integration is
+involved -- verify the live URL's content directly, don't just trust the pipeline went
+green.**
+
 ## 2026-07-04 — "Check your country" dropdown + Render deploy blueprint
 
 **Country dropdown (PROJECT_BRAIN #12 item 4).** Scoped to the 48 teams that actually
