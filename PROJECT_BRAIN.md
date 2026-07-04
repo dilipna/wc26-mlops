@@ -51,6 +51,23 @@ k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned on
 - **MLflow experiment tracking + model registry (2026-07-03, live-verified):** `backtest_2018_2022.py` logs one run/year with step-indexed per-checkpoint Brier/log-loss; `daily_update.py` logs one run/day and registers the model as `wc26-layer1-stacked-ensemble`. Tracking server: `docker/mlflow/Dockerfile` + `mlflow` service in `docker-compose.airflow.yml`, sqlite backend, `mlflow-artifacts:/` proxied artifact serving (localhost:5000). `src/models/layer1_ensemble/tracking.py` fast-fails (1.5s TCP preflight) if the server's down so it never blocks the pipeline. Two bugs found and fixed live — see DECISIONS.md 2026-07-03 entry: (1) artifact PermissionError from non-proxied local-path artifact root, (2) runs stuck `RUNNING` from a Windows-console UnicodeEncodeError on mlflow's own emoji print, fixed via `sys.stdout.reconfigure(encoding="utf-8")`.
 
 # 6. WHAT IS IMPLEMENTED
+- **FastAPI model-serving layer + OpenTelemetry (2026-07-04):** `src/serving/app.py` --
+  `POST /predict` (score any fixture), `GET /champions` (live Layer 2 P(champion) per
+  team, cached), `GET /health` (model source), auto docs at `/docs`. Loads the fitted
+  sklearn stack from the MLflow registry when reachable (`tracking.load_latest_stack()`,
+  new optional `stack` param on `Layer1Ensemble`), falls back to training locally
+  otherwise (~9s, same as `daily_update.py`) -- Elo/form timelines always rebuilt locally
+  since they aren't part of the registered artifact. `/champions` intentionally doesn't
+  call the paid Odds API (empty fixture list into `live_bracket`), documented tradeoff.
+  OpenTelemetry auto-instruments FastAPI, console exporter by default (no collector
+  running yet), OTLP if `OTEL_EXPORTER_OTLP_ENDPOINT` is set. `docker/serving/Dockerfile`
+  + `serving` service in `docker-compose.airflow.yml`. 4 new pytest tests using dependency-
+  injected fakes (fast, no real training in CI). Live-verified: real server run, hit
+  health/predict/champions, got Argentina .2534/France .2004/... matching a prior
+  `daily_update.py` run -- but only the MLflow-unreachable fallback path was re-exercised
+  live this session (Docker Desktop wasn't running); the registry-load branch reuses
+  `log_run`'s already-live-verified `mlflow.sklearn`/reachability calls but wasn't
+  re-tested end-to-end. See DECISIONS.md 2026-07-04.
 - **"Model vs reality" proof tracker (2026-07-04):** `src/verification/proof_tracker.py` (pure grading logic,
   6 pytest tests) + `scripts/verify_predictions.py` (I/O wrapper, third Airflow task after `daily_update.py`).
   Joins each fixture's LAST pre-kickoff snapshot from Supabase `match_predictions` (the durable history; local
@@ -98,8 +115,10 @@ k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned on
 
 # 8. WHAT IS MISSING
 - Flat 50/50 knockout draw split (unchanged; stacking + heuristic draw-rate fix done 2026-07-03, see #5/#6). Live Layer 2 + Elo backfill DONE 2026-07-04, see #6.
-- FastAPI, DVC, Evidently, Prometheus/Grafana, Kubernetes, chatbot (empty dirs / not started) — Airflow, Docker, MLflow, Supabase now done, see #6
-- Public deploy (Vercel planned), calibration/reliability diagram (Tier 1 requirement for final summary), README screenshot/GIF
+- Optuna hyperparameter tuning (no tuning step exists at all yet, fit-and-ship only — next up), DVC, Evidently, Prometheus/Grafana, Kubernetes, chatbot (empty dir / not started, blocked on an LLM API key), country-prediction dropdown — Airflow, Docker, MLflow, Supabase, FastAPI+OTel now done, see #6
+- Public deploy: DONE 2026-07-04, see #6 in the Supabase/Layer2 entry above and the dashboard redesign entry — live at https://dashboard-hazel-kappa-52.vercel.app, auto-deploys on push to main
+- FastAPI serving deployed to a real cloud host (Render/Cloud Run free tier) — built and live-verified locally 2026-07-04, NOT yet deployed publicly
+- calibration/reliability diagram (Tier 1 requirement for final summary) — the proof tracker's per-run calibration buckets (2026-07-04) are the building block for this, not the final artifact itself; README screenshot/GIF
 
 # 9. KEY DESIGN DECISIONS (FROM CODE / DECISIONS.md)
 - Stacked meta-learner (sklearn StackingClassifier, 5-fold CV) for Layer 1, replacing the earlier equal-weight average — done 2026-07-03
@@ -121,14 +140,15 @@ python scripts/backfill_2026_group_stage.py # one-time (already run 2026-07-04):
 python scripts/verify_predictions.py       # grades finished fixtures vs their last pre-kickoff prediction → dashboard/data/proof_tracker.json
 python scripts/export_dashboard_data.py    # logs → dashboard/data/*.json (run after daily_update + verify_predictions)
 python scripts/fetch_live_snapshot.py      # raw odds/fixtures snapshot (superseded by daily_update)
-python -m pytest tests/ -q                 # 16 tests
-cd dashboard && npm run dev                # site at localhost:3000
+python -m pytest tests/ -q                 # 20 tests
+cd dashboard && npm run dev                # site at localhost:3000 -- LIVE at https://dashboard-hazel-kappa-52.vercel.app
+uvicorn src.serving.app:app --port 8000    # FastAPI serving layer -- docs at localhost:8000/docs
 
-docker compose -f docker-compose.airflow.yml up -d   # Postgres + Airflow (webserver/scheduler) + MLflow
+docker compose -f docker-compose.airflow.yml up -d   # Postgres + Airflow (webserver/scheduler) + MLflow + serving
 # Airflow UI: localhost:8080 (admin/admin) -- wc26_daily_pipeline DAG (3 tasks: daily_update >> verify_predictions >> export_dashboard_data), @ 06:00 UTC daily
 # MLflow UI: localhost:5000 -- experiment "wc26-layer1-ensemble", registry "wc26-layer1-stacked-ensemble"
 ```
-Requires: Python 3.10 (pandas, numpy, sklearn, xgboost, requests, python-dotenv, pytest, mlflow — see requirements.txt, new file), Node 24, `.env` with ODDS_API_KEY, Docker Desktop (running, for Airflow/MLflow).
+Requires: Python 3.10 (pandas, numpy, sklearn, xgboost, requests, python-dotenv, pytest, mlflow, fastapi, uvicorn, opentelemetry-* — see requirements.txt), Node 24, `.env` with ODDS_API_KEY, Docker Desktop (running, for Airflow/MLflow/serving).
 
 # 11. NEXT STEP (CRITICAL)
 1. ~~Airflow DAG wrapping daily_update.py + export_dashboard_data.py~~ — DONE 2026-07-03, live-verified, see #6. The
@@ -153,11 +173,10 @@ Next: dashboard reading live Supabase data instead of static-at-build JSON (fixe
 yet done -- the dashboard still reads `dashboard/data/*.json` via the export script. Revisit once the FastAPI
 serving layer (item 2) or a direct Supabase read path is in place.
 
-**2. FastAPI serving layer (goes WITH Supabase, not instead of it — different layers).**
-Decision discussed 2026-07-03: FastAPI = the model-serving service (score any fixture on demand, current
-P(champion) per team, loads model from MLflow registry `wc26-layer1-stacked-ensemble`); Supabase = the database.
-Both, together, is the strongest portfolio combo. FastAPI is also the natural backend for the chatbot (item 5).
-Add as a service in docker-compose. `src/serving/` is the empty dir waiting for it.
+**2. FastAPI serving layer — DONE 2026-07-04, see #6.** (goes WITH Supabase, not instead of it — different layers.)
+`POST /predict`, `GET /champions`, `GET /health`, OpenTelemetry-instrumented, Dockerized, live-verified locally.
+Still needed: deploy the container to a free-tier cloud host (Render or Cloud Run) for a public URL + genuine
+cloud-platform touchpoint — not yet done. FastAPI is also the natural backend for the chatbot (item 5).
 **Redis: discussed and REJECTED (honest-pushback)** — recruiter-level traffic + once-daily data updates = nothing
 to cache; adding it would read as over-engineering in interviews. Revisit only if something real needs it.
 

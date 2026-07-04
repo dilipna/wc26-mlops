@@ -58,6 +58,7 @@ class Layer1Ensemble:
         rankings,
         train_start: date,
         train_end: date,
+        stack: StackingClassifier | None = None,
     ):
         self.timelines = timelines
         self.rankings = rankings
@@ -70,34 +71,40 @@ class Layer1Ensemble:
         self.X_train_ = X
         self.y_train_ = y
 
-        elo_logreg = Pipeline(
-            [
-                ("select", FunctionTransformer(_select_columns, kw_args={"cols": [ELO_IDX, NEUTRAL_IDX]})),
-                ("clf", LogisticRegression(max_iter=1000)),
-            ]
-        )
-        xgb_member = xgb.XGBClassifier(
-            objective="multi:softprob",
-            num_class=3,
-            n_estimators=200,
-            max_depth=4,
-            learning_rate=0.1,
-            eval_metric="mlogloss",
-        )
-        heuristic_member = _FifaHeuristicEstimator()
+        if stack is not None:
+            # Pre-fit stack loaded from the MLflow registry (see
+            # tracking.load_latest_stack) -- the serving layer's job is to
+            # score fixtures with the registered model, not retrain one.
+            self.stack = stack
+        else:
+            elo_logreg = Pipeline(
+                [
+                    ("select", FunctionTransformer(_select_columns, kw_args={"cols": [ELO_IDX, NEUTRAL_IDX]})),
+                    ("clf", LogisticRegression(max_iter=1000)),
+                ]
+            )
+            xgb_member = xgb.XGBClassifier(
+                objective="multi:softprob",
+                num_class=3,
+                n_estimators=200,
+                max_depth=4,
+                learning_rate=0.1,
+                eval_metric="mlogloss",
+            )
+            heuristic_member = _FifaHeuristicEstimator()
 
-        self.stack = StackingClassifier(
-            estimators=[
-                ("xgboost", xgb_member),
-                ("elo_logreg", elo_logreg),
-                ("fifa_heuristic", heuristic_member),
-            ],
-            final_estimator=LogisticRegression(max_iter=1000),
-            cv=STACK_CV_FOLDS,
-            stack_method="predict_proba",
-            passthrough=False,
-        )
-        self.stack.fit(X, y)
+            self.stack = StackingClassifier(
+                estimators=[
+                    ("xgboost", xgb_member),
+                    ("elo_logreg", elo_logreg),
+                    ("fifa_heuristic", heuristic_member),
+                ],
+                final_estimator=LogisticRegression(max_iter=1000),
+                cv=STACK_CV_FOLDS,
+                stack_method="predict_proba",
+                passthrough=False,
+            )
+            self.stack.fit(X, y)
 
         # Kept for direct access (e.g. the un-blended baseline path uses the
         # heuristic directly, not through the stack).
