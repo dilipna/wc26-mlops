@@ -2,6 +2,55 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-04 — FastAPI model-serving layer + OpenTelemetry
+
+PROJECT_BRAIN #12 item 2. `src/serving/app.py`: `POST /predict` scores any fixture on
+demand (Layer 1 model + the un-blended heuristic baseline side by side), `GET /champions`
+returns the live Layer 2 Monte Carlo P(champion) per team, `GET /health` reports which
+model source is live. Auto docs at `/docs` (FastAPI default).
+
+**Registry-load, not retrain-in-the-serving-layer:** added an optional `stack` param to
+`Layer1Ensemble.__init__` (backward compatible -- existing callers still train fresh) so
+the API can load the already-fitted sklearn `StackingClassifier` from the MLflow registry
+(`tracking.load_latest_stack()`, mirroring `log_run`'s reachability-preflight pattern) and
+skip refitting it. Elo/form timelines are still rebuilt locally at startup from historical +
+live results, since those aren't part of the registered artifact -- the registry holds the
+classifier, not the feature pipeline's state. Falls back to training a fresh ensemble
+locally (same as `daily_update.py`, ~9s) if the registry is unreachable or empty, so the API
+never hard-fails on a down MLflow server. **Live-verified the fallback path only** this
+session (ran the real server, hit `/health` -> `/predict` -> `/champions`, got real numbers
+matching a prior `daily_update.py` run almost exactly: Argentina .2534/France .2004/...) --
+Docker Desktop wasn't running so the actual registry-load branch wasn't re-exercised live,
+though it reuses the exact `mlflow.sklearn`/reachability calls already live-verified in
+`log_run` (2026-07-03).
+
+**`/champions` doesn't call the paid Odds API.** `daily_update.py` passes upcoming fixtures
+from a live Odds API call into `live_bracket.build_2026_tree` so a drawn knockout match's
+shootout winner can be inferred before its next fixture is itself logged as a completed
+result (see `live_bracket.py`'s docstring). Calling a paid, rate-limited API on every hit to
+a public serving endpoint would be wrong -- so this endpoint passes an empty fixture list
+and accepts that one specific edge case self-corrects once real results catch up, exactly
+like the daily pipeline already does for everything else. Champion probabilities are cached
+after first computation (only recomputed on `?refresh=true` or process restart), since
+they only change once a day.
+
+**OpenTelemetry (`src/serving/otel.py`):** FastAPI auto-instrumented via
+`FastAPIInstrumentor`; console span exporter by default since no collector
+(Jaeger/Tempo/etc.) exists in this project yet, switching to OTLP if
+`OTEL_EXPORTER_OTLP_ENDPOINT` is set. Import failure degrades to a no-op print, same
+best-effort convention as every other optional-infra integration here. Verified real spans
+print for `/health`, `/predict`, `/champions` in a live run.
+
+**Testing:** `tests/test_serving.py` uses FastAPI's dependency-injection (`app.
+dependency_overrides[get_model_state]`) with a fake ensemble/state stub, not the real
+9-second local-training bootstrap -- keeps CI fast and deterministic. The real bootstrap
+path is what got manually live-verified above instead.
+
+**Docker:** `docker/serving/Dockerfile` (COPY-based, self-contained -- unlike Airflow's
+bind-mounted image, this one needs to be deployable as-is to a cloud host later) + a
+`serving` service in `docker-compose.airflow.yml` for local compose usage (bind-mounts
+`src/`/`data/` there instead, for fast local iteration).
+
 ## 2026-07-04 — "Model vs reality" proof tracker
 
 Dilip's explicit highest-value ask (PROJECT_BRAIN #12 item 3): an auditable track record

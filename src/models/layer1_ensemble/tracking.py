@@ -50,6 +50,25 @@ def _is_reachable(uri: str) -> bool:
         return False
 
 
+def load_latest_stack():
+    """Best-effort load of the latest registered Layer 1 model
+    (REGISTERED_MODEL_NAME) from the MLflow registry, for the FastAPI
+    serving layer (src/serving/app.py). Returns (stack, source_label):
+    stack is the fitted sklearn StackingClassifier, or None if the
+    registry is unreachable/empty -- callers should fall back to training
+    one locally, same best-effort philosophy as log_run above."""
+    uri = _tracking_uri()
+    if not _is_reachable(uri):
+        return None, f"trained_locally (mlflow unreachable at {uri})"
+    try:
+        mlflow.set_tracking_uri(uri)
+        model = mlflow.sklearn.load_model(f"models:/{REGISTERED_MODEL_NAME}/latest")
+        return model, "mlflow_registry"
+    except Exception as exc:  # noqa: BLE001 -- best-effort, see module docstring
+        print(f"[mlflow] registry load failed, training locally instead ({exc.__class__.__name__}: {exc})")
+        return None, f"trained_locally (registry load failed: {exc.__class__.__name__})"
+
+
 def log_run(ensemble, run_name: str, params: dict, metrics: dict, register: bool = False) -> None:
     uri = _tracking_uri()
     if not _is_reachable(uri):
