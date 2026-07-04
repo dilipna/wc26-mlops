@@ -97,6 +97,22 @@ def insert_match_predictions(rows: list[dict]) -> int:
     return _insert("match_predictions", payload)
 
 
+def fetch_match_predictions() -> list[dict]:
+    """All rows ever logged to match_predictions (append-only -- see
+    schema.sql), oldest first. Used by scripts/verify_predictions.py to
+    find each fixture's last pre-kickoff snapshot. Empty list (not an
+    error) if Supabase isn't configured/reachable."""
+    client = _client()
+    if client is None:
+        return []
+    try:
+        resp = client.table("match_predictions").select("*").order("logged_at").execute()
+        return resp.data
+    except Exception as exc:
+        print(f"[supabase_store] fetch match_predictions failed (non-fatal): {exc}")
+        return []
+
+
 def upsert_tournament_predictions(prediction_date, team_probs: dict[str, float], model_version: str) -> int:
     """team_probs: {team: win_probability}, the same data appended to
     data/predictions/predictions_log.csv for this run."""

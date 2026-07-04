@@ -1,11 +1,14 @@
 """Daily WC26 pipeline DAG.
 
-Wraps the two manual entry points documented in PROJECT_BRAIN.md #10 in a
-fixed daily schedule:
+Wraps the entry points documented in PROJECT_BRAIN.md #10 in a fixed
+daily schedule:
 
 1. daily_update.py       -- pull results/odds, rebuild features, score
                              fixtures, append to the predictions log.
-2. export_dashboard_data.py -- convert the updated logs into the JSON
+2. verify_predictions.py -- grade every fixture that finished today
+                             against its last pre-kickoff prediction
+                             (the "model vs reality" proof tracker).
+3. export_dashboard_data.py -- convert the updated logs into the JSON
                              files the dashboard reads at build time.
 
 Runs at 06:00 UTC so the prior day's completed matches are reflected
@@ -42,9 +45,14 @@ with DAG(
         bash_command=f"cd {PROJECT_DIR} && python scripts/daily_update.py",
     )
 
+    verify_predictions = BashOperator(
+        task_id="verify_predictions",
+        bash_command=f"cd {PROJECT_DIR} && python scripts/verify_predictions.py",
+    )
+
     export_dashboard_data = BashOperator(
         task_id="export_dashboard_data",
         bash_command=f"cd {PROJECT_DIR} && python scripts/export_dashboard_data.py",
     )
 
-    daily_update >> export_dashboard_data
+    daily_update >> verify_predictions >> export_dashboard_data

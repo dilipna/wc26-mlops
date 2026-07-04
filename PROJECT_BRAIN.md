@@ -25,7 +25,7 @@ data/predictions/    # predictions_log.csv — (date, team, win_probability, mod
 src/                 # see #2
 scripts/             # 5 runnable scripts, see #10
 dashboard/           # Next.js site; dashboard/data/*.json is its only data source
-tests/               # 4 pytest files, 6 tests, all passing
+tests/               # 6 pytest files, 16 tests, all passing
 k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned only
 .env                 # ODDS_API_KEY (works), API_FOOTBALL_KEY (useless, see #7)
 .obsidian/, graphify-out/, Untitled.md  # NOT part of this system. Confirmed via graphify-out/.graphify_detect.json:
@@ -51,6 +51,18 @@ k8s/, src/orchestration/, src/serving/, src/monitoring/   # EMPTY — planned on
 - **MLflow experiment tracking + model registry (2026-07-03, live-verified):** `backtest_2018_2022.py` logs one run/year with step-indexed per-checkpoint Brier/log-loss; `daily_update.py` logs one run/day and registers the model as `wc26-layer1-stacked-ensemble`. Tracking server: `docker/mlflow/Dockerfile` + `mlflow` service in `docker-compose.airflow.yml`, sqlite backend, `mlflow-artifacts:/` proxied artifact serving (localhost:5000). `src/models/layer1_ensemble/tracking.py` fast-fails (1.5s TCP preflight) if the server's down so it never blocks the pipeline. Two bugs found and fixed live — see DECISIONS.md 2026-07-03 entry: (1) artifact PermissionError from non-proxied local-path artifact root, (2) runs stuck `RUNNING` from a Windows-console UnicodeEncodeError on mlflow's own emoji print, fixed via `sys.stdout.reconfigure(encoding="utf-8")`.
 
 # 6. WHAT IS IMPLEMENTED
+- **"Model vs reality" proof tracker (2026-07-04):** `src/verification/proof_tracker.py` (pure grading logic,
+  6 pytest tests) + `scripts/verify_predictions.py` (I/O wrapper, third Airflow task after `daily_update.py`).
+  Joins each fixture's LAST pre-kickoff snapshot from Supabase `match_predictions` (the durable history; local
+  JSON snapshots are gitignored/transient) against `data/live/results_log.csv`, grades model vs bookmaker
+  (correct pick + multi-class Brier per match), and builds a 5-bucket calibration/reliability breakdown
+  incrementally every day (contributes to CLAUDE.md's Tier 1 calibration-diagram requirement). Writes
+  `dashboard/data/proof_tracker.json`; dashboard section `ProofTracker.tsx` ("Live Track Record" / "Our AI vs
+  Reality") renders per-match cards + running accuracy/Brier stats + calibration chart, with a clean empty
+  state for when nothing's graded yet. Live-run against real Supabase data: correctly returns 0 graded matches
+  right now (all 8 logged 2026-07-04 predictions are for fixtures that haven't finished yet) -- verified this
+  is real, not a bug, by inspecting match_predictions/results_log directly. Manually verified the rendered
+  component with synthetic graded data via SSR HTML (no Playwright installed in this env).
 - **Live Layer 2 (2026-07-04, live-verified):** official 2026 remaining-bracket skeleton encoded
   (`src/models/layer2_simulation/live_bracket.py`, match numbers verified from Wikipedia RAW wikitext — QF pairing
   is 97=W89vW90, 98=W93vW94, 99=W91vW92, 100=W95vW96, NOT sequential), partial-state tree resolution (drawn ties
@@ -106,13 +118,14 @@ python scripts/fetch_historical_data.py    # one-time: pull 3 historical CSVs
 python scripts/backtest_2018_2022.py       # Phase 0 backtest → data/backtest/*.json + console summary
 python scripts/daily_update.py             # THE daily job: results→features→L1 scoring→L2 Monte Carlo→predictions log
 python scripts/backfill_2026_group_stage.py # one-time (already run 2026-07-04): Wikipedia group-stage backfill
-python scripts/export_dashboard_data.py    # logs → dashboard/data/*.json (run after daily_update)
+python scripts/verify_predictions.py       # grades finished fixtures vs their last pre-kickoff prediction → dashboard/data/proof_tracker.json
+python scripts/export_dashboard_data.py    # logs → dashboard/data/*.json (run after daily_update + verify_predictions)
 python scripts/fetch_live_snapshot.py      # raw odds/fixtures snapshot (superseded by daily_update)
-python -m pytest tests/ -q                 # 6 tests
+python -m pytest tests/ -q                 # 16 tests
 cd dashboard && npm run dev                # site at localhost:3000
 
 docker compose -f docker-compose.airflow.yml up -d   # Postgres + Airflow (webserver/scheduler) + MLflow
-# Airflow UI: localhost:8080 (admin/admin) -- wc26_daily_pipeline DAG, @ 06:00 UTC daily
+# Airflow UI: localhost:8080 (admin/admin) -- wc26_daily_pipeline DAG (3 tasks: daily_update >> verify_predictions >> export_dashboard_data), @ 06:00 UTC daily
 # MLflow UI: localhost:5000 -- experiment "wc26-layer1-ensemble", registry "wc26-layer1-stacked-ensemble"
 ```
 Requires: Python 3.10 (pandas, numpy, sklearn, xgboost, requests, python-dotenv, pytest, mlflow — see requirements.txt, new file), Node 24, `.env` with ODDS_API_KEY, Docker Desktop (running, for Airflow/MLflow).
@@ -148,14 +161,14 @@ Add as a service in docker-compose. `src/serving/` is the empty dir waiting for 
 **Redis: discussed and REJECTED (honest-pushback)** — recruiter-level traffic + once-daily data updates = nothing
 to cache; adding it would read as over-engineering in interviews. Revisit only if something real needs it.
 
-**3. "Model vs reality" proof tracker — HIGHEST recruiter value, Dilip's explicit ask.**
+**3. "Model vs reality" proof tracker — DONE 2026-07-04, see #6.** HIGHEST recruiter value, Dilip's explicit ask.
 Dashboard section acting as an auditable track record: every day the model's pre-match probabilities are logged
 (timestamped, BEFORE kickoff); after each match completes, a verification job joins prediction ↔ result and the
-dashboard shows e.g. "July 2, 10:04 UTC: model said 61% Spain — Spain won 3-0 ✓", with running accuracy /
-Brier / calibration stats and model-vs-bookmaker comparison. Most raw data ALREADY exists (match_predictions
-snapshots + results_log.csv); what's missing is durability (item 1), the join/verification job (add as a third
-Airflow DAG task after daily_update), and the UI. This directly serves CLAUDE.md's core mission ("dashboard that
-shows the prediction evolving day by day against the eventual real result").
+dashboard shows a graded card (kickoff score, model pick + confidence + ✓/✗, bookmaker comparison), with running
+accuracy / Brier / calibration stats. Built as `src/verification/proof_tracker.py` (pure, tested) +
+`scripts/verify_predictions.py` (wired as the 2nd Airflow task) + `ProofTracker.tsx` dashboard section
+("Live Track Record"). Currently 0 graded matches (real, not a bug -- today's logged predictions haven't kicked
+off/finished yet); will populate automatically as R16 matches complete.
 
 **4. "Check your country's prediction" dropdown.**
 Dashboard feature: dropdown of all national teams (with flag-icons, aliases in flags.ts/rankings.py) → shows that

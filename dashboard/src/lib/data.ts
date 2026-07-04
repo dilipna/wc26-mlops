@@ -3,6 +3,7 @@ import backtestRaw from "../../data/backtest.json";
 import resultsRaw from "../../data/results.json";
 import upcomingRaw from "../../data/upcoming_matches.json";
 import summaryRaw from "../../data/summary.json";
+import proofTrackerRaw from "../../data/proof_tracker.json";
 
 export type PredictionRow = {
   date: string;
@@ -40,7 +41,47 @@ export type BacktestYear = {
   checkpoints: Record<string, BacktestCheckpoint>;
 };
 
+export type OutcomeKey = "home_win" | "draw" | "away_win";
+
+export type GradedMatch = {
+  home_team: string;
+  away_team: string;
+  commence_time: string;
+  logged_at: string;
+  home_score: number;
+  away_score: number;
+  actual_outcome: OutcomeKey;
+  model: Record<OutcomeKey, number>;
+  model_predicted_outcome: OutcomeKey;
+  model_correct: boolean;
+  model_brier: number;
+  bookmaker: Record<OutcomeKey, number> | null;
+  bookmaker_predicted_outcome: OutcomeKey | null;
+  bookmaker_correct: boolean | null;
+  bookmaker_brier: number | null;
+};
+
+export type ProofTrackerData = {
+  generated_at: string | null;
+  graded_matches: GradedMatch[];
+  summary: {
+    n_graded: number;
+    model_accuracy: number | null;
+    model_avg_brier: number | null;
+    n_bookmaker_graded: number;
+    bookmaker_accuracy: number | null;
+    bookmaker_avg_brier: number | null;
+  };
+  calibration: {
+    bucket_label: string;
+    predicted_mid: number;
+    n: number;
+    actual_rate: number | null;
+  }[];
+};
+
 export const predictions = predictionsRaw as unknown as PredictionRow[];
+export const proofTracker = proofTrackerRaw as unknown as ProofTrackerData;
 export const backtest = backtestRaw as unknown as Record<string, BacktestYear>;
 export const results = resultsRaw as unknown as MatchResult[];
 export const upcomingMatches = upcomingRaw as unknown as UpcomingMatch[];
