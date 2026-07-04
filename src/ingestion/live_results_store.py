@@ -10,6 +10,8 @@ from datetime import datetime
 from pathlib import Path
 
 from src.features.data_loading import Match
+from src.ingestion import supabase_store
+from src.ingestion.team_names import canonical
 
 LOG_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "live" / "results_log.csv"
 FIELDNAMES = ["date", "home_team", "away_team", "home_score", "away_score"]
@@ -31,11 +33,11 @@ def append_new_results(score_events: list[dict]) -> int:
         if not event.get("completed") or not event.get("scores"):
             continue
         match_date = event["commence_time"][:10]
-        home, away = event["home_team"], event["away_team"]
+        scores = {canonical(s["name"]): s["score"] for s in event["scores"]}
+        home, away = canonical(event["home_team"]), canonical(event["away_team"])
         key = (match_date, home, away)
         if key in existing:
             continue
-        scores = {s["name"]: s["score"] for s in event["scores"]}
         if home not in scores or away not in scores:
             continue
         new_rows.append(
@@ -59,6 +61,8 @@ def append_new_results(score_events: list[dict]) -> int:
         if write_header:
             writer.writeheader()
         writer.writerows(new_rows)
+
+    supabase_store.upsert_match_results(new_rows)
     return len(new_rows)
 
 

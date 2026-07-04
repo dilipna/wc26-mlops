@@ -2,6 +2,134 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-04 — Live Layer 2: the model's own P(champion) now flows daily
+
+The single biggest honesty gap in the system is closed: `predictions_log.csv` (and the
+dashboard hero/chart) had only ever carried the bookmaker's outright market, honestly
+labeled as a baseline, because the model's own tournament-winner probability needs a
+Monte Carlo over the *remaining* 2026 bracket — and the bracket skeleton was never
+encoded (parked 2026-07-02, promoted to top priority by Dilip 2026-07-04: "this should
+happen for sure"). Bundled with the two data fixes it depends on.
+
+**2026 group-stage + R32-opener backfill (`scripts/backfill_2026_group_stage.py`):** live
+Elo/form previously jumped from ~2024 straight into the knockout rounds. All 72 group
+matches + the June 28 South Africa–Canada R32 match are parsed from the *raw wikitext* of
+the twelve Wikipedia group pages (`action=raw` + regex over `football box` templates) and
+appended to `results_log.csv` with the same dedup rule as live ingestion. Raw wikitext,
+not the rendered page: three consecutive WebFetch attempts against the rendered
+knockout-stage page returned mutually contradictory bracket pairings (the summarizer
+garbles bracket-table layouts), while the wikitext's `{{score link|...|Match NN}}`
+templates are unambiguous — every match number below was verified there. The parser
+fails loudly on unknown FIFA codes / unparsable scores rather than dropping matches, and
+validates every mapped name against the historical dataset before writing. Wikipedia 403s
+the default `requests` UA; a descriptive User-Agent fixes it.
+
+**Team-name canonicalization (`src/ingestion/team_names.py`):** found while checking
+names for the backfill — the Odds API says "USA"/"Bosnia & Herzegovina", the historical
+dataset says "United States"/"Bosnia and Herzegovina", and Elo timelines key on exact
+names. So live "USA" results were feeding a *brand-new* team at the default 1500 rating
+instead of the real United States timeline — a genuine cause of the model-vs-bookmaker
+gaps flagged on 2026-07-02 (PROJECT_BRAIN #8). `canonical()` is now applied to every
+name at the ingestion boundary (results, fixtures, outrights, bookmaker outcome keys),
+and existing log rows were migrated one-time (2 results cells, 7 predictions cells).
+`flags.ts` already aliased both spellings, so the dashboard is unaffected.
+
+**Bracket skeleton + partial-state simulator
+(`src/models/layer2_simulation/live_bracket.py`):** unlike `bracket.py` (backtests,
+completed brackets only), this encodes the official remaining bracket once — R16 matches
+89–96 with real entrants, QF children (97=W89vW90, **98=W93vW94, 99=W91vW92** — NOT
+sequential, verified against the wikitext score-link match numbers, a naive assumption
+would have wired the semifinal quadrants wrong), SF 101=W97vW98 / 102=W99vW100 — and
+resolves it against results into a tree whose nodes are either a known winner or a
+pending match. Handles the nested case where an R16 slot is itself a pending R32 match
+(Switzerland vs winner of Colombia–Ghana). Only results dated ≥ June 28 resolve ties:
+group-stage meetings of future knockout pairings (e.g. Colombia–Portugal, both Group K)
+must not count. **Knockout draws:** the Odds API score feed doesn't report shootout
+winners, so a drawn tie stays "pending" (re-simulated) until either team appears in a
+later-round fixture against a different opponent (`_infer_drawn_winner`) — self-healing
+within a day, no manual data entry. The simulator itself is a ~40-line recursive resolve
+with memoized advance probabilities, replacing nothing (the backtest simulator stays
+as-is for the fixed-round completed-bracket case).
+
+**Daily output:** `daily_update.py` now appends THREE series per day to the predictions
+log + Supabase: `stacked_l2_montecarlo_v1` (the model), `heuristic_l2_montecarlo_v1`
+(the FIFA-heuristic member alone through the same simulation — same baseline convention
+as the Phase 0 backtest), and the existing `bookmaker_outright_baseline_v1`.
+`export_dashboard_data.py` and `data.ts` pick the model series as primary (bookmaker as
+fallback for pre-07-04 dates), so the hero/leaderboard/chart now show OUR model.
+
+**First live run (2026-07-04):** model favorites Argentina 25.3% / France 20.0% / Spain
+16.6% / Brazil 10.3% / Colombia 5.0% vs bookmaker France 31.4% / Argentina 16.2% / Spain
+12.7% — same top cluster, real disagreement on the order, which is exactly what an
+honest model-vs-market comparison should look like. 4 new tests (17-team empty state,
+group-game exclusion, draw-then-fixture-inference, simulation sanity); 10 total pass;
+dashboard builds clean.
+
+Dilip created the Supabase project and pasted credentials into `.env`, surfacing two real
+issues caught by actually connecting rather than trusting the code review below:
+
+**Credentials swapped on first paste:** `SUPABASE_URL` initially held a new-format secret
+API key (`sb_secret_...`) and the actual project URL was never pasted in. Recovered
+without asking Dilip to re-fetch anything: the `service_role` value he put in
+`SUPABASE_KEY` is a JWT whose payload includes the project ref (`{"ref": "...",
+"role": "service_role", ...}`), so the correct `https://<ref>.supabase.co` URL was derived
+by decoding it and confirmed working on the next connection test.
+
+**`supabase-py`'s `realtime` dependency needs `websockets>=13` (for `websockets.asyncio`),
+but this machine's global site-packages had `websockets==11.0.3`** (pulled in by some
+other, unrelated project sharing the same global Python install -- no venv exists yet).
+`_client()`'s own try/except caught the `ModuleNotFoundError` and correctly no-op'd rather
+than crashing, but that meant it looked "configured but silently doing nothing" rather
+than actually writing -- only caught by explicitly querying table row counts after a run,
+not by the absence of an exception. Fixed by pinning `websockets==15.0.1` (newest version
+still inside `realtime`'s `<16` ceiling). This does put `websockets` outside some unrelated
+global package's own pin (`gradio-client<12`, not used anywhere in this repo) -- an
+acceptable trade-off for now given there's no project-local venv; worth revisiting if a
+dedicated venv gets set up later.
+
+**Verified live:** ran `scripts/daily_update.py` for real (2026-07-04) -- 2 new
+`match_results` rows, 8 `match_predictions` rows, 17 `tournament_predictions` rows, all
+confirmed via a direct row-count query against the Supabase tables, matching the console
+output exactly. Supabase is now a live third destination alongside the CSV/JSON logs.
+
+## 2026-07-03 — Supabase as durable predictions/results store
+
+First item of Dilip's 2026-07-03 feature list (PROJECT_BRAIN.md #12): the per-match
+prediction snapshots (`data/live/match_predictions_*.json`) are gitignored and only ever
+live on one disk, but they're the raw material for the "model vs reality" proof tracker
+(#12 item 3) -- that needed fixing before anything downstream (proof tracker, FastAPI,
+country dropdown) could be built on top of it.
+
+**Design:** three tables (`supabase/schema.sql`) mirroring the three existing logs --
+`match_results` (mirrors `results_log.csv`), `match_predictions` (mirrors the
+`match_predictions_<ts>.json` snapshots), `tournament_predictions` (mirrors
+`predictions_log.csv`). `match_predictions` is deliberately **append-only, no unique
+constraint** -- unlike the other two tables, its whole point is a timestamped history of
+every pre-kickoff snapshot for a fixture (probabilities can shift run to run as odds move),
+which is exactly the "prediction evolving day by day" data the proof tracker and mission
+statement need. The other two upsert on their natural key so re-running the pipeline never
+duplicates a row.
+
+**Client** (`src/ingestion/supabase_store.py`): every function is best-effort -- if
+`SUPABASE_URL`/`SUPABASE_KEY` aren't set, or the project is unreachable, or the call
+fails, it prints a warning and returns 0 rather than raising. Same fast-fail philosophy as
+`tracking.py`'s MLflow preflight (`src/models/layer1_ensemble/tracking.py`): CSV/JSON stay
+the source of truth and Supabase is additive, never a new way for the daily pipeline to
+break. Verified: with no credentials configured, `_client()` returns `None` and every
+insert/upsert call is a silent no-op (all 6 existing tests still pass unchanged).
+
+**Wired in at two call sites, not a new script:** `live_results_store.append_new_results`
+pushes newly-appended completed-match rows; `daily_update.py` pushes the scored fixture
+list right after writing the JSON snapshot, and the outright tournament probabilities
+right after the CSV append. `docker-compose.airflow.yml` already does `env_file: .env` for
+every Airflow service, so no compose changes were needed -- Supabase credentials reach the
+scheduler container automatically once added to `.env`.
+
+**Not yet done (needs Dilip):** create the actual Supabase project (free tier), run
+`supabase/schema.sql` in its SQL editor, and paste `SUPABASE_URL` + the `service_role` key
+into `.env`. Until then the pipeline runs exactly as before, just without the Supabase
+mirror. FastAPI serving layer (#12 item 2) and the proof tracker (#12 item 3) are next.
+
 ## 2026-07-03 — Stacked meta-learner, heuristic draw-rate fix, MLflow; two bugs caught by
 actually running it
 
