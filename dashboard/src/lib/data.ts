@@ -4,6 +4,7 @@ import resultsRaw from "../../data/results.json";
 import upcomingRaw from "../../data/upcoming_matches.json";
 import summaryRaw from "../../data/summary.json";
 import proofTrackerRaw from "../../data/proof_tracker.json";
+import teamsRaw from "../../data/teams.json";
 
 export type PredictionRow = {
   date: string;
@@ -80,8 +81,15 @@ export type ProofTrackerData = {
   }[];
 };
 
+export type TeamStatus = {
+  team: string;
+  status: "alive" | "eliminated";
+  current_probability: number | null;
+};
+
 export const predictions = predictionsRaw as unknown as PredictionRow[];
 export const proofTracker = proofTrackerRaw as unknown as ProofTrackerData;
+export const teams = teamsRaw as unknown as TeamStatus[];
 export const backtest = backtestRaw as unknown as Record<string, BacktestYear>;
 export const results = resultsRaw as unknown as MatchResult[];
 export const upcomingMatches = upcomingRaw as unknown as UpcomingMatch[];
@@ -114,6 +122,16 @@ export function seriesByTeam(modelVersion?: string): Map<string, PredictionRow[]
   }
   for (const list of map.values()) list.sort((a, b) => a.date.localeCompare(b.date));
   return map;
+}
+
+// Per-team series lookup for the country dropdown: unlike seriesByTeam
+// (which picks one series for the whole app), a team eliminated before
+// the model's own Layer 2 series existed (2026-07-04) may only have
+// bookmaker-series history -- fall back per-team, not globally.
+export function seriesForTeam(team: string): PredictionRow[] {
+  const modelRows = predictions.filter((r) => r.team === team && r.model_version === MODEL_SERIES);
+  const rows = modelRows.length > 0 ? modelRows : predictions.filter((r) => r.team === team && r.model_version === BOOKMAKER_SERIES);
+  return [...rows].sort((a, b) => a.date.localeCompare(b.date));
 }
 
 export const CHECKPOINT_ORDER = ["post_group", "post_r16", "post_qf", "post_sf"] as const;

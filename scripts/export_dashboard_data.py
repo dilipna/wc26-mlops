@@ -10,10 +10,16 @@ pipeline produces new data.)
 
 import csv
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from src.ingestion import live_results_store  # noqa: E402
+from src.models.layer2_simulation import live_bracket  # noqa: E402
+
 DATA_DIR = ROOT / "data"
 OUT_DIR = ROOT / "dashboard" / "data"
 
@@ -94,6 +100,36 @@ def export_summary(predictions_rows, results_rows, upcoming_matches):
     return summary
 
 
+def export_teams(predictions_rows):
+    """Full 2026 roster -- every team that's played at least one logged
+    match, so no external "which 48 teams qualified" list is needed --
+    with alive/eliminated status from the live bracket tree and current
+    model P(champion) where available. Powers the dashboard's "check your
+    country" lookup (PROJECT_BRAIN #12 item 4)."""
+    matches = live_results_store.load_live_matches()
+    roster = sorted({m.home_team for m in matches} | {m.away_team for m in matches})
+
+    tree = live_bracket.build_2026_tree(matches, upcoming_fixtures=[])
+    alive = live_bracket.alive_teams(tree)
+
+    primary = [r for r in predictions_rows if r["model_version"] == MODEL_SERIES]
+    if not primary:
+        primary = [r for r in predictions_rows if r["model_version"] == BOOKMAKER_SERIES]
+    latest_date = max((r["date"] for r in primary), default=None)
+    current_by_team = {r["team"]: r["win_probability"] for r in primary if r["date"] == latest_date} if latest_date else {}
+
+    teams = [
+        {
+            "team": team,
+            "status": "alive" if team in alive else "eliminated",
+            "current_probability": current_by_team.get(team),
+        }
+        for team in roster
+    ]
+    (OUT_DIR / "teams.json").write_text(json.dumps(teams, indent=2))
+    return teams
+
+
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     predictions_rows = export_predictions_timeseries()
@@ -101,11 +137,14 @@ def main():
     results_rows = export_results()
     upcoming_matches = export_upcoming_matches()
     summary = export_summary(predictions_rows, results_rows, upcoming_matches)
+    teams = export_teams(predictions_rows)
     print(f"Exported dashboard data to {OUT_DIR}")
     print(f"  {len(predictions_rows)} prediction rows, {len(results_rows)} results, "
           f"{len(upcoming_matches)} upcoming matches")
     print(f"  Top favorites as of {summary['latest_predictions_date']}: "
           f"{[(f['team'], round(f['win_probability'], 3)) for f in summary['top_favorites']]}")
+    n_alive = sum(1 for t in teams if t["status"] == "alive")
+    print(f"  {len(teams)} teams tracked ({n_alive} alive, {len(teams) - n_alive} eliminated)")
 
 
 if __name__ == "__main__":

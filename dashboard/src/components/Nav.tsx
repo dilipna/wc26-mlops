@@ -9,6 +9,7 @@ export default function Nav() {
       </div>
       <div className="hidden gap-7 text-xs uppercase tracking-[0.12em] text-foreground/55 md:flex">
         <a href="#leaderboard" className="hover:text-foreground transition-colors">Favorites</a>
+        <a href="#country" className="hover:text-foreground transition-colors">Country</a>
         <a href="#fixtures" className="hover:text-foreground transition-colors">Fixtures</a>
         <a href="#backtest" className="hover:text-foreground transition-colors">Proof</a>
         <a href="#stack" className="hover:text-foreground transition-colors">Stack</a>
