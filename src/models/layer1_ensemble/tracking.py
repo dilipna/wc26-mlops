@@ -53,6 +53,51 @@ def _is_reachable(uri: str) -> bool:
         return False
 
 
+def is_reachable() -> bool:
+    """Public cheap reachability check (see _is_reachable) -- for the admin
+    dashboard's System Health section, which needs to report MLflow's
+    status without triggering a full registry lookup."""
+    return _is_reachable(_tracking_uri())
+
+
+def list_recent_runs(n: int = 10) -> list[dict]:
+    """Best-effort list of the `n` most recent runs in EXPERIMENT_NAME,
+    newest first -- for the admin dashboard's Training History section.
+    Returns [] (never raises) if MLflow is unreachable or the experiment
+    doesn't exist yet, same best-effort philosophy as the rest of this
+    module."""
+    uri = _tracking_uri()
+    if not _is_reachable(uri):
+        return []
+    try:
+        mlflow.set_tracking_uri(uri)
+        client = MlflowClient()
+        experiment = client.get_experiment_by_name(EXPERIMENT_NAME)
+        if experiment is None:
+            return []
+        runs = client.search_runs(
+            [experiment.experiment_id],
+            order_by=["attribute.start_time DESC"],
+            max_results=n,
+        )
+        return [
+            {
+                "run_id": run.info.run_id,
+                "run_name": run.info.run_name,
+                "status": run.info.status,
+                "start_time": datetime.fromtimestamp(run.info.start_time / 1000, tz=timezone.utc).isoformat()
+                if run.info.start_time
+                else None,
+                "params": dict(run.data.params),
+                "metrics": dict(run.data.metrics),
+            }
+            for run in runs
+        ]
+    except Exception as exc:  # noqa: BLE001 -- best-effort, see module docstring
+        print(f"[mlflow] recent-runs lookup failed (non-fatal): {exc.__class__.__name__}: {exc}")
+        return []
+
+
 def load_latest_stack():
     """Best-effort load of the latest registered Layer 1 model
     (REGISTERED_MODEL_NAME) from the MLflow registry, for the FastAPI

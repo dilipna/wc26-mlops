@@ -196,3 +196,17 @@ def predict(req: PredictRequest, state: ModelState = Depends(get_model_state)):
 def champions(refresh: bool = False, state: ModelState = Depends(get_model_state)):
     result = state.champion_probabilities(refresh=refresh)
     return {**result, "model_version": state.model_version}
+
+
+@app.get("/feature-importance")
+def feature_importance(state: ModelState = Depends(get_model_state)):
+    """The actually-serving model's real XGBoost feature importances (see
+    Layer1Ensemble.xgb_feature_importance) -- for the admin dashboard's
+    Training section. Live from state.ensemble, not a static export, so it
+    always reflects whichever model this instance loaded/trained at
+    startup (registry version or a freshly trained fallback)."""
+    return {
+        "model_version": state.model_version,
+        "model_source": state.model_source,
+        "importances": state.ensemble.xgb_feature_importance(),
+    }

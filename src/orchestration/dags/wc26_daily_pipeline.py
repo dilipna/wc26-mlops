@@ -12,13 +12,15 @@ daily schedule:
                              files the dashboard reads at build time.
 
 check_drift.py (Evidently feature-drift check, appended to
-data/monitoring/drift_history.csv) runs as an independent parallel branch
-off daily_update, not chained into the predictions path above -- same
-"never blocks the pipeline" philosophy as every other optional-infra
-integration in this project (see PROJECT_BRAIN.md #9). Its output may
-therefore lag the same day's export by one run if it finishes after
-export_dashboard_data; each drift record is self-timestamped so the
-dashboard is honest about which day's drift check it's showing.
+data/monitoring/drift_history.csv) and check_data_quality.py (missing
+values/schema/duplicate checks, appended to
+data/monitoring/data_quality_history.csv) both run as independent parallel
+branches off daily_update, not chained into the predictions path above --
+same "never blocks the pipeline" philosophy as every other optional-infra
+integration in this project (see PROJECT_BRAIN.md #9). Their output may
+therefore lag the same day's export by one run if they finish after
+export_dashboard_data; each record is self-timestamped so the admin
+dashboard is honest about which day's check it's showing.
 
 Runs at 06:00 UTC so the prior day's completed matches are reflected
 before backup. Project root is mounted read-write at /opt/airflow/project
@@ -69,5 +71,11 @@ with DAG(
         bash_command=f"cd {PROJECT_DIR} && python scripts/check_drift.py",
     )
 
+    check_data_quality = BashOperator(
+        task_id="check_data_quality",
+        bash_command=f"cd {PROJECT_DIR} && python scripts/check_data_quality.py",
+    )
+
     daily_update >> verify_predictions >> export_dashboard_data
     daily_update >> check_drift
+    daily_update >> check_data_quality

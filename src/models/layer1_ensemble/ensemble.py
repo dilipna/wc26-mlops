@@ -20,6 +20,7 @@ from sklearn.preprocessing import FunctionTransformer
 
 from src.models.layer1_ensemble.features import (
     ELO_IDX,
+    FEATURE_NAMES,
     NEUTRAL_IDX,
     RANK_IDX,
     build_feature_row,
@@ -154,6 +155,15 @@ class Layer1Ensemble:
     def baseline_advance_probability(self, team_a: str, team_b: str, as_of: date) -> float:
         p_loss, p_draw, p_win = self.baseline_match_probs(team_a, team_b, as_of, neutral=True)
         return p_win + 0.5 * p_draw
+
+    def xgb_feature_importance(self) -> dict[str, float]:
+        """The fitted XGBoost member's real `feature_importances_` (gain-
+        based, xgboost's default), mapped to FEATURE_NAMES -- for the admin
+        dashboard's Training section. Not SHAP (see relative_member_influence
+        in tracking.py and the dashboard Model Card for that distinction);
+        this is a coarser, standard tree-ensemble importance, but genuine,
+        not fabricated."""
+        return dict(zip(FEATURE_NAMES, (float(v) for v in self.xgb.feature_importances_)))
 
     def meta_learner_weights(self) -> dict:
         """The stacking meta-learner's learned coefficients, for

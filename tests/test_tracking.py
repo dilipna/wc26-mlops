@@ -95,6 +95,65 @@ def test_relative_member_influence_empty_for_missing_shape():
     assert tracking.relative_member_influence({}) == {}
 
 
+def test_is_reachable_false_when_mlflow_unreachable(monkeypatch):
+    monkeypatch.setenv("MLFLOW_TRACKING_URI", "http://localhost:59999")
+    assert tracking.is_reachable() is False
+
+
+def test_list_recent_runs_empty_when_mlflow_unreachable(monkeypatch):
+    monkeypatch.setenv("MLFLOW_TRACKING_URI", "http://localhost:59999")
+    assert tracking.list_recent_runs() == []
+
+
+def test_list_recent_runs_empty_when_experiment_missing(monkeypatch):
+    monkeypatch.setattr(tracking, "_is_reachable", lambda uri: True)
+
+    class FakeClient:
+        def get_experiment_by_name(self, name):
+            return None
+
+    monkeypatch.setattr(tracking, "MlflowClient", lambda: FakeClient())
+    assert tracking.list_recent_runs() == []
+
+
+def test_list_recent_runs_returns_newest_first_shape(monkeypatch):
+    monkeypatch.setattr(tracking, "_is_reachable", lambda uri: True)
+
+    class FakeExperiment:
+        experiment_id = "0"
+
+    class FakeRunInfo:
+        def __init__(self, run_id, run_name, start_time):
+            self.run_id = run_id
+            self.run_name = run_name
+            self.status = "FINISHED"
+            self.start_time = start_time
+
+    class FakeRunData:
+        params = {"train_start": "1992-01-01"}
+        metrics = {"log_loss": 0.55}
+
+    class FakeRun:
+        def __init__(self, run_id, run_name, start_time):
+            self.info = FakeRunInfo(run_id, run_name, start_time)
+            self.data = FakeRunData()
+
+    runs = [FakeRun("run-2", "second", 1_800_000_000_000), FakeRun("run-1", "first", 1_700_000_000_000)]
+
+    class FakeClient:
+        def get_experiment_by_name(self, name):
+            return FakeExperiment()
+
+        def search_runs(self, experiment_ids, order_by, max_results):
+            return runs
+
+    monkeypatch.setattr(tracking, "MlflowClient", lambda: FakeClient())
+    result = tracking.list_recent_runs(n=2)
+    assert [r["run_id"] for r in result] == ["run-2", "run-1"]
+    assert result[0]["metrics"] == {"log_loss": 0.55}
+    assert result[0]["start_time"].startswith("2027-01-15")
+
+
 def test_relative_member_influence_sums_to_one_and_favors_dominant_member():
     # 3 members x 3 classes -- xgboost's block has much larger magnitude
     # coefficients than the other two, so it should end up with the

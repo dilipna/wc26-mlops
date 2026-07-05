@@ -12,6 +12,9 @@ class FakeEnsemble:
     def baseline_match_probs(self, home, away, as_of, neutral=True):
         return (0.25, 0.25, 0.5)
 
+    def xgb_feature_importance(self):
+        return {"elo_diff": 0.6, "rank_points_diff": 0.4}
+
 
 class FakeState:
     def __init__(self):
@@ -64,6 +67,14 @@ def test_response_carries_request_id_and_latency_headers():
     # two requests must get distinct request IDs
     resp2 = client.get("/health")
     assert resp.headers["X-Request-ID"] != resp2.headers["X-Request-ID"]
+
+
+def test_feature_importance():
+    resp = client.get("/feature-importance")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["importances"] == {"elo_diff": 0.6, "rank_points_diff": 0.4}
+    assert body["model_version"] == "v42"
 
 
 def test_cors_allows_configured_dashboard_origin():
