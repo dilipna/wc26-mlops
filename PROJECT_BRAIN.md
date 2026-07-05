@@ -328,16 +328,19 @@ maps to a backlog item in §8.
   fifa2026mlops.vercel.app` if the domain-registration above doesn't turn out to
   auto-follow — `vercel alias ls` shows the ground truth, don't assume from `git push`
   succeeding or even from Vercel's dashboard showing "Ready"/"Production" on a commit.
-- **Predictions-timeseries duplicate rows.** `dashboard/data/predictions_timeseries.json`
-  had systemic duplicate `(date, team, model_version)` rows (251 rows, only 135 unique —
-  every team's most recent 2-3 days duplicated). Caused a real user-visible bug (Argentina/
-  France doubled on the leaderboard). Almost certainly `daily_update.py` (or whatever
-  appends to `data/predictions/predictions_log.csv`) ran more than once for the same day
-  with no dedup guard on append. **Patched at the exported-JSON level only** (2026-07-05,
-  Phase 8) as a stop-gap for the current deploy; **the real fix — a dedup guard in the
-  backend append/export path — is still needed** and wasn't done (out of scope for a
-  frontend-only session). Will recur next time `export_dashboard_data.py` runs against the
-  still-duplicated `predictions_log.csv`/Supabase rows.
+- **RESOLVED 2026-07-05, later same day (was a stop-gap patch, now a real fix).**
+  Predictions-timeseries duplicate rows. Root cause confirmed: `scripts/daily_update.py`'s
+  `append_predictions_log()` unconditionally appended every run with no guard, so any
+  re-run for the same day (retry, manual re-run) duplicated that day's rows for every team,
+  every series — 251 rows in `data/predictions/predictions_log.csv`, only 135 unique. Real
+  fix: `append_predictions_log()` now rewrites (not appends) — drops any existing rows for
+  `(today, model_version)` before writing fresh ones, so re-running the same day converges
+  to one row per team instead of accumulating. Covered by new
+  `tests/test_daily_update.py` (2 tests, idempotency + other-day/series rows untouched).
+  One-time cleanup applied to the real `predictions_log.csv` (251→135, keeping the most
+  recent value per key) and `export_dashboard_data.py` re-run to regenerate all
+  `dashboard/data/*.json` from the clean source. 51/51 tests passing. Committed
+  (`d9775c2`), pushed, Vercel redeployed, Render redeployed (see below) — verified live.
 
 **Hard blocker — FIXED 2026-07-05:**
 - `scripts/daily_update.py` had zero error handling around the Odds API (`_api_key()`
@@ -1012,15 +1015,25 @@ unreachable" — that's correct, because `GET /feature-importance` (Phase 4, §1
 exists in the *uncommitted* `src/serving/app.py` changes, never pushed to Render; it'll
 start working once that backend work is committed and deployed (see gap list below).
 
+**UPDATE, same day, follow-up session: both remaining gaps above are now closed.** The
+predictions-timeseries duplicate-row bug got a real fix (not just the JSON-level patch —
+see §7's resolved entry), and all the previously-uncommitted backend work (Phases 1, 2, 5
+sport-plugin core, data-quality monitoring, the `/feature-importance` endpoint, MLflow
+registry helpers) was reviewed (diffs read, not just trusted), tested (51/51 passing,
+including 2 new tests for the dedup fix), and committed (`d9775c2`). Dashboard data was
+regenerated from the clean pipeline and committed (`0296f9e`). Both Vercel and Render were
+redeployed and verified live: production leaderboard shows no duplicates, and the admin
+dashboard's live feature-importance card (previously "unavailable, serving API
+unreachable") now shows real XGBoost importances from the redeployed serving API
+(`elo_diff` at ~79%, matching what the model actually weighs most heavily).
+
 Phases 1, 2, 4, 5, 6 (the backend `Sport` interface, verification pass, `/admin` itself,
-the DAG branch, and `ReplayScrubber`) are **still real and still exist in the working
-tree** — only the *public-facing* Phase 3/Phase 7 redesign work was reverted. Real gaps
-that remain, in priority order: (1) the predictions-timeseries duplicate-row bug's real
-fix (append-time dedup) is still needed in the backend pipeline; (2) nothing from Phases
-1/2/5/6 (the backend sport-plugin core, data-quality monitoring, DAG branch, the new
-`/feature-importance` endpoint) has been committed — only this session's dashboard revert
-was, so Render is running an older backend than what's in the working tree; (3) §6's demo
-script is stale against actual `page.tsx` history, unrelated to this session, still unfixed.
+the DAG branch, and `ReplayScrubber`) are **committed and deployed**, not just "real and in
+the working tree" as the note above said a few hours earlier. Remaining gaps, in priority
+order: (1) §6's demo script is stale against actual `page.tsx` history — cosmetic,
+low-priority, unrelated to any of this session's work; (2) `ReplayScrubber` promotion to
+the public site is still deliberately deferred to post-July 19; (3) no other known gaps
+from this session — the two items that were open going into this follow-up are both closed.
 
 ---
 
@@ -1240,3 +1253,44 @@ the end of this entry** — the first half (Phase 7) was reverted later in the s
   last ~3 sessions' dashboard work was built, verified via lint/build/curl, marked "done" in
   this file, and **never actually seen by anyone at the live URL.** Flagged prominently in
   §7 as the top-priority open item — needs Dilip to check Vercel's dashboard directly.
+
+**2026-07-05 (follow-up session, same day: root-cause the deploy, fix the duplicate-row
+bug for real, commit the backend backlog).** Dilip asked "what shall we do next," was given
+a 2-option recommendation (fix the duplicate-row bug vs. review/commit the backend
+backlog), and asked for both.
+- **Vercel mystery fully resolved** (not just "found," as the previous entry left it):
+  `vercel alias ls` showed `fifa2026mlops.vercel.app` pointed at a day-old deployment while
+  the project's other auto-generated aliases had been tracking every new deploy correctly
+  the whole time — it was a one-off `vercel alias set` pin, not a build failure. The Vercel
+  CLI was already authenticated on this machine (no token needed). Deployed directly via
+  `vercel --prod` (had to link a second `.vercel/project.json` at the repo root — the
+  project's Root Directory setting is `dashboard`, so the CLI must run from repo root, not
+  from inside `dashboard/`), repointed the alias, then `vercel domains add
+  fifa2026mlops.vercel.app dashboard` to register it as a real tracked project domain.
+  Verified this held on a second deploy later in the session — it auto-aliased with no
+  manual step needed.
+- **Render deployed too**: Dilip supplied a deploy hook URL. `curl`ing it returned `202`;
+  `/health` came up with a freshly trained model within the request. Vercel production had
+  *zero* environment variables configured (not a code bug — just never set) —
+  `NEXT_PUBLIC_SERVING_API_URL` added via `vercel env add`, blocked once by the harness's
+  auto-mode classifier for using a self-discovered URL on a persistent prod config;
+  paused and got explicit confirmation via `AskUserQuestion` before proceeding, per how
+  this project's own working agreement treats hard-to-reverse shared-system actions.
+- **Duplicate-row bug fixed for real** (not just the JSON patch from the prior entry):
+  found `daily_update.py`'s `append_predictions_log()` had no guard against being run twice
+  for the same day. Rewrote it to drop-and-replace that day's rows per series instead of
+  blindly appending; added `tests/test_daily_update.py` (2 new tests) rather than trusting
+  it by inspection. One-time cleanup of the real `predictions_log.csv` (251→135 rows).
+- **Reviewed then committed the backend backlog** that had been sitting uncommitted across
+  several earlier sessions (sport-plugin core, data-quality monitoring + its DAG branch,
+  the `/feature-importance` serving endpoint, MLflow registry helpers) — read the actual
+  diffs first (not just trusted PROJECT_BRAIN's prior description of them), ran the full
+  suite (51/51 passing), then committed. Re-ran `export_dashboard_data.py` against the
+  cleaned pipeline, committed the refreshed `dashboard/data/*.json`, redeployed both
+  Vercel and Render, and verified live: no duplicate leaderboard entries, and the admin
+  dashboard's live feature-importance card — previously "unavailable" — now shows real
+  numbers from the redeployed serving API.
+- Two commits this session: `d9775c2` (dedup fix + backend backlog), `0296f9e`
+  (regenerated dashboard data). Both pushed and deployed, not just committed.
+- **Not done**: §6's demo script staleness (cosmetic, unrelated, still open). Everything
+  else that was open going into this session is now closed.
