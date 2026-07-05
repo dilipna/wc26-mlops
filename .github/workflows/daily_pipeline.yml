@@ -1,0 +1,83 @@
+name: Daily prediction pipeline
+
+# Runs the same sequence as the local Airflow DAG (docker-compose.airflow.yml),
+# but in GitHub's cloud instead of requiring a laptop with Docker Desktop to
+# stay on -- see PROJECT_BRAIN.md's 2026-07-05 finding that nothing was
+# actually scheduling this daily, and that Vercel's git-integration
+# auto-deploy isn't reliable, hence the explicit deploy-hook calls below
+# instead of relying on the push alone. The local Airflow DAG stays as-is
+# (a real, demoable orchestration artifact) -- this is what actually keeps
+# the live site fresh day to day.
+on:
+  schedule:
+    - cron: "0 6 * * *" # 06:00 UTC daily, matches the Airflow DAG's schedule
+  workflow_dispatch: {} # manual trigger, for testing this workflow itself
+
+permissions:
+  contents: write
+
+jobs:
+  daily-update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+          cache-dependency-path: requirements-lock.txt
+
+      - run: pip install -r requirements-lock.txt
+
+      - name: Sanity check the pipeline before touching real data
+        run: python -m pytest tests/ -q
+
+      - name: Daily update (results, features, Layer 1 + Layer 2 predictions)
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python scripts/daily_update.py
+
+      - name: Grade finished predictions
+        run: python scripts/verify_predictions.py
+
+      - name: Check feature drift
+        continue-on-error: true # independent branch, must never block the pipeline
+        run: python scripts/check_drift.py
+
+      - name: Check data quality
+        continue-on-error: true # independent branch, must never block the pipeline
+        run: python scripts/check_data_quality.py
+
+      - name: Export dashboard data
+        run: python scripts/export_dashboard_data.py
+
+      - name: Commit and push refreshed data
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ dashboard/data/
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No data changes to commit"
+          else
+            git commit -m "Daily pipeline: $(date -u +%Y-%m-%d) results, predictions, drift, data quality"
+            git pull --rebase origin main
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger Vercel redeploy
+        if: steps.commit.outputs.changed == 'true' && env.VERCEL_DEPLOY_HOOK_URL != ''
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: curl -fsS -X POST "$VERCEL_DEPLOY_HOOK_URL"
+
+      - name: Trigger Render redeploy
+        if: steps.commit.outputs.changed == 'true' && env.RENDER_DEPLOY_HOOK_URL != ''
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: curl -fsS "$RENDER_DEPLOY_HOOK_URL"
