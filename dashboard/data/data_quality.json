@@ -90,6 +90,15 @@
       "historical_count": "49484",
       "live_count": "90",
       "overlap_count": "74"
+    },
+    {
+      "generated_at": "2026-07-05",
+      "total_rows": "49574",
+      "schema_valid": "True",
+      "duplicate_rows": "152",
+      "historical_count": "49484",
+      "live_count": "90",
+      "overlap_count": "74"
     }
   ]
 }
