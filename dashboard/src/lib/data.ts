@@ -7,6 +7,9 @@ import proofTrackerRaw from "../../data/proof_tracker.json";
 import teamsRaw from "../../data/teams.json";
 import modelRegistryRaw from "../../data/model_registry.json";
 import driftRaw from "../../data/drift.json";
+import dataQualityRaw from "../../data/data_quality.json";
+import systemHealthRaw from "../../data/system_health.json";
+import trainingHistoryRaw from "../../data/training_history.json";
 
 export type PredictionRow = {
   date: string;
@@ -134,7 +137,53 @@ export type DriftData = {
   history: DriftHistoryRow[];
 };
 
+export type DataQualitySnapshot = {
+  generated_at: string;
+  missing_values: Record<string, { missing: number; total: number; pct: number }>;
+  schema: {
+    columns_present: Record<string, boolean>;
+    dtype_mismatches: Record<string, { expected: string; actual: string }>;
+    extra_columns: string[];
+    valid: boolean;
+  };
+  duplicates_before_dedup: { duplicate_rows: number; duplicate_keys: number; total_rows: number };
+  historical_live_overlap: { historical_count: number; live_count: number; overlap_count: number };
+};
+
+export type DataQualityHistoryRow = {
+  generated_at: string;
+  total_rows: string;
+  schema_valid: string;
+  duplicate_rows: string;
+  historical_count: string;
+  live_count: string;
+  overlap_count: string;
+};
+
+export type DataQualityData = {
+  latest: DataQualitySnapshot | null;
+  history: DataQualityHistoryRow[];
+};
+
+export type SystemHealth = {
+  generated_at: string;
+  mlflow_reachable: boolean;
+  supabase_reachable: boolean;
+};
+
+export type TrainingRun = {
+  run_id: string;
+  run_name: string;
+  status: string;
+  start_time: string | null;
+  params: Record<string, string>;
+  metrics: Record<string, number>;
+};
+
 export const predictions = predictionsRaw as unknown as PredictionRow[];
+export const dataQuality = dataQualityRaw as unknown as DataQualityData;
+export const systemHealth = systemHealthRaw as unknown as SystemHealth;
+export const trainingHistory = trainingHistoryRaw as unknown as TrainingRun[];
 export const proofTracker = proofTrackerRaw as unknown as ProofTrackerData;
 export const teams = teamsRaw as unknown as TeamStatus[];
 export const backtest = backtestRaw as unknown as Record<string, BacktestYear>;

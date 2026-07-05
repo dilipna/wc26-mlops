@@ -1,4 +1,5 @@
-const REPO = "dilipna/wc26-mlops";
+import { REPO } from "@/lib/site";
+
 const DAG_PATH = "src/orchestration/dags/wc26_daily_pipeline.py";
 
 function TaskNode({ label, path }: { label: string; path?: string }) {
@@ -22,9 +23,11 @@ function Arrow() {
 export default function TrainingPipelineTimeline({
   lastDataRefresh,
   lastDriftCheck,
+  lastDataQualityCheck,
 }: {
   lastDataRefresh: string | null;
   lastDriftCheck: string | null;
+  lastDataQualityCheck?: string | null;
 }) {
   return (
     <div className="glass-card p-6">
@@ -55,8 +58,13 @@ export default function TrainingPipelineTimeline({
         <Arrow />
         <TaskNode label="check_drift.py" path="scripts/check_drift.py" />
       </div>
+      <div className="mt-3 flex flex-wrap items-center gap-2 pl-0 sm:pl-[calc(11ch+1.25rem)]">
+        <span className="font-mono text-[11px] text-text-muted">(parallel branch)</span>
+        <Arrow />
+        <TaskNode label="check_data_quality.py" path="scripts/check_data_quality.py" />
+      </div>
 
-      <div className="mt-5 grid gap-4 border-t border-border pt-4 sm:grid-cols-2">
+      <div className="mt-5 grid gap-4 border-t border-border pt-4 sm:grid-cols-3">
         <div className="font-mono text-xs">
           <div className="text-text-muted">Last successful data refresh</div>
           <div className="mt-1 text-foreground">{lastDataRefresh ?? "unknown"}</div>
@@ -65,6 +73,12 @@ export default function TrainingPipelineTimeline({
           <div className="text-text-muted">Last drift check</div>
           <div className="mt-1 text-foreground">{lastDriftCheck ?? "not yet run"}</div>
         </div>
+        {lastDataQualityCheck !== undefined && (
+          <div className="font-mono text-xs">
+            <div className="text-text-muted">Last data-quality check</div>
+            <div className="mt-1 text-foreground">{lastDataQualityCheck ?? "not yet run"}</div>
+          </div>
+        )}
       </div>
 
       <p className="mt-4 text-xs text-text-muted">

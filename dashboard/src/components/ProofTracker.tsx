@@ -47,24 +47,24 @@ function GradedCard({ match, delay }: { match: GradedMatch; delay: number }) {
     >
       <div className="font-mono flex items-center justify-between text-xs text-foreground/40 mb-3">
         <span>Predicted {formatUTC(match.logged_at)}</span>
-        <span style={{ color: match.model_correct ? "var(--status-good)" : "var(--status-critical)" }}>
+        <span style={{ color: match.model_correct ? "var(--accent)" : "var(--accent-deep)" }}>
           {match.model_correct ? "✓ Correct" : "✗ Missed"}
         </span>
       </div>
 
       <div className="flex items-baseline justify-between mb-4">
-        <span className="font-bold text-foreground">{match.home_team}</span>
-        <span className="text-lg text-foreground">
+        <span className="font-display font-bold text-foreground">{match.home_team}</span>
+        <span className="font-display text-lg text-foreground">
           {match.home_score} - {match.away_score}
         </span>
-        <span className="font-bold text-foreground">{match.away_team}</span>
+        <span className="font-display font-bold text-foreground">{match.away_team}</span>
       </div>
 
       <div className="space-y-1.5 text-sm">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-[11px] uppercase tracking-widest text-series-1/80">Our AI said</span>
+          <span className="font-mono text-[11px] uppercase tracking-widest text-accent/80">Our AI said</span>
           <span className="text-foreground/80">
-            {modelPick} <span className="font-mono text-series-1">{modelConfidence.toFixed(0)}%</span>
+            {modelPick} <span className="font-mono text-accent">{modelConfidence.toFixed(0)}%</span>
           </span>
         </div>
         {bookmakerPick && (
@@ -107,7 +107,7 @@ function CalibrationChart({ calibration }: { calibration: ProofTrackerData["cali
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: i * 0.08 + 0.1 }}
                 className="w-3.5 rounded-t-sm"
-                style={{ background: "var(--series-1)" }}
+                style={{ background: "var(--accent)" }}
                 title={bucket.actual_rate !== null ? `Actual ${(bucket.actual_rate * 100).toFixed(0)}%` : "No data yet"}
               />
             </div>
@@ -121,7 +121,7 @@ function CalibrationChart({ calibration }: { calibration: ProofTrackerData["cali
           <span className="h-2 w-2 rounded-full bg-foreground/30" /> Predicted confidence
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full" style={{ background: "var(--series-1)" }} /> Actually correct
+          <span className="h-2 w-2 rounded-full" style={{ background: "var(--accent)" }} /> Actually correct
         </span>
       </div>
     </div>
@@ -133,7 +133,7 @@ export default function ProofTracker({ data }: { data: ProofTrackerData }) {
 
   if (summary.n_graded === 0) {
     return (
-      <div className="glass-card rounded-2xl p-8 text-center text-foreground/50">
+      <div className="font-serif glass-card rounded-2xl p-8 text-center text-foreground/50">
         No completed knockout matches graded yet -- every pre-kickoff prediction is already logged, so the first
         finished match will land here automatically on the next daily run.
       </div>

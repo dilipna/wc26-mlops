@@ -11,7 +11,7 @@ function TickerRow({ results, copy }: { results: MatchResult[]; copy: number }) 
           className="font-mono glass-card flex flex-none items-center gap-3 whitespace-nowrap rounded-[10px] px-5 py-3.5 text-[13px]"
         >
           <span className="text-foreground/70">{r.home_team}</span>
-          <span className="font-semibold text-series-1">
+          <span className="font-semibold text-accent">
             {r.home_score}&ndash;{r.away_score}
           </span>
           <span className="text-foreground/70">{r.away_team}</span>
