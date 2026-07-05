@@ -1,3 +1,4 @@
 generated_at,reference_rows,current_rows,dataset_drift,share_of_drifted_columns,elo_diff_drift_score,elo_diff_drift_detected,form_goals_against_diff_drift_score,form_goals_against_diff_drift_detected,form_goals_for_diff_drift_score,form_goals_for_diff_drift_detected,form_win_rate_diff_drift_score,form_win_rate_diff_drift_detected,rank_points_diff_drift_score,rank_points_diff_drift_detected
 2026-07-05,19282,810,False,0.2,0.10080505509235055,True,0.08811733694976887,False,0.06888865805136554,False,0.027949636687407325,False,0.09174173436944262,False
 2026-07-05,19282,810,False,0.2,0.10080505509235055,True,0.08811733694976887,False,0.06888865805136554,False,0.027949636687407325,False,0.09174173436944262,False
+2026-07-05,19282,810,False,0.2,0.10080505509235055,True,0.08811733694976887,False,0.06888865805136554,False,0.027949636687407325,False,0.09174173436944262,False
