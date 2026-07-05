@@ -22,7 +22,7 @@ function CheckpointBars({ year }: { year: BacktestYear }) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="w-4 rounded-t-sm"
-                style={{ background: "var(--accent)" }}
+                style={{ background: "var(--series-1)" }}
                 title={`Model: ${modelPct.toFixed(1)}%`}
               />
               <motion.div
@@ -58,7 +58,7 @@ export default function ModelValidation({ backtest }: { backtest: Record<string,
           className="glass-card rounded-2xl p-6"
         >
           <div className="flex items-baseline justify-between mb-[22px]">
-            <span className="font-display text-2xl font-extrabold text-foreground">{year.year}</span>
+            <span className="text-2xl font-extrabold text-foreground">{year.year}</span>
             <span className="font-mono text-xs text-foreground/50">
               Champion: <span className="text-foreground">{year.champion}</span>
             </span>
@@ -66,7 +66,7 @@ export default function ModelValidation({ backtest }: { backtest: Record<string,
           <CheckpointBars year={year} />
           <div className="mt-5 flex items-center gap-4 text-[11px] text-foreground/40">
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full" style={{ background: "var(--accent)" }} /> Our AI
+              <span className="h-2 w-2 rounded-full" style={{ background: "var(--series-1)" }} /> Our AI
             </span>
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-foreground/30" /> World-ranking guess

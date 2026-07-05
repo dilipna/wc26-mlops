@@ -11,6 +11,15 @@ daily schedule:
 3. export_dashboard_data.py -- convert the updated logs into the JSON
                              files the dashboard reads at build time.
 
+check_drift.py (Evidently feature-drift check, appended to
+data/monitoring/drift_history.csv) runs as an independent parallel branch
+off daily_update, not chained into the predictions path above -- same
+"never blocks the pipeline" philosophy as every other optional-infra
+integration in this project (see PROJECT_BRAIN.md #9). Its output may
+therefore lag the same day's export by one run if it finishes after
+export_dashboard_data; each drift record is self-timestamped so the
+dashboard is honest about which day's drift check it's showing.
+
 Runs at 06:00 UTC so the prior day's completed matches are reflected
 before backup. Project root is mounted read-write at /opt/airflow/project
 by docker-compose.airflow.yml so both scripts' relative paths (data/,
@@ -55,4 +64,10 @@ with DAG(
         bash_command=f"cd {PROJECT_DIR} && python scripts/export_dashboard_data.py",
     )
 
+    check_drift = BashOperator(
+        task_id="check_drift",
+        bash_command=f"cd {PROJECT_DIR} && python scripts/check_drift.py",
+    )
+
     daily_update >> verify_predictions >> export_dashboard_data
+    daily_update >> check_drift

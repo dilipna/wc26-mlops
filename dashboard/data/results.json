@@ -1,5 +1,26 @@
 [
   {
+    "date": "2026-07-04",
+    "home_team": "Colombia",
+    "away_team": "Ghana",
+    "home_score": "1",
+    "away_score": "0"
+  },
+  {
+    "date": "2026-07-04",
+    "home_team": "Canada",
+    "away_team": "Morocco",
+    "home_score": "0",
+    "away_score": "3"
+  },
+  {
+    "date": "2026-07-04",
+    "home_team": "Paraguay",
+    "away_team": "France",
+    "home_score": "0",
+    "away_score": "1"
+  },
+  {
     "date": "2026-07-03",
     "home_team": "Switzerland",
     "away_team": "Algeria",

@@ -1,19 +1,24 @@
-import Nav from "@/components/Nav";
+import StatusBar from "@/components/StatusBar";
 import Hero from "@/components/Hero";
 import SectionHeading from "@/components/SectionHeading";
 import FavoritesLeaderboard from "@/components/FavoritesLeaderboard";
 import ProbabilityChart from "@/components/ProbabilityChart";
 import UpcomingMatches from "@/components/UpcomingMatches";
-import ProofTracker from "@/components/ProofTracker";
 import CountryLookup from "@/components/CountryLookup";
-import ModelValidation from "@/components/ModelValidation";
-import MethodologySection from "@/components/MethodologySection";
-import StatsStrip from "@/components/StatsStrip";
 import ResultsTicker from "@/components/ResultsTicker";
-import TechStack from "@/components/TechStack";
+import ProofTracker from "@/components/ProofTracker";
+import ModelValidation from "@/components/ModelValidation";
+import LiveInferenceConsole from "@/components/LiveInferenceConsole";
+import ModelCard from "@/components/ModelCard";
+import ModelRegistryCard from "@/components/ModelRegistryCard";
+import TrainingPipelineTimeline from "@/components/TrainingPipelineTimeline";
+import DriftDashboard from "@/components/DriftDashboard";
+import CicdSection from "@/components/CicdSection";
 import Footer from "@/components/Footer";
 import {
   backtest,
+  drift,
+  modelRegistry,
   proofTracker,
   results,
   seriesByTeam,
@@ -26,98 +31,107 @@ export default function Home() {
   const favorites = summary.top_favorites;
   const perTeam = seriesByTeam();
   const chartTeams = favorites.map((f) => f.team).slice(0, 6);
-
-  const stats = [
-    { label: "Matches tracked live", value: String(summary.completed_results_count) },
-    { label: "Next matches predicted", value: String(summary.upcoming_matches_count) },
-    { label: "Tournament simulations a day", value: "10,000" },
-    { label: "Past World Cups tested", value: "2018 & 2022" },
-  ];
+  const teamNames = teams.map((t) => t.team);
 
   return (
     <main className="relative">
-      <Nav />
+      <StatusBar />
       <Hero topFavorite={favorites[0]} latestDate={summary.latest_predictions_date} />
 
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-20">
-        <StatsStrip stats={stats} />
-      </section>
+      {/* ---------- The predictions ---------- */}
 
-      <section id="leaderboard" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section id="leaderboard" className="relative z-10 mx-auto max-w-6xl px-6 py-14">
         <SectionHeading
-          eyebrow="Live Tracker"
-          title="Who Takes The Trophy?"
-          subtitle="Every remaining team's chance of winning it all, refreshed daily. Right now these numbers come from the global market; our own simulator's numbers join this board once the knockout bracket is locked in -- see the note below."
+          eyebrow="Today's odds"
+          title="Who takes the trophy?"
+          subtitle="Every remaining team's chance of winning it all, refreshed each morning."
         />
         <FavoritesLeaderboard favorites={favorites} />
       </section>
 
-      <section id="country" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section className="relative z-10 mx-auto max-w-6xl px-6 py-14">
         <SectionHeading
-          eyebrow="Find Your Team"
-          title="Check Your Country"
-          subtitle="Every one of the 48 teams: still alive or eliminated, and how their odds have moved."
-        />
-        <CountryLookup teams={teams} />
-      </section>
-
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
-        <SectionHeading
-          eyebrow="Day By Day"
-          title="The Race, Charted"
-          subtitle="One point per team, per day. Watch the favorites rise and fall as real results land -- and see who the data backed once the champion is crowned."
+          eyebrow="Day by day"
+          title="The race, charted"
+          subtitle="One point per team, per day — watch the favorites rise and fall as real results land."
         />
         <ProbabilityChart seriesByTeam={perTeam} teams={chartTeams} />
       </section>
 
-      <section id="fixtures" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section id="fixtures" className="relative z-10 mx-auto max-w-6xl px-6 py-14">
         <SectionHeading
-          eyebrow="Up Next"
-          title="Our AI vs The World"
-          subtitle="For every upcoming match: our prediction, right next to what the rest of the world expects."
+          eyebrow="Up next"
+          title="My model vs the market"
+          subtitle="For every upcoming match: my prediction next to the bookmakers'."
         />
         <UpcomingMatches matches={upcomingMatches} />
       </section>
 
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
-        <SectionHeading
-          eyebrow="Just Finished"
-          title="Latest Results"
-          subtitle="Every final score below feeds straight into tomorrow's ratings."
-        />
+      <section id="country" className="relative z-10 mx-auto max-w-6xl px-6 py-14">
+        <SectionHeading eyebrow="Find your team" title="Check your country" />
+        <CountryLookup teams={teams} />
+      </section>
+
+      <section className="relative z-10 mx-auto max-w-6xl px-6 py-10">
         <ResultsTicker results={results} />
       </section>
 
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      {/* ---------- The proof ---------- */}
+
+      <div className="relative z-10 mx-auto max-w-6xl border-t border-border px-6 pt-16 pb-2">
+        <p className="max-w-xl text-[15px] leading-relaxed text-text-secondary">
+          Everything above comes from a system I built and operate end to end — ingestion,
+          training, simulation, deployment, monitoring. Here&apos;s the proof it works.
+        </p>
+      </div>
+
+      <section id="performance" className="relative z-10 mx-auto max-w-6xl px-6 py-14">
         <SectionHeading
-          eyebrow="Live Track Record"
-          title="Our AI vs Reality"
-          subtitle="Every pre-kickoff prediction is logged before the match starts. Once it finishes, we grade it here -- no cherry-picking, no hindsight."
+          eyebrow="Track record"
+          title="Graded against reality"
+          subtitle="I log every prediction before kickoff and grade it once the match ends — no cherry-picking, no hindsight."
         />
         <ProofTracker data={proofTracker} />
       </section>
 
-      <section id="backtest" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section id="backtest" className="relative z-10 mx-auto max-w-6xl px-6 py-14">
         <SectionHeading
           eyebrow="Backtested"
-          title="Tested On Real History"
-          subtitle="Before trusting it with 2026, we replayed the 2018 and 2022 World Cups from the group stage onward. The eventual champion's predicted chances climbed round after round in both -- and beat a simple world-ranking guess on average."
+          title="Tested on 2018 and 2022 first"
+          subtitle="Before touching live data, I replayed two whole World Cups. The eventual champion's predicted chances climbed round after round in both."
         />
         <ModelValidation backtest={backtest} />
       </section>
 
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
-        <SectionHeading eyebrow="Under the Hood" title="How It Works" />
-        <MethodologySection />
+      <section id="inference" className="relative z-10 mx-auto max-w-6xl px-6 py-14">
+        <SectionHeading
+          eyebrow="Live demo"
+          title="Call the model yourself"
+          subtitle="This hits the deployed API from your browser — the request ID and latency below are the actual round trip, not mocked."
+        />
+        <LiveInferenceConsole teams={teamNames} />
       </section>
 
-      <section id="stack" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section id="how-it-works" className="relative z-10 mx-auto max-w-6xl px-6 py-14">
+        <SectionHeading eyebrow="Method" title="How it works" />
+        <ModelCard />
+      </section>
+
+      <section id="engineering" className="relative z-10 mx-auto max-w-6xl px-6 py-14">
         <SectionHeading
-          eyebrow="Behind The Scenes"
-          title="What Powers This Site"
-          subtitle="Every tool used to build what you're looking at -- from the models to the pixels."
+          eyebrow="Engineering"
+          title="Under the hood"
+          subtitle="The model retrains and re-registers in MLflow daily, an Airflow DAG runs the pipeline, and Evidently watches for feature drift."
         />
-        <TechStack />
+        <div className="space-y-6">
+          <ModelRegistryCard registry={modelRegistry} />
+          <TrainingPipelineTimeline
+            lastDataRefresh={summary.generated_at}
+            lastDriftCheck={drift.latest?.generated_at ?? null}
+          />
+          <DriftDashboard drift={drift} />
+          <CicdSection />
+        </div>
       </section>
 
       <Footer />

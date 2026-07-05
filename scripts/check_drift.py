@@ -8,6 +8,7 @@ and data/monitoring/drift_report.html (full Evidently report).
 Run: python scripts/check_drift.py
 """
 
+import csv
 import json
 import sys
 from datetime import date, datetime, timezone
@@ -25,8 +26,30 @@ from src.ingestion import live_results_store  # noqa: E402
 from src.monitoring.drift_report import feature_frame, run_drift_report, summarize  # noqa: E402
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "data" / "monitoring"
+HISTORY_PATH = OUT_DIR / "drift_history.csv"
 REFERENCE_START = date(2016, 1, 1)
 TOURNAMENT_START = date(2026, 1, 1)
+
+
+def append_history(generated_at: str, reference_rows: int, current_rows: int, summary: dict) -> None:
+    """Appends one row per run to data/monitoring/drift_history.csv --
+    drift_report.json only ever holds the latest snapshot, so this is the
+    real (thin at first, growing daily) trend source for the dashboard's
+    drift-over-time chart."""
+    columns = sorted(summary["columns"])
+    write_header = not HISTORY_PATH.exists()
+    HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(HISTORY_PATH, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        if write_header:
+            header = ["generated_at", "reference_rows", "current_rows", "dataset_drift", "share_of_drifted_columns"]
+            for col in columns:
+                header += [f"{col}_drift_score", f"{col}_drift_detected"]
+            writer.writerow(header)
+        row = [generated_at, reference_rows, current_rows, summary["dataset_drift"], summary["share_of_drifted_columns"]]
+        for col in columns:
+            row += [summary["columns"][col]["drift_score"], summary["columns"][col]["drift_detected"]]
+        writer.writerow(row)
 
 
 def main():
@@ -60,6 +83,7 @@ def main():
         )
     )
     report.save_html(str(OUT_DIR / "drift_report.html"))
+    append_history(today.isoformat(), len(reference), len(current), summary)
 
     print(
         f"Reference: {len(reference)} rows ({REFERENCE_START}->{TOURNAMENT_START}); "

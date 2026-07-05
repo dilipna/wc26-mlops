@@ -166,3 +166,45 @@ date,team,win_probability,model_version
 2026-07-04,Argentina,0.3283,heuristic_l2_montecarlo_v1
 2026-07-04,Belgium,0.0462,heuristic_l2_montecarlo_v1
 2026-07-04,Spain,0.1213,heuristic_l2_montecarlo_v1
+2026-07-05,France,0.3335948132008106,bookmaker_outright_baseline_v1
+2026-07-05,Argentina,0.15507594705696884,bookmaker_outright_baseline_v1
+2026-07-05,Spain,0.13026725318553625,bookmaker_outright_baseline_v1
+2026-07-05,England,0.07873086542892264,bookmaker_outright_baseline_v1
+2026-07-05,Brazil,0.06675008155930397,bookmaker_outright_baseline_v1
+2026-07-05,Portugal,0.06325988121633383,bookmaker_outright_baseline_v1
+2026-07-05,Colombia,0.031948756985649765,bookmaker_outright_baseline_v1
+2026-07-05,Mexico,0.02925111332699384,bookmaker_outright_baseline_v1
+2026-07-05,Morocco,0.031708975942020406,bookmaker_outright_baseline_v1
+2026-07-05,United States,0.025940097376631537,bookmaker_outright_baseline_v1
+2026-07-05,Norway,0.021988262160711897,bookmaker_outright_baseline_v1
+2026-07-05,Belgium,0.017210822422956424,bookmaker_outright_baseline_v1
+2026-07-05,Switzerland,0.01109180459741668,bookmaker_outright_baseline_v1
+2026-07-05,Egypt,0.003181325539743307,bookmaker_outright_baseline_v1
+2026-07-05,Mexico,0.0276,stacked_l2_montecarlo_v1
+2026-07-05,France,0.1848,stacked_l2_montecarlo_v1
+2026-07-05,Switzerland,0.0206,stacked_l2_montecarlo_v1
+2026-07-05,Argentina,0.2506,stacked_l2_montecarlo_v1
+2026-07-05,United States,0.0031,stacked_l2_montecarlo_v1
+2026-07-05,Belgium,0.0387,stacked_l2_montecarlo_v1
+2026-07-05,Spain,0.1714,stacked_l2_montecarlo_v1
+2026-07-05,Norway,0.0108,stacked_l2_montecarlo_v1
+2026-07-05,Brazil,0.094,stacked_l2_montecarlo_v1
+2026-07-05,Egypt,0.0027,stacked_l2_montecarlo_v1
+2026-07-05,England,0.0459,stacked_l2_montecarlo_v1
+2026-07-05,Colombia,0.0536,stacked_l2_montecarlo_v1
+2026-07-05,Morocco,0.052,stacked_l2_montecarlo_v1
+2026-07-05,Portugal,0.0442,stacked_l2_montecarlo_v1
+2026-07-05,Mexico,0.0023,heuristic_l2_montecarlo_v1
+2026-07-05,France,0.2631,heuristic_l2_montecarlo_v1
+2026-07-05,Switzerland,0.0015,heuristic_l2_montecarlo_v1
+2026-07-05,Argentina,0.3399,heuristic_l2_montecarlo_v1
+2026-07-05,United States,0.0021,heuristic_l2_montecarlo_v1
+2026-07-05,Belgium,0.0446,heuristic_l2_montecarlo_v1
+2026-07-05,Spain,0.1177,heuristic_l2_montecarlo_v1
+2026-07-05,Norway,0.0,heuristic_l2_montecarlo_v1
+2026-07-05,Brazil,0.0633,heuristic_l2_montecarlo_v1
+2026-07-05,Egypt,0.0,heuristic_l2_montecarlo_v1
+2026-07-05,England,0.109,heuristic_l2_montecarlo_v1
+2026-07-05,Colombia,0.0251,heuristic_l2_montecarlo_v1
+2026-07-05,Morocco,0.0115,heuristic_l2_montecarlo_v1
+2026-07-05,Portugal,0.0199,heuristic_l2_montecarlo_v1

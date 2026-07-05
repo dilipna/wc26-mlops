@@ -21,7 +21,7 @@ function Sparkline({ rows }: { rows: PredictionRow[] }) {
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="h-11 w-full" preserveAspectRatio="none">
-      <polyline points={points} fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={points} fill="none" stroke="var(--series-1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -60,12 +60,12 @@ export default function CountryLookup({ teams }: { teams: TeamStatus[] }) {
           <div className="flex items-center gap-4">
             <Flag team={team.team} className="text-4xl" />
             <div>
-              <div className="font-display text-2xl font-bold text-foreground">{team.team}</div>
+              <div className="text-2xl font-bold text-foreground">{team.team}</div>
               <span
                 className="font-mono mt-1 inline-block rounded-full px-2.5 py-0.5 text-[11px] uppercase tracking-wide"
                 style={{
-                  color: team.status === "alive" ? "var(--accent)" : "rgba(242,237,224,0.5)",
-                  border: `1px solid ${team.status === "alive" ? "var(--accent)" : "rgba(242,237,224,0.25)"}`,
+                  color: team.status === "alive" ? "var(--series-1)" : "rgba(242,237,224,0.5)",
+                  border: `1px solid ${team.status === "alive" ? "var(--series-1)" : "rgba(242,237,224,0.25)"}`,
                 }}
               >
                 {team.status === "alive" ? "Still Alive" : "Eliminated"}

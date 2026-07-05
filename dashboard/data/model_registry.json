@@ -1,0 +1,29 @@
+{
+  "registered_model_name": "wc26-layer1-stacked-ensemble",
+  "feature_names": [
+    "elo_diff",
+    "form_goals_for_diff",
+    "form_goals_against_diff",
+    "form_win_rate_diff",
+    "rank_points_diff",
+    "neutral"
+  ],
+  "mlflow_reachable": true,
+  "version": "2",
+  "run_id": "db693953f3434180a81d35ebde1bac36",
+  "trained_at": "2026-07-05T02:02:49.670000+00:00",
+  "params": {
+    "train_start": "1992-01-01",
+    "train_end": "2026-07-05",
+    "n_training_rows": "62782",
+    "cv_folds": "5"
+  },
+  "metrics": {
+    "train_set_insample_log_loss": 0.9075825527807982
+  },
+  "member_influence": {
+    "xgboost": 0.6535069536492558,
+    "elo_logreg": 0.26947272299745956,
+    "fifa_heuristic": 0.07702032335328457
+  }
+}

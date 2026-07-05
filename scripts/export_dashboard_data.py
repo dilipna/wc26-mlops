@@ -18,6 +18,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from src.ingestion import live_results_store  # noqa: E402
+from src.models.layer1_ensemble import tracking  # noqa: E402
+from src.models.layer1_ensemble.features import FEATURE_NAMES  # noqa: E402
 from src.models.layer2_simulation import live_bracket  # noqa: E402
 
 DATA_DIR = ROOT / "data"
@@ -130,6 +132,48 @@ def export_teams(predictions_rows):
     return teams
 
 
+def export_model_registry():
+    """Model versioning card (PROJECT_BRAIN.md #8 Step 2): the real MLflow
+    registry version/run/training params if MLflow is reachable at export
+    time; an honest "unreachable" shape otherwise -- never fabricates a
+    version number or training date."""
+    info = tracking.get_registry_info()
+    ensemble_weights = info["ensemble_weights"] if info else {}
+    registry = {
+        "registered_model_name": tracking.REGISTERED_MODEL_NAME,
+        "feature_names": FEATURE_NAMES,
+        "mlflow_reachable": info is not None,
+        "version": info["version"] if info else None,
+        "run_id": info["run_id"] if info else None,
+        "trained_at": info["created_at"] if info else None,
+        "params": info["params"] if info else {},
+        "metrics": info["metrics"] if info else {},
+        "member_influence": tracking.relative_member_influence(ensemble_weights),
+    }
+    (OUT_DIR / "model_registry.json").write_text(json.dumps(registry, indent=2))
+    return registry
+
+
+def export_drift():
+    """Real Evidently drift-check output (data/monitoring/) -- the latest
+    snapshot plus the accumulated history CSV as a genuine (currently
+    thin, growing daily) trend series. Missing files (drift check never
+    run yet) degrade to an honest empty shape, not fabricated numbers."""
+    monitoring_dir = DATA_DIR / "monitoring"
+    latest_path = monitoring_dir / "drift_report.json"
+    history_path = monitoring_dir / "drift_history.csv"
+
+    latest = json.loads(latest_path.read_text()) if latest_path.exists() else None
+    history = []
+    if history_path.exists():
+        with open(history_path, encoding="utf-8") as f:
+            history = list(csv.DictReader(f))
+
+    drift = {"latest": latest, "history": history}
+    (OUT_DIR / "drift.json").write_text(json.dumps(drift, indent=2))
+    return drift
+
+
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     predictions_rows = export_predictions_timeseries()
@@ -138,6 +182,8 @@ def main():
     upcoming_matches = export_upcoming_matches()
     summary = export_summary(predictions_rows, results_rows, upcoming_matches)
     teams = export_teams(predictions_rows)
+    registry = export_model_registry()
+    drift = export_drift()
     print(f"Exported dashboard data to {OUT_DIR}")
     print(f"  {len(predictions_rows)} prediction rows, {len(results_rows)} results, "
           f"{len(upcoming_matches)} upcoming matches")
@@ -145,6 +191,9 @@ def main():
           f"{[(f['team'], round(f['win_probability'], 3)) for f in summary['top_favorites']]}")
     n_alive = sum(1 for t in teams if t["status"] == "alive")
     print(f"  {len(teams)} teams tracked ({n_alive} alive, {len(teams) - n_alive} eliminated)")
+    print(f"  Model registry: version={registry['version']} (mlflow_reachable={registry['mlflow_reachable']})")
+    print(f"  Drift: {len(drift['history'])} history row(s), "
+          f"latest generated_at={drift['latest']['generated_at'] if drift['latest'] else None}")
 
 
 if __name__ == "__main__":
