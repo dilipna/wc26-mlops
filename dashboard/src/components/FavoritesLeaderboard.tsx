@@ -27,7 +27,7 @@ export default function FavoritesLeaderboard({ favorites }: { favorites: Predict
             {teamCode(row.team)}
           </div>
           <div className="min-w-0">
-            <div className="mb-2 truncate text-xl font-bold text-foreground">
+            <div className="font-display mb-2 truncate text-xl font-bold text-foreground">
               {row.team}
             </div>
             <div className="h-[5px] overflow-hidden rounded-full bg-foreground/10">
@@ -37,13 +37,13 @@ export default function FavoritesLeaderboard({ favorites }: { favorites: Predict
                 viewport={{ once: true }}
                 transition={{ duration: 1.1, delay: i * 0.09, ease: [0.16, 1, 0.3, 1] }}
                 className="h-full rounded-full"
-                style={{ background: i === 0 ? "var(--series-1)" : "var(--foreground)" }}
+                style={{ background: i === 0 ? "var(--accent)" : "var(--foreground)" }}
               />
             </div>
           </div>
           <AnimatedCounter
             value={row.win_probability * 100}
-            className={`font-mono text-2xl font-semibold shrink-0 ${i === 0 ? "text-series-1" : "text-foreground"}`}
+            className={`font-mono text-2xl font-semibold shrink-0 ${i === 0 ? "text-accent" : "text-foreground"}`}
           />
         </motion.div>
       ))}

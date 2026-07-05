@@ -19,6 +19,14 @@ working rule, not optional housekeeping.
 
 ## 1. Mission
 
+**2026-07-05 update: mission expanded, not replaced.** Dilip pivoted this from
+"WC26-MLOps, a football project" to **a general-purpose Sports AI Prediction Platform,
+provisionally named "SpOps,"** with football/WC26 as the first sport plugin, not the
+platform's identity. This is a deliberate, explicitly risk-accepted decision made 14 days
+before the July 19 hard stop — see §11 for the full pivot record, phase plan, and Phase 1
+status. Read §11 before continuing any work here; it supersedes nothing below, it adds a
+sport-agnostic core layer beneath it.
+
 This project exists for one reason: **to show employers, in an interview setting, that
 Dilip can build and operate real MLOps systems.** It is not primarily a football
 prediction product — the World Cup angle is the vehicle, not the point. Every decision
@@ -96,6 +104,19 @@ Legend: ✅ done and verified · 🚧 built but incomplete/unverified/needs work
 - ✅ Timestamped predictions store (CSV + Supabase Postgres)
 - ✅ Dashboard live and public: https://fifa2026mlops.vercel.app — **redesigned 2026-07-05**
   into an ops-console-style ML platform UI (see §6/§7/§8 for the new IA)
+- ⚠️ **2026-07-05, later session — built then reverted, read §11 Phase 7/8 before
+  trusting anything below this line about the public dashboard's look.** A Football/
+  Cricket/Other Sports sport switcher, a public `#eval` explainability table, and
+  `/cricket`/`/other-sports` placeholders were built, then **reverted the same session**
+  after discovering production had never actually updated past commit `3e704ae` (see §7's
+  new fragility entry) — Dilip chose to match what's actually live rather than deploy a
+  redesign nobody had seen go live. **Current public design = `3e704ae`'s original
+  editorial look** (globe hero, Favorites/Country/Fixtures/Proof/Stack nav), **plus** a
+  real, clearly-labeled **Admin Dashboard** button added to that original `Nav.tsx`,
+  linking to the still-real `/admin` route (Phase 4, §11). A real data bug (duplicate rows
+  in `predictions_timeseries.json`, causing doubled leaderboard entries) was found and
+  patched at the data-file level in the same pass — see §11 Phase 8 for the backend root
+  cause that still needs a real fix.
 - ✅ Trivial baseline logged alongside the model on every run (heuristic member + bookmaker odds)
 - 🚧 Calibration/reliability diagram — per-run buckets exist (Proof Tracker); the *final*
   full-season version is due after July 19, not before
@@ -272,6 +293,29 @@ time you read this; check §3/§8 status first):
 A full read-only audit (3 parallel investigations: reproducibility/fragility, component
 verification against claimed status, dashboard UI honesty) found the following. Each
 maps to a backlog item in §8.
+
+**NEW, unresolved, top priority (found 2026-07-05, see §11 Phase 8 for full discovery):**
+- **Production has not deployed a dashboard change since commit `3e704ae`, despite later
+  commits — including `028bc2e`, a full redesign — being pushed to `origin/main` and in
+  sync (`git rev-list --left-right --count origin/main...HEAD` → `0 0`).** The
+  2026-07-04 "Vercel Root Directory" auto-deploy bug (`9eed947`) was fixed *before*
+  `028bc2e` was pushed, so that's not the explanation. This means every dashboard
+  redesign this file has described as "live" since `3e704ae` — the ops-console redesign,
+  the recruiter-lens trim, the SpOps pivot — **was never actually visible at
+  `fifa2026mlops.vercel.app`.** Not yet root-caused. **Before trusting any future push to
+  actually update the production URL: check Vercel's project dashboard directly (build
+  logs, deployment list, which commit each deployment maps to, whether `028bc2e`'s build
+  even succeeded) rather than assuming `git push` alone is sufficient verification.**
+- **Predictions-timeseries duplicate rows.** `dashboard/data/predictions_timeseries.json`
+  had systemic duplicate `(date, team, model_version)` rows (251 rows, only 135 unique —
+  every team's most recent 2-3 days duplicated). Caused a real user-visible bug (Argentina/
+  France doubled on the leaderboard). Almost certainly `daily_update.py` (or whatever
+  appends to `data/predictions/predictions_log.csv`) ran more than once for the same day
+  with no dedup guard on append. **Patched at the exported-JSON level only** (2026-07-05,
+  Phase 8) as a stop-gap for the current deploy; **the real fix — a dedup guard in the
+  backend append/export path — is still needed** and wasn't done (out of scope for a
+  frontend-only session). Will recur next time `export_dashboard_data.py` runs against the
+  still-duplicated `predictions_log.csv`/Supabase rows.
 
 **Hard blocker — FIXED 2026-07-05:**
 - `scripts/daily_update.py` had zero error handling around the Odds API (`_api_key()`
@@ -614,7 +658,336 @@ serving API).
 
 ---
 
-## 11. Session log
+## 11. Multi-sport platform pivot — "SpOps" (2026-07-05)
+
+**Decision, made explicitly with full risk accepted:** pivot from a football-only system
+to a general-purpose Sports AI Prediction Platform, football/WC26 as the first sport
+plugin. Confirmed with Dilip: proceed now, 14 days before the July 19 hard stop, accepting
+the live site may regress or stall before then. Provisional name: **SpOps** (Dilip's own
+choice, overriding the 3 proposed options — ArenaIQ/MatchCast/WinProbe). Applied as
+on-site/product copy only for now (page titles, hero copy, footer) — **not** a GitHub
+repo rename, Vercel/Render project rename, or URL change. Renaming live infra is a
+separate, explicit, high-blast-radius decision (breaks `fifa2026mlops.vercel.app` and
+every GitHub link the CI/CD dashboard section points to) — don't do it silently if asked
+to "rebrand everything."
+
+**Phase order agreed (the brief's literal order, not the risk-reduced alternative that was
+offered and declined):**
+1. Core architecture (sport-agnostic interfaces + refactor football behind them)
+2. Football implementation (already ~90% built — this phase is a verification pass, not a
+   fresh build)
+3. Public website
+4. Admin dashboard (read-only)
+5. Orchestration & monitoring
+6. Post-tournament longevity
+
+### Phase 1 — DONE 2026-07-05
+
+**The sport-specific boundary, and why it's drawn here:** almost all existing engineering
+(Elo math, the stacked ensemble, MLflow tracking, FastAPI middleware, drift plumbing, most
+dashboard components) was already sport-agnostic by construction — it operates on plain
+team-name strings and match records, never on anything football-specific. What's actually
+football-specific is a small set of literal constants: the `"FIFA World Cup"` tournament
+name, the Odds API sport keys, the R16/QF/SF bracket draw, and the 3-outcome
+(win/draw/loss) label set. Phase 1 scope follows that finding exactly — it does **not**
+physically move `src/ingestion`/`src/features`/`src/models` into a `src/sports/football/`
+tree, and does **not** try to further abstract the single-elimination-bracket or
+3-class-outcome assumptions. Both only matter once a second sport exists, which is
+explicitly deferred past July 19 (see phase order above) — abstracting them now would be
+speculative rework against a requirement that doesn't exist yet, and it's the highest
+regression-risk part of the tree (bracket tests, serving tests, the 34 passing tests
+overall).
+
+**What was built:**
+- `src/core/sport.py` — the `Sport` interface: a `SportConfig` dataclass
+  (`sport_id`, `display_name`, `tournament_name`, `outcome_labels`,
+  `odds_api_match_sport_key`/`odds_api_outright_sport_key`, `checkpoint_labels`) plus a
+  `Sport` `Protocol` and a `register()`/`get_sport()`/`list_sports()` registry. Deliberately
+  a `Protocol`, not an ABC — nothing else in this codebase uses class-based interfaces (the
+  existing convention is `Callable`-alias duck typing, e.g. `AdvanceProbFn` in
+  `live_bracket.py`); a structural Protocol matches that spirit without forcing inheritance.
+- `src/sports/football/__init__.py` — `FootballSport`, the first (only) plugin: carries the
+  `FOOTBALL` `SportConfig` and delegates `build_bracket`/`build_live_tree` to the existing
+  `bracket.py`/`live_bracket.py` (no rewrite of those). Registers itself on import.
+- `src/ingestion/odds_api.py`'s `MATCH_ODDS_SPORT_KEY`/`OUTRIGHT_SPORT_KEY` now read from
+  `FOOTBALL` instead of being separately hardcoded — safe with no import-cycle risk (this
+  module isn't imported by anything `src.sports.football` depends on).
+- `src/features/data_loading.world_cup_matches` and
+  `src/ingestion/live_results_store.load_live_matches` gained an optional
+  `tournament_name: str = "FIFA World Cup"` parameter (default preserves today's exact
+  behavior). **Deliberately not wired to `get_sport("football").config` at the call site**:
+  both modules are imported by `src.models.layer2_simulation.{bracket,live_bracket}`, which
+  `src.sports.football` itself imports — importing the plugin back into these modules would
+  cycle. The parameter is the seam a second sport threads through later; not built further
+  until one exists.
+- Verified: all 34 existing tests still pass, unchanged. Direct sanity check confirmed
+  `list_sports() == ["football"]`, `FOOTBALL.odds_api_match_sport_key` flows correctly into
+  `odds_api.MATCH_ODDS_SPORT_KEY`, and `src.serving.app` still imports cleanly (no cycle).
+
+**Explicitly not done in Phase 1 (by design, not oversight):**
+- No physical file move of `src/ingestion`/`src/features`/`src/models` into
+  `src/sports/football/`.
+- No generalization of the 3-class outcome shape or the single-elimination bracket
+  assumption — both are real, sport-specific couplings (see the backend architecture audit
+  in this session's exploration), left alone until a second sport is actually being built.
+- No infra/branding rename (see above).
+
+### Phase 2 — DONE 2026-07-05 (verification pass, no new building)
+
+Confirmed zero behavior change from Phase 1's refactor: `world_cup_matches` still returns
+64/64 matches for 2018/2022 (matches this file's own documented backtest numbers), live
+match tournament tagging is unchanged, and all 34 pre-existing tests still passed. No
+football logic itself was touched in Phase 1, so this was a confirmation, not new work.
+
+### Phase 3 — DONE 2026-07-05 (public site)
+
+- **Branding**: "SpOps" applied as on-site copy only (page `<title>`, layout metadata,
+  a small `SpOps/football` brand mark in `StatusBar.tsx` linking to `/admin`, footer credit)
+  — the Hero headline ("Who wins the 2026 World Cup?") is **unchanged**, per Dilip's own
+  recent explicit direction to keep the public site football-first and human, not
+  platform-branding-first. GitHub repo/Vercel/Render identifiers are **unchanged** (separate
+  high-blast-radius decision, not folded in here).
+- **Sport boundary applied to the frontend too**: `dashboard/src/lib/flags.ts` and
+  `teamCode.ts` (hardcoded country-flag/3-letter-code lookup tables) deleted and moved
+  wholesale to `dashboard/src/sports/football/identity.ts`, mirroring the backend's
+  `src/sports/football` pattern — `Flag.tsx` and every `teamCode()` call site now import
+  from there instead of a `lib/` file that implied it was sport-agnostic when it wasn't.
+- **New `dashboard/src/lib/site.ts`**: centralizes `PRODUCT_NAME`, `REPO`, `GITHUB_URL`,
+  `ACTIVE_SPORT` — replaces five separate hardcoded `const REPO = "dilipna/wc26-mlops"`
+  copies (`StatusBar.tsx`, `Footer.tsx`, `CicdSection.tsx`, `ModelCard.tsx`,
+  `TrainingPipelineTimeline.tsx`) found during the Phase 1 exploration.
+- Verified: `npm run lint` and `npm run build` both clean after every change.
+
+### Phase 4 — DONE 2026-07-05 (admin dashboard — the big new deliverable)
+
+New read-only `/admin` route (`dashboard/src/app/admin/`), linked from the public site's
+brand mark and footer. All 8 sections from the brief exist; where real backing data
+doesn't exist yet, the section says so explicitly instead of fabricating numbers
+(non-negotiable #1 in the brief):
+
+1. **System** — live client-side ping of the serving API (reusing `StatusBar`'s pattern),
+   plus real `mlflow_reachable`/`supabase_reachable` checks captured at export time.
+   New: `tracking.is_reachable()`, `supabase_store.is_reachable()` (a real
+   `select ... limit 1` query, not just "can a client object be constructed").
+2. **MLOps** — reuses the existing `TrainingPipelineTimeline` (the real Airflow DAG task
+   graph), now showing all three parallel monitoring branches (drift + data quality).
+3. **Models** — reuses `ModelRegistryCard` (real MLflow registry data) plus an honest note
+   that precision/recall/F1/ROC-AUC aren't the natural metric for a 3-outcome probability
+   model — Brier/log-loss (already tracked) are shown instead of forcing in metrics that
+   don't fit the problem shape.
+4. **Training** — real MLflow run history (new: `tracking.list_recent_runs()`), **live**
+   XGBoost feature importance via a new `GET /feature-importance` serving-API endpoint
+   (new: `Layer1Ensemble.xgb_feature_importance()`, reading the actually-loaded model's
+   real `feature_importances_`, not a static export) — explicitly labeled not-SHAP. Also
+   states plainly that Optuna tuning still doesn't beat the defaults (already known, not
+   hidden behind a fake "tuned" badge).
+5. **Monitoring** — a live latency probe (real `X-Response-Time-Ms` samples, explicitly
+   not a persisted history). API traffic, CPU/memory, and container-level stats are
+   labeled **not yet implemented** (Render's free tier doesn't expose them; Prometheus/
+   Grafana is Tier 3) with a link to the real Docker healthchecks that do exist.
+6. **Data Quality** — new `src/monitoring/data_quality.py` / `scripts/check_data_quality.py`:
+   real missing-value/schema/duplicate-key checks over the combined historical+live match
+   data, plus a `historical_live_overlap` check tied directly to the real 2026-07-04
+   double-counting incident (74/90 live matches already in the historical CSV, confirmed
+   live) — this exists specifically so a regression of that dedup bug would show up here.
+   Drift (`DriftDashboard`, already built) is reused in the same section.
+7. **Predictions** — reuses `ProbabilityChart` and `ProofTracker`; adds a new `ReplayScrubber`
+   (see Phase 6 below).
+8. **Observability** — Grafana/Prometheus/structured logs/alerting: **not yet implemented**
+   (Tier 3), stated plainly, with real links to GitHub Actions run history and
+   `docker-compose.airflow.yml`'s actual healthchecks as the closest real signal today.
+
+All new backend functions have tests (`test_data_quality.py`, `test_ensemble.py`,
+`test_supabase_store.py`, plus additions to `test_tracking.py`/`test_serving.py`) — 49
+tests passing (up from 34). `npm run lint`/`npm run build` clean; the route was smoke-tested
+live (`npm run dev` + `curl localhost:3000/admin` → 200, real section content confirmed
+present, not just "build succeeded").
+
+**Caught and fixed before it became a real regression**: running the new export script in
+this session's sandbox (no local MLflow running) silently overwrote the committed
+`dashboard/data/model_registry.json` — which held a real registry snapshot from a session
+where MLflow *was* up — with an honest-but-empty "unreachable" shape. Reverted via
+`git checkout`. Lesson for next time: don't run `export_dashboard_data.py` and commit its
+output from an environment that doesn't have the same live infra the last real run did.
+
+### Phase 5 — DONE 2026-07-05 (orchestration), verified live same session
+
+`check_data_quality.py` added to `wc26_daily_pipeline` DAG as a third independent parallel
+branch off `daily_update` (alongside the existing `check_drift` branch) — same "never
+blocks tomorrow's predictions" philosophy. **Verified live**: brought up the full
+`docker-compose.airflow.yml` stack (`docker compose up -d --build`), all four
+healthchecked services (postgres/mlflow/serving/airflow-webserver) reached `healthy`,
+`airflow dags list-import-errors` showed none, `airflow tasks list wc26_daily_pipeline`
+showed all 5 tasks including the new one, and `airflow tasks test wc26_daily_pipeline
+check_data_quality` actually executed `scripts/check_data_quality.py` inside the container
+end to end (49,574 rows checked, schema valid, 76 duplicate keys pre-dedup, 74/90
+historical/live overlap — matching the local run exactly) and exited 0.
+
+### Phase 6 — DONE 2026-07-05 (post-tournament longevity, seeded not finished)
+
+Built `ReplayScrubber` (admin Predictions section): a real date-slider over
+`predictions_log.csv`'s logged history, showing the leaderboard as it stood on any given
+day so far. Deliberately **admin-only for now, not promoted to the public site**: the
+tournament doesn't end until July 19, so this can only replay "so far," not the complete
+story with a champion highlighted at the end that the brief's Phase 6 actually describes,
+and the public site was intentionally trimmed to stay minimal last session. Promote a
+polished version to the public site after July 19, once there's a finished tournament to
+replay properly.
+
+### Phase 7 — unplanned, 2026-07-05, later session (public nav generalization + Eval)
+
+Dilip asked, in a fresh session, for a "proper sports prediction site" with a Football/
+Cricket/Other Sports menu, a top-right Admin Dashboard button, and a public-facing "eval
+table" covering model explainability. Before writing anything, this session found the
+working tree already had **unwired, uncommitted Phase 1-6 scaffolding** matching most of
+this ask (the `SpOps` rebrand, `src/core/sport.py`/`src/sports/football/`, the full
+`/admin` route and its 8 sections) — confirmed via `AskUserQuestion` that Dilip wanted to
+build on that existing work rather than discard it, keep backend untouched (frontend-only
+task), and keep the SpOps branding. All three confirmed "recommended"/keep.
+
+**What was built:**
+- `dashboard/src/lib/site.ts`: new `SPORTS` config (`Football` live, `Cricket`/`Other
+  Sports` marked `coming-soon`) — single source for the nav switcher and both placeholder
+  pages' copy.
+- `dashboard/src/components/StatusBar.tsx`: rewritten nav — brand mark now links `/` (was
+  `/admin`, easy to miss as a link at all); sport-switcher tabs next to it
+  (`usePathname`-driven active state); the in-page anchor nav (Predictions/Fixtures/Track
+  record/Eval/How it works/Engineering) now only renders on the football home page (was
+  rendering, inertly, on every route); a bordered, explicitly-labeled **Admin Dashboard**
+  button added top-right, replacing the old "click the logo" discoverability problem named
+  in the §3 bullet above.
+- `dashboard/src/components/ComingSoon.tsx` (new) + `dashboard/src/app/cricket/page.tsx` +
+  `dashboard/src/app/other-sports/page.tsx` (new routes): frontend-only placeholders, same
+  visual system as the football home page, each linking back to the live football tracker.
+  No cricket/other-sport backend, model, or data was built or implied to exist — the copy
+  says "coming soon," not "here are cricket predictions."
+- `dashboard/src/components/EvalTable.tsx` (new), wired into `page.tsx`'s new `#eval`
+  section (added to the public nav, between Track record and How it works): two real
+  `<table>` elements, not cards/bars —
+  1. **Backtest & live evaluation**: one row per 2018/2022 backtest checkpoint
+     (post-group/R16/QF/SF, from `backtest.json`, already-existing data) plus a live-2026
+     row (from `proof_tracker.json`'s summary) — champion probability, Brier, log-loss,
+     model vs. baseline side by side, plus a computed Brier-lift badge per row.
+  2. **Explainability**: the same `member_influence` weights `ModelRegistryCard` already
+     showed (XGBoost/Elo-logreg/FIFA-heuristic, from the real fitted meta-learner — explicitly
+     labeled, again, as not SHAP) rendered as a table with a plain-language "role" column per
+     member, plus a feature-schema glossary (one line per `feature_names` entry explaining
+     what it captures) that didn't exist anywhere on the public site before.
+  All data plumbed into `EvalTable` was already exported and real (`backtest`, `proofTracker`,
+  `modelRegistry` from `lib/data.ts`) — no new export script or fabricated numbers.
+- No backend files touched this session (explicit scope constraint, confirmed with Dilip).
+
+**Verified live, with an actual browser this time:** `npm run build` clean (5 static
+routes: `/`, `/admin`, `/cricket`, `/other-sports`), `npm run dev` on `localhost:3000`, and
+—correcting every prior session's "no browser tool available" note (§12)— a scratch
+Playwright install (`npx playwright install chromium` into a throwaway `node_modules`
+outside the repo) drove a real headless Chromium against the dev server and screenshotted
+the home page nav, `/cricket`, `/admin`, and the new `#eval` section. Zero console errors.
+**Lesson for future sessions: a browser tool IS available in this environment** via a
+scratch Playwright install (takes ~1-2 min the first time to pull Chromium) — don't assume
+visual verification is impossible before trying this.
+
+**Explicitly not done:** no change to `#registry`/Engineering section (still has its own
+`ModelRegistryCard` with the same ensemble-weights bars — `EvalTable` duplicates that data
+in table form for a different reading mode, deliberately not a replacement); no attempt to
+reconcile §6's demo script, which still describes an older engineering-first section order
+that a later session (§12, "recruiter-lens trim") already reordered football-first — that
+staleness predates this session and wasn't in scope to fix here.
+
+**⚠️ Phase 7 as described above was built, then REVERTED in the same session — see Phase 8.**
+Read Phase 8 before assuming any of Phase 7's public-site changes (sport switcher, `/cricket`,
+`/other-sports`, `#eval`) are live in the working tree. They are not. Phase 7's text is kept
+verbatim above for history (and because `EvalTable.tsx`/`ComingSoon.tsx`/the `SPORTS` config
+still exist as dead/removed code in git history, easy to resurrect if ever wanted again).
+
+### Phase 8 — 2026-07-05, same session as Phase 7 (revert to match stuck production + real Admin button)
+
+**Critical discovery that changed the plan:** after building Phase 7, a Playwright
+screenshot of the actual live URL (`https://fifa2026mlops.vercel.app/`) showed **the original
+pre-ops-console design** (globe hero, "WHO WINS THE WORLD CUP?", olive accent, Favorites/
+Country/Fixtures/Proof/Stack nav) — not the ops-console/SpOps redesign this file's §3/§7/§8
+had been describing as shipped. Root cause, confirmed by bisecting `git log -- dashboard/`:
+**production has not picked up any dashboard change since commit `3e704ae`.** Commit
+`028bc2e` ("push") — the entire ops-console redesign — *was* committed and *is* on
+`origin/main` (`git rev-list --left-right --count origin/main...HEAD` → `0 0`, fully in
+sync), yet the live site still renders `3e704ae`'s design. The 2026-07-04 "Vercel Root
+Directory auto-deploy bug" (commit `9eed947`) was fixed *before* `028bc2e` was pushed, so
+that specific bug isn't the explanation — **why `028bc2e`'s auto-deploy didn't reach
+production is still unexplained and unresolved.** This means every dashboard redesign done
+across the "ops-console," "recruiter-lens trim," and "SpOps pivot" sessions (§7/§8/§11)
+has *never actually been live* — Dilip has been looking at (and, this session, asking to
+preserve) a build that's two redesigns older than what this file described as current.
+**This is the single most important open fragility item in the project right now** (see
+new §7 entry) — investigate Vercel's deployment/build log for `028bc2e` before trusting any
+future `git push` to actually update the production URL.
+
+Presented with this, Dilip's explicit instruction (confirmed via `AskUserQuestion`): revert
+the public-facing design to match the live URL exactly, keep only `/admin` (Phase 4) wired
+to a real nav button, and deploy that — not the ops-console/SpOps redesign, not Phase 7's
+sport switcher/Eval table.
+
+**What was done:**
+- Identified `3e704ae` as the exact last commit whose `dashboard/` state matches
+  production (`git log --oneline 84d61f0..3e704ae -- dashboard/` → only `e4fe751`, the
+  country-dropdown commit, touched it; nothing after does until `028bc2e`).
+- `git checkout 3e704ae -- <21 files>` restored `app/page.tsx`, `app/layout.tsx`,
+  `app/globals.css`, `Nav.tsx`, `Hero.tsx`, `TechStack.tsx`, `MethodologySection.tsx`,
+  `StatsStrip.tsx`, `AnimatedCounter.tsx`, `Flag.tsx`, `Footer.tsx`, `FavoritesLeaderboard.tsx`,
+  `ModelValidation.tsx`, `ProbabilityChart.tsx`, `ProofTracker.tsx`, `ResultsTicker.tsx`,
+  `SectionHeading.tsx`, `UpcomingMatches.tsx`, `CountryLookup.tsx`, `lib/flags.ts`,
+  `lib/teamCode.ts` — byte-identical to what's live today.
+- Deleted the now-orphaned ops-console/Phase-7-only files that nothing else references:
+  `StatusBar.tsx`, `ArchitectureDiagram.tsx`, `CicdSection.tsx`, `ModelCard.tsx`,
+  `LiveInferenceConsole.tsx`, `EvalTable.tsx`, `ComingSoon.tsx`, `app/cricket/`,
+  `app/other-sports/`. Removed the `SPORTS` export from `lib/site.ts` (kept the rest —
+  `PRODUCT_NAME`/`GITHUB_URL`/`REPO`/`ACTIVE_SPORT` — since `/admin` still uses them).
+  **Deliberately kept** `lib/data.ts` (the current superset, not the `3e704ae` version —
+  `/admin` needs its newer exports), `dashboard/src/sports/football/identity.ts` (still
+  used by admin's `ReplayScrubber`), and the whole `app/admin/`/`components/admin/` tree.
+- Added the actual ask — an **Admin Dashboard** button — to the restored `Nav.tsx`: a
+  bordered button next to the Favorites/Country/Fixtures/Proof/Stack links, `href="/admin"`.
+  This is the only intentional change to the pre-`028bc2e` design.
+- **Found and fixed a real, separate data bug while verifying the revert**: the leaderboard
+  showed Argentina and France twice each. Root cause: `dashboard/data/predictions_timeseries.json`
+  had systemic duplicate `(date, team, model_version)` rows — every team on 2026-07-04/05
+  duplicated 2x, 2026-07-03 duplicated 4x (251 rows, only 135 unique) — almost certainly
+  `daily_update.py` having been run more than once for the same day with no append-time
+  dedup guard. **Root cause is in the backend pipeline (out of this session's frontend-only
+  scope) and was *not* fixed there.** Stop-gap only: deduped `predictions_timeseries.json`
+  in place (251→135 rows) and regenerated `summary.json`'s `top_favorites` from the deduped
+  data. **This will recur the next time `export_dashboard_data.py` runs** unless someone
+  adds a real dedup step to `daily_update.py`'s append path or `export_summary()`/
+  `export_predictions_timeseries()` — flagged here so it isn't mistaken for fixed at the
+  source. Verified other exports (`results.json`, `upcoming_matches.json`, `teams.json`,
+  `proof_tracker.json`) do **not** have this issue — isolated to the predictions series.
+- Verified: `npm run build` clean (routes: `/`, `/admin` only — `/cricket`/`/other-sports`
+  correctly gone), Playwright screenshots of `/` and `/admin` with zero console errors
+  (the duplicate-key React warning from the data bug above is gone after the dedup fix).
+- **Scope discipline**: only `dashboard/` and this file were staged/committed. All the
+  pre-existing uncommitted backend changes (`src/`, `scripts/`, `tests/`, root `data/`) —
+  present in the working tree before this session even started — were left exactly as
+  found, not bundled into this push.
+
+---
+
+**Where this stands after this session:** the public site is now byte-identical in design
+to what's actually live (matching `3e704ae`), plus one real addition (the Admin Dashboard
+nav button) and one real fix (the predictions-timeseries dedup). Phases 1, 2, 4, 5, 6 (the
+backend `Sport` interface, verification pass, `/admin` itself, the DAG branch, and
+`ReplayScrubber`) are **still real and still exist in the working tree** — only the
+*public-facing* Phase 3/Phase 7 redesign work was reverted. Real gaps that remain, in
+priority order: (1) **the stuck-production-deploy mystery is unresolved** — push this
+session's commit and *actually check* (Vercel dashboard build log, not just `git push`
+succeeding) whether it reaches the live URL, since `028bc2e` demonstrably didn't; (2) the
+predictions-timeseries duplicate-row bug's real fix (append-time dedup) is still needed in
+the backend pipeline; (3) Render redeploy still pending (carried over, older issue); (4)
+nothing from Phases 1/2/5/6 (the backend sport-plugin core, data-quality monitoring, DAG
+branch) has been committed — only this session's dashboard revert was; (5) §6's demo
+script is stale against actual `page.tsx` history, unrelated to this session, still unfixed.
+
+---
+
+## 12. Session log
 
 **2026-07-04 (session: Evidently + audit + mission reset).**
 - Built Evidently drift monitoring (`src/monitoring/drift_report.py`,
@@ -745,3 +1118,88 @@ serving API).
   Dilip · code on GitHub".
 - Verified: lint + production build clean, dev server renders the new order, archive
   gone, hero/footer copy present. Render redeploy still pending (carried over).
+
+**2026-07-05 (session: multi-sport platform pivot, all 6 phases, fourth session today).**
+- Dilip issued a new brief asking to generalize this into a "Sports AI Prediction
+  Platform" (football as first sport, not the identity), with a rebrand, a new read-only
+  admin dashboard, and a 6-phase build. Flagged the conflict up front (14 days to July 19,
+  the site was just deliberately trimmed) via `AskUserQuestion`; Dilip chose to pivot now,
+  accepting the risk, and to follow the brief's literal phase order over the lower-risk
+  alternative offered. Chose the name **"SpOps"** himself (overriding the 3 proposed
+  options). Full detail of every phase is in §11 above (written as the authoritative
+  record, not duplicated here) — this entry is the chronological pointer.
+- Ran all 6 phases in one session. Summary of what actually shipped: a `Sport`
+  interface + `FootballSport` plugin (Phase 1); a verification pass, zero regressions
+  (Phase 2); SpOps branding applied as copy only + football identity lookups moved into
+  `src/sports/football`-equivalent frontend location + REPO constant centralized (Phase 3);
+  the new 8-section `/admin` dashboard, including two genuinely new backend capabilities
+  (a real data-quality check, and a live `/feature-importance` serving endpoint) rather
+  than a purely cosmetic new page (Phase 4); `check_data_quality.py` added to the Airflow
+  DAG (Phase 5, not live-verified); a `ReplayScrubber` seeding Phase 6, deliberately kept
+  admin-only until the tournament actually ends.
+- **Discipline point**: every section of the new admin dashboard that didn't have real
+  backing data (SHAP, Prometheus/Grafana, API traffic, CPU/memory, Redis) says so
+  explicitly instead of showing fabricated numbers — this was the brief's own non-negotiable
+  #1, and the single easiest place to have cut corners under time pressure.
+- **Real mistake caught mid-session**: running the new export script in this sandbox (no
+  local MLflow) silently overwrote `dashboard/data/model_registry.json`'s real committed
+  registry snapshot with an honest-but-empty one. Caught via `git diff` before it could
+  compound, reverted with `git checkout`. Worth remembering: this class of script has a
+  real side effect on committed files, not just on data/ scratch space.
+- Verified: 49/49 Python tests passing (up from 34), dashboard lint + build clean, `/admin`
+  smoke-tested via `npm run dev` + `curl` (200, real section content confirmed present).
+  **Not done**: a real visual eyeball of `/admin` in a browser (no browser tool available,
+  same limitation as every prior frontend session — recommend Dilip check this before
+  treating Phase 4 as fully signed off), and a live `docker compose up` re-verification of
+  the Phase 5 DAG change.
+
+**2026-07-05 (session: public nav generalization + Eval, then reverted + real Admin button
++ data fix, fifth session today — Phase 7 then Phase 8, both unplanned).** Full detail in
+§11 Phases 7/8; chronological pointer only, per this section's own convention. **Read to
+the end of this entry** — the first half (Phase 7) was reverted later in the same session.
+- Found the working tree already had unwired, uncommitted Phase 1-6 scaffolding (SpOps
+  rebrand, `src/core`/`src/sports/football`, the full `/admin` route) from an earlier
+  session. Confirmed via `AskUserQuestion` (all three answers: keep backend untouched,
+  build on the existing admin scaffold, keep the SpOps branding) before touching anything —
+  avoided a needless revert-and-rebuild of real prior work.
+- Added a Football/Cricket/Other Sports sport-switcher to `StatusBar.tsx` (`lib/site.ts`'s
+  new `SPORTS` config) and a clearly-labeled top-right **Admin Dashboard** button — `/admin`
+  was previously only reachable via a small, unlabeled brand-mark click. Added `/cricket`
+  and `/other-sports` placeholder routes (`ComingSoon.tsx`) — frontend-only, no fabricated
+  sport data.
+- Added a public `#eval` section (`EvalTable.tsx`): a real backtest+live evaluation table
+  (champion prob / Brier / log-loss / lift, model vs. baseline, one row per checkpoint) and
+  a real explainability table (ensemble member weights + role + a feature-schema glossary),
+  built entirely from data already exported (`backtest.json`, `proof_tracker.json`,
+  `model_registry.json`) — no new export script, no invented numbers.
+- **Process correction with future-session impact**: every prior frontend session's log
+  entry says "no browser tool available." That was never re-checked. This session installed
+  Playwright into a scratch directory outside the repo (`npx playwright install chromium`)
+  and actually drove headless Chromium against the dev server — real screenshots of the nav,
+  `/cricket`, `/admin`, and the new Eval section, zero console errors. **Future sessions
+  should do this too instead of assuming no browser is available** — it costs one `npx`
+  install (~1-2 min first time), not a missing capability.
+- Verified: `npm run build` clean (5 static routes), `npm run dev` on `localhost:3000` left
+  running for Dilip to check in his own browser, Playwright screenshots confirmed correct
+  rendering with no console errors.
+- **Not done (superseded below)**: nothing from Phases 1-7 had been committed at this point;
+  §6's demo script still describes a stale section order — still true, still unfixed.
+- **Then, same session: Dilip asked to make the site match the live production URL exactly
+  plus an admin button, "do not change anything."** Screenshotting the actual live URL (not
+  trusting a text summary) showed it was still the pre-ops-console design — meaning
+  everything Phase 7 (and the ops-console redesign, and the SpOps pivot) had built was
+  never live. Confirmed via `AskUserQuestion` that Dilip wanted a genuine revert (not just a
+  styling tweak), given what that implied. Bisected git history to find `3e704ae` as the
+  exact last commit matching production, restored those 21 files verbatim, deleted the
+  now-orphaned Phase-7/ops-console-only files, added a real Admin Dashboard button to the
+  restored `Nav.tsx`, and found + stop-gap-fixed a real duplicate-row bug in
+  `predictions_timeseries.json` (see §7's new fragility entries and §11 Phase 8 for full
+  detail on all of this). Committed and pushed only `dashboard/` + this file — left the
+  pre-existing, unrelated, still-uncommitted backend changes (`src/`, `scripts/`, `tests/`,
+  root `data/`) exactly as found.
+- **Most important finding of the whole session, unrelated to what was asked**: production
+  has been stuck on `3e704ae` since before this session started, despite later commits
+  (including a full redesign) being pushed and in sync with `origin/main`. This means the
+  last ~3 sessions' dashboard work was built, verified via lint/build/curl, marked "done" in
+  this file, and **never actually seen by anyone at the live URL.** Flagged prominently in
+  §7 as the top-priority open item — needs Dilip to check Vercel's dashboard directly.

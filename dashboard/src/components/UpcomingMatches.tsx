@@ -98,19 +98,19 @@ export default function UpcomingMatches({ matches }: { matches: UpcomingMatch[] 
             </div>
 
             <div className="flex items-baseline justify-between mb-[18px]">
-              <span className="text-[19px] font-bold text-foreground">{m.home_team}</span>
+              <span className="font-display text-[19px] font-bold text-foreground">{m.home_team}</span>
               <span className="font-mono text-[11px] text-foreground/35">VS</span>
-              <span className="text-[19px] font-bold text-foreground">{m.away_team}</span>
+              <span className="font-display text-[19px] font-bold text-foreground">{m.away_team}</span>
             </div>
 
             <div className="space-y-2.5">
               <ProbabilityBar
                 label="MODEL"
-                labelColor="var(--series-1)"
+                labelColor="var(--accent)"
                 homePct={m.model.home_win}
                 awayPct={m.model.away_win}
                 drawPct={m.model.draw}
-                fillColor="var(--series-1)"
+                fillColor="var(--accent)"
                 delay={0.1}
               />
               <ProbabilityBar

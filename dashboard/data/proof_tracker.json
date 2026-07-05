@@ -1,13 +1,89 @@
 {
-  "generated_at": "2026-07-04T15:41:25.820583+00:00",
-  "graded_matches": [],
+  "generated_at": "2026-07-05T17:34:06.695333+00:00",
+  "graded_matches": [
+    {
+      "home_team": "Paraguay",
+      "away_team": "France",
+      "commence_time": "2026-07-04T21:00:00+00:00",
+      "logged_at": "2026-07-04T02:20:54.926214+00:00",
+      "home_score": 0,
+      "away_score": 1,
+      "actual_outcome": "away_win",
+      "model": {
+        "home_win": 0.0961217090716741,
+        "draw": 0.201743587445914,
+        "away_win": 0.702134703482411
+      },
+      "model_predicted_outcome": "away_win",
+      "model_correct": true,
+      "model_brier": 0.13866359289991792,
+      "bookmaker": {
+        "home_win": 0.0545663272067476,
+        "draw": 0.135702664378647,
+        "away_win": 0.809731008414606
+      },
+      "bookmaker_predicted_outcome": "away_win",
+      "bookmaker_correct": true,
+      "bookmaker_brier": 0.057594986343220286
+    },
+    {
+      "home_team": "Canada",
+      "away_team": "Morocco",
+      "commence_time": "2026-07-04T17:00:00+00:00",
+      "logged_at": "2026-07-04T02:20:54.926214+00:00",
+      "home_score": 0,
+      "away_score": 3,
+      "actual_outcome": "away_win",
+      "model": {
+        "home_win": 0.203387398988977,
+        "draw": 0.282003063285511,
+        "away_win": 0.514609537725511
+      },
+      "model_predicted_outcome": "away_win",
+      "model_correct": true,
+      "model_brier": 0.3564960626369554,
+      "bookmaker": {
+        "home_win": 0.207080265415959,
+        "draw": 0.285864954644817,
+        "away_win": 0.507054779939224
+      },
+      "bookmaker_predicted_outcome": "away_win",
+      "bookmaker_correct": true,
+      "bookmaker_brier": 0.3675959985995942
+    },
+    {
+      "home_team": "Colombia",
+      "away_team": "Ghana",
+      "commence_time": "2026-07-04T01:30:00+00:00",
+      "logged_at": "2026-07-04T02:20:54.926214+00:00",
+      "home_score": 1,
+      "away_score": 0,
+      "actual_outcome": "home_win",
+      "model": {
+        "home_win": 0.792394834394309,
+        "draw": 0.137922284502489,
+        "away_win": 0.0696828811032026
+      },
+      "model_predicted_outcome": "home_win",
+      "model_correct": true,
+      "model_brier": 0.06697816526739496,
+      "bookmaker": {
+        "home_win": 0.830951679291129,
+        "draw": 0.13490552599135,
+        "away_win": 0.034142794717521
+      },
+      "bookmaker_predicted_outcome": "home_win",
+      "bookmaker_correct": true,
+      "bookmaker_brier": 0.047942566108614894
+    }
+  ],
   "summary": {
-    "n_graded": 0,
-    "model_accuracy": null,
-    "model_avg_brier": null,
-    "n_bookmaker_graded": 0,
-    "bookmaker_accuracy": null,
-    "bookmaker_avg_brier": null
+    "n_graded": 3,
+    "model_accuracy": 1.0,
+    "model_avg_brier": 0.18737927360142273,
+    "n_bookmaker_graded": 3,
+    "bookmaker_accuracy": 1.0,
+    "bookmaker_avg_brier": 0.1577111836838098
   },
   "calibration": [
     {
@@ -25,14 +101,14 @@
     {
       "bucket_label": "40-60%",
       "predicted_mid": 0.5,
-      "n": 0,
-      "actual_rate": null
+      "n": 1,
+      "actual_rate": 1.0
     },
     {
       "bucket_label": "60-80%",
       "predicted_mid": 0.7,
-      "n": 0,
-      "actual_rate": null
+      "n": 2,
+      "actual_rate": 1.0
     },
     {
       "bucket_label": "80-100%",
