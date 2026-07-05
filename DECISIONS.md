@@ -2,6 +2,45 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-05 — Cloud-scheduled daily pipeline (GitHub Actions), alongside the local Airflow DAG
+
+**Found while asked to make the project safe to leave running unattended through July 19:**
+the only thing that ever runs `daily_update.py` is the local Airflow DAG in
+`docker-compose.airflow.yml` — which only fires if this machine's Docker Desktop is up.
+Separately, checking Vercel's actual deployment history (`vercel ls`) showed every
+production deployment so far was CLI-triggered (`vercel --prod`), none from a git push —
+so even a bot committing fresh data to `main` wouldn't have redeployed the live site.
+Both gaps meant the "daily-updating tracker" would silently stop updating the moment this
+laptop closed, with no error, no alert, just stale data.
+
+**Fix:** `.github/workflows/daily_pipeline.yml` — a `schedule`-triggered (06:00 UTC daily)
+GitHub Actions workflow that runs the exact same sequence as the Airflow DAG
+(`daily_update.py` → `verify_predictions.py` → `check_drift.py`/`check_data_quality.py` as
+non-blocking parallel-equivalent steps → `export_dashboard_data.py`), commits the refreshed
+data, and explicitly calls a Vercel deploy hook and the existing Render deploy hook —
+sidestepping the git-integration mystery entirely rather than trying to root-cause it
+further under time pressure. A `pytest` run gates the whole thing before it's allowed to
+touch real data or redeploy anything.
+
+**Why GitHub Actions and not fixing Airflow to run in the cloud:** a persistently-running
+Airflow deployment (a real VM or a paid scheduler) costs money and adds infra for a
+14-day-remaining portfolio project — CLAUDE.md is explicit that Tier 2/3 infra shouldn't be
+over-built. GitHub Actions' free scheduled-workflow minutes do the actual job (run a script
+daily, no server to keep up) at zero cost and zero new infra to maintain.
+
+**Why keep the local Airflow DAG at all, then:** it's real, tested, already-built
+orchestration and stays as the demoable interview artifact (`make backend` / MLflow UI /
+Airflow UI walkthrough per PROJECT_BRAIN §6) — this decision doesn't remove it, it just
+stops depending on it for the site to actually stay live day to day.
+
+**Trade-off accepted:** if the local Airflow DAG is ever run manually on the same day this
+workflow also runs, both write to the same `predictions_log.csv`/`dashboard/data/*.json` —
+`append_predictions_log()`'s per-day idempotency (2026-07-05 fix, see PROJECT_BRAIN.md §7)
+means this can't reintroduce duplicate rows, but whichever one pushes second needs
+`git pull --rebase` to succeed, which the workflow does; a manual local run pushing at the
+same moment could still race. Low-probability, one person operating both paths — not
+engineering around it further.
+
 ## 2026-07-04 — requests pin broke the Render Docker build (evidently conflict)
 
 Dilip's first real Render deploy attempt failed at `pip install -r requirements.txt` inside
