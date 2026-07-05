@@ -140,217 +140,217 @@
   {
     "date": "2026-07-03",
     "team": "France",
-    "win_probability": 0.307815328471407,
+    "win_probability": 0.3078332124074377,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Argentina",
-    "win_probability": 0.17122788534211214,
+    "win_probability": 0.17123783360740266,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Spain",
-    "win_probability": 0.12573592804316241,
+    "win_probability": 0.1257432332456195,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "England",
-    "win_probability": 0.08141401340794766,
+    "win_probability": 0.08141874352653862,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Brazil",
-    "win_probability": 0.0659854220076204,
+    "win_probability": 0.06598925573179523,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Portugal",
-    "win_probability": 0.06596042752958721,
+    "win_probability": 0.06596425980159379,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Mexico",
-    "win_probability": 0.02973093162047897,
+    "win_probability": 0.02973265897461001,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Colombia",
-    "win_probability": 0.02749918783188391,
+    "win_probability": 0.027500785522676385,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "United States",
-    "win_probability": 0.02749918783188391,
+    "win_probability": 0.027500785522676385,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Morocco",
-    "win_probability": 0.028703658573314878,
+    "win_probability": 0.028705326243330925,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Norway",
-    "win_probability": 0.022348944857083667,
+    "win_probability": 0.022350243321010602,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Belgium",
-    "win_probability": 0.018956694298419185,
+    "win_probability": 0.018957795674071496,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Switzerland",
-    "win_probability": 0.013391629656427121,
+    "win_probability": 0.01363047420579594,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Egypt",
-    "win_probability": 0.0029327425148613284,
+    "win_probability": 0.002932912905919469,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Paraguay",
-    "win_probability": 0.0023917751142090416,
+    "win_probability": 0.002391914075297674,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Canada",
-    "win_probability": 0.003212589710827239,
+    "win_probability": 0.003212776360885138,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Australia",
-    "win_probability": 0.002230896022673463,
+    "win_probability": 0.0019348595723418826,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Ghana",
-    "win_probability": 0.0019081933439572827,
+    "win_probability": 0.001908304209156449,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-03",
     "team": "Cape Verde",
-    "win_probability": 0.0010545638221431896,
+    "win_probability": 0.0010546250918402808,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "France",
-    "win_probability": 0.3146020006373687,
+    "win_probability": 0.3137668636894684,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Argentina",
-    "win_probability": 0.16494933761627886,
+    "win_probability": 0.16170061460866525,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Spain",
-    "win_probability": 0.12723630425331664,
+    "win_probability": 0.12689854499374117,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "England",
-    "win_probability": 0.0809772077389965,
+    "win_probability": 0.08076224706492695,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Brazil",
-    "win_probability": 0.06677280997968227,
+    "win_probability": 0.06659555605053946,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Portugal",
-    "win_probability": 0.06588066637527053,
+    "win_probability": 0.06570578071487798,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Mexico",
-    "win_probability": 0.030085703587436386,
+    "win_probability": 0.030005838606862383,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Colombia",
-    "win_probability": 0.027827328943685767,
+    "win_probability": 0.03329777802526973,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "United States",
-    "win_probability": 0.02722509570535227,
+    "win_probability": 0.02715282444424268,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Morocco",
-    "win_probability": 0.02850129464933624,
+    "win_probability": 0.02842563561291425,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Norway",
-    "win_probability": 0.021089971836541713,
+    "win_probability": 0.021033986767549178,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Belgium",
-    "win_probability": 0.019564314299430185,
+    "win_probability": 0.019512379214152,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Switzerland",
-    "win_probability": 0.014359129761049676,
+    "win_probability": 0.014321012267267523,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Egypt",
-    "win_probability": 0.003548482082585271,
+    "win_probability": 0.0035390623443441746,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Canada",
-    "win_probability": 0.0032509247615174195,
+    "win_probability": 0.0032422949137170657,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Ghana",
-    "win_probability": 0.002121297338688343,
+    "win_probability": 0.002036780995793571,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-04",
     "team": "Paraguay",
-    "win_probability": 0.002008130433463037,
+    "win_probability": 0.0020027996856680757,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
@@ -476,7 +476,7 @@
   {
     "date": "2026-07-04",
     "team": "Ghana",
-    "win_probability": 0,
+    "win_probability": 0.0,
     "model_version": "heuristic_l2_montecarlo_v1"
   },
   {
@@ -530,7 +530,7 @@
   {
     "date": "2026-07-04",
     "team": "Norway",
-    "win_probability": 0,
+    "win_probability": 0.0,
     "model_version": "heuristic_l2_montecarlo_v1"
   },
   {
@@ -560,85 +560,85 @@
   {
     "date": "2026-07-05",
     "team": "France",
-    "win_probability": 0.3335948132008106,
+    "win_probability": 0.33308530272532766,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Argentina",
-    "win_probability": 0.15507594705696884,
+    "win_probability": 0.1553422500037013,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Spain",
-    "win_probability": 0.13026725318553625,
+    "win_probability": 0.12881766261718844,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "England",
-    "win_probability": 0.07873086542892264,
+    "win_probability": 0.07886606538649452,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Brazil",
-    "win_probability": 0.06675008155930397,
+    "win_probability": 0.06898739674077418,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Portugal",
-    "win_probability": 0.06325988121633383,
+    "win_probability": 0.0626193293493181,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Colombia",
-    "win_probability": 0.031948756985649765,
+    "win_probability": 0.03200362073654849,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Mexico",
-    "win_probability": 0.02925111332699384,
+    "win_probability": 0.030230021065188052,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Morocco",
-    "win_probability": 0.031708975942020406,
+    "win_probability": 0.03111172512759434,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "United States",
-    "win_probability": 0.025940097376631537,
+    "win_probability": 0.026515315086838673,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Norway",
-    "win_probability": 0.021988262160711897,
+    "win_probability": 0.021215540026080944,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Belgium",
-    "win_probability": 0.017210822422956424,
+    "win_probability": 0.016815839745893776,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Switzerland",
-    "win_probability": 0.01109180459741668,
+    "win_probability": 0.011110851911361425,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
     "date": "2026-07-05",
     "team": "Egypt",
-    "win_probability": 0.003181325539743307,
+    "win_probability": 0.00327907947769007,
     "model_version": "bookmaker_outright_baseline_v1"
   },
   {
@@ -770,7 +770,7 @@
   {
     "date": "2026-07-05",
     "team": "Norway",
-    "win_probability": 0,
+    "win_probability": 0.0,
     "model_version": "heuristic_l2_montecarlo_v1"
   },
   {
@@ -782,7 +782,7 @@
   {
     "date": "2026-07-05",
     "team": "Egypt",
-    "win_probability": 0,
+    "win_probability": 0.0,
     "model_version": "heuristic_l2_montecarlo_v1"
   },
   {
