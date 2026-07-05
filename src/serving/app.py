@@ -192,6 +192,22 @@ def predict(req: PredictRequest, state: ModelState = Depends(get_model_state)):
     )
 
 
+@app.post("/explain")
+def explain(req: PredictRequest, state: ModelState = Depends(get_model_state)):
+    """Real per-match SHAP values (Layer1Ensemble.shap_values_for_match) --
+    genuine local interpretability for one specific fixture, not the
+    global feature_importances_ that /feature-importance returns. Reuses
+    PredictRequest since the inputs are identical to /predict."""
+    home = canonical(req.home_team)
+    away = canonical(req.away_team)
+    if home not in state.timelines or away not in state.timelines:
+        raise HTTPException(404, f"Unknown team(s) -- check spelling against historical results: {home}, {away}")
+
+    as_of = req.as_of or state.today
+    result = state.ensemble.shap_values_for_match(home, away, as_of, neutral=req.neutral)
+    return {**result, "model_version": state.model_version}
+
+
 @app.get("/champions")
 def champions(refresh: bool = False, state: ModelState = Depends(get_model_state)):
     result = state.champion_probabilities(refresh=refresh)

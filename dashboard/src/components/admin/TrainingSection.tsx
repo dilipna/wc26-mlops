@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { TrainingRun } from "@/lib/data";
+import ExplainMatch from "./ExplainMatch";
+import type { TeamStatus, TrainingRun } from "@/lib/data";
 
 const SERVING_API_URL = process.env.NEXT_PUBLIC_SERVING_API_URL;
 
@@ -67,7 +68,13 @@ function FeatureImportanceLive() {
   );
 }
 
-export default function TrainingSection({ trainingHistory }: { trainingHistory: TrainingRun[] }) {
+export default function TrainingSection({
+  trainingHistory,
+  teams,
+}: {
+  trainingHistory: TrainingRun[];
+  teams: TeamStatus[];
+}) {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="glass-card p-6">
@@ -106,11 +113,11 @@ export default function TrainingSection({ trainingHistory }: { trainingHistory: 
           <FeatureImportanceLive />
         </div>
         <p className="mt-4 text-xs text-text-secondary">
-          SHAP values are <strong className="text-foreground">not yet implemented</strong> (Tier 2, CLAUDE.md) -- this
-          feature-importance view and the Model Registry section&apos;s ensemble-member weights are the current,
-          honest stand-ins.
+          This is a global, XGBoost-only importance (gain-based). For genuine per-match SHAP values, see below.
         </p>
       </div>
+
+      <ExplainMatch teams={teams} />
     </div>
   );
 }

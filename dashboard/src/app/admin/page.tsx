@@ -81,7 +81,7 @@ export default function AdminPage() {
 
       <section id="training" className="py-8">
         <SectionHeading eyebrow="4 · Training" title="Training history, tuning, feature importance" />
-        <TrainingSection trainingHistory={trainingHistory} />
+        <TrainingSection trainingHistory={trainingHistory} teams={teams} />
       </section>
 
       <section id="monitoring" className="py-8">
