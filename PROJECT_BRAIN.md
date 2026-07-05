@@ -133,9 +133,21 @@ Legend: ✅ done and verified · 🚧 built but incomplete/unverified/needs work
   CSV** (`data/monitoring/drift_history.csv`, added 2026-07-05) and a dedicated **Drift
   Monitoring** dashboard section (current snapshot + trend chart) — the "zero dashboard
   presence" gap noted 2026-07-04 is closed
-- ⬜ SHAP values on Layer 1 — still not built; the dashboard's "Ensemble member influence"
-  stat is an honest, coarser stand-in derived from real meta-learner coefficients, explicitly
-  labeled as not-SHAP (see Model Card copy)
+- ✅ **SHAP values on Layer 1 — built and deployed 2026-07-05.**
+  `Layer1Ensemble.shap_values_for_match()` computes genuine per-match Shapley contributions
+  to the stacked ensemble's (loss, draw, win) probabilities via a model-agnostic
+  `shap.explainers.Exact` against `self.stack.predict_proba` (not `TreeExplainer` —
+  verified directly that it raises `ValueError` against xgboost 3.x's multi-class
+  `base_score` format on this project's pinned version). New `POST /explain` serving
+  endpoint + an interactive "Explain a prediction" card in the admin dashboard's Training
+  section (team-select + live SHAP bars), replacing the "not yet implemented" disclaimer
+  that had been there since this gap was first named. `shap==0.49.1` added to
+  `requirements.txt`/`requirements-lock.txt` (lock regenerated inside `python:3.10-slim`
+  per its own header). Verified in the actual serving Docker image (not just natively)
+  and confirmed live on both Vercel and Render — see §12 session log for full detail. The
+  "Ensemble member influence" stat (meta-learner weights) and `xgb_feature_importance()`
+  (global XGBoost importance) both still exist as complementary, coarser views — this
+  doesn't replace them, it adds the genuinely local one CLAUDE.md asked for.
 
 **Tier 3** — not started, not prioritized until Tier 1/2 + the two mission gaps are closed.
 
@@ -1294,3 +1306,38 @@ backlog), and asked for both.
   (regenerated dashboard data). Both pushed and deployed, not just committed.
 - **Not done**: §6's demo script staleness (cosmetic, unrelated, still open). Everything
   else that was open going into this session is now closed.
+
+**2026-07-05 (same-day follow-up: SHAP values on Layer 1, the Tier-2 gap CLAUDE.md named).**
+Asked "what shall we do next," recommended SHAP over Kubernetes (genuine interpretability
+gap vs. a buzzword CLAUDE.md itself says not to chase), Dilip agreed.
+- Real blocker found and worked around, not glossed over: `shap.TreeExplainer(self.xgb)`
+  raises `ValueError` on this project's pinned `xgboost==3.2.0` for multi-class models —
+  verified directly (xgboost 3.x serializes `multi:softprob`'s `base_score` as a per-class
+  array; shap's XGBoost JSON loader expects a scalar float). Switched to a model-agnostic
+  `shap.explainers.Exact` against the full stack's `predict_proba` instead — sidesteps the
+  parsing bug entirely, and with only 6 features it's exact (64 coalitions), not sampled.
+- `Layer1Ensemble.shap_values_for_match()` (new), `POST /explain` (new serving endpoint),
+  `ExplainMatch.tsx` (new admin component: team-select dropdowns + live SHAP bars,
+  replacing the "not yet implemented" disclaimer in `TrainingSection.tsx`). Test asserts
+  the actual SHAP identity (base value + sum of contributions == real predicted
+  probability), not just "it doesn't crash."
+- `shap==0.49.1` added to `requirements.txt`. **Regenerated `requirements-lock.txt` inside
+  `python:3.10-slim` via Docker** (per the lock file's own header — Docker Desktop wasn't
+  running, had to start it first) rather than skipping this step, since the serving
+  Dockerfile installs only from the lock file, not `requirements.txt` directly — adding a
+  dependency without updating the lock file would have deployed a broken image to Render.
+- **Verified beyond "it works on my machine"**: built `docker/serving/Dockerfile` locally
+  with the updated lock file and called `POST /explain` against the actual running
+  container before pushing/deploying anything — this project's own established discipline
+  (§7's "verify live, not just by reading code") applied to a new dependency, not just new
+  code.
+- Deployed both services and confirmed live: Vercel via `vercel --prod` (admin page HTML
+  contains "Explain a prediction"), Render via the deploy hook. Render's first real
+  `/explain` call after redeploy hung ~60s+ (numba JIT-compiling on the free tier's limited
+  CPU) before succeeding; the same request 1s later was 943ms. Not a bug — same
+  first-request-after-cold-start pattern already documented for MLflow-unreachable local
+  training, just a bigger one-time cost. Confirmed working with a real Playwright
+  screenshot of the live production admin page (Brazil vs Spain, real bars, real numbers).
+- 54/54 tests passing (was 51). One commit: `f151d05`, pushed and deployed.
+- **Not done**: nothing left open from this specific ask. §6's demo-script staleness is
+  still the one standing, unrelated, low-priority item.
