@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from src.ingestion import live_results_store  # noqa: E402
+from src.ingestion import live_results_store, supabase_store  # noqa: E402
 from src.models.layer1_ensemble import tracking  # noqa: E402
 from src.models.layer1_ensemble.features import FEATURE_NAMES  # noqa: E402
 from src.models.layer2_simulation import live_bracket  # noqa: E402
@@ -174,6 +174,48 @@ def export_drift():
     return drift
 
 
+def export_data_quality():
+    """Real data-quality check output (scripts/check_data_quality.py) --
+    same "snapshot + accumulated history" pattern as export_drift. Missing
+    files (check never run yet) degrade to an honest empty shape."""
+    monitoring_dir = DATA_DIR / "monitoring"
+    latest_path = monitoring_dir / "data_quality.json"
+    history_path = monitoring_dir / "data_quality_history.csv"
+
+    latest = json.loads(latest_path.read_text()) if latest_path.exists() else None
+    history = []
+    if history_path.exists():
+        with open(history_path, encoding="utf-8") as f:
+            history = list(csv.DictReader(f))
+
+    data_quality = {"latest": latest, "history": history}
+    (OUT_DIR / "data_quality.json").write_text(json.dumps(data_quality, indent=2))
+    return data_quality
+
+
+def export_system_health():
+    """Real reachability checks for the admin dashboard's System section.
+    The serving API itself is checked client-side (StatusBar's existing
+    live ping) since this script runs at export time, not request time --
+    this only covers the two backend dependencies checkable from here."""
+    health = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "mlflow_reachable": tracking.is_reachable(),
+        "supabase_reachable": supabase_store.is_reachable(),
+    }
+    (OUT_DIR / "system_health.json").write_text(json.dumps(health, indent=2))
+    return health
+
+
+def export_training_history():
+    """Real MLflow run history (up to 10 most recent runs) for the admin
+    dashboard's Training section -- empty list (not fabricated rows) if
+    MLflow is unreachable or no runs are logged yet."""
+    runs = tracking.list_recent_runs(n=10)
+    (OUT_DIR / "training_history.json").write_text(json.dumps(runs, indent=2))
+    return runs
+
+
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     predictions_rows = export_predictions_timeseries()
@@ -184,6 +226,9 @@ def main():
     teams = export_teams(predictions_rows)
     registry = export_model_registry()
     drift = export_drift()
+    data_quality = export_data_quality()
+    system_health = export_system_health()
+    training_history = export_training_history()
     print(f"Exported dashboard data to {OUT_DIR}")
     print(f"  {len(predictions_rows)} prediction rows, {len(results_rows)} results, "
           f"{len(upcoming_matches)} upcoming matches")
@@ -194,6 +239,10 @@ def main():
     print(f"  Model registry: version={registry['version']} (mlflow_reachable={registry['mlflow_reachable']})")
     print(f"  Drift: {len(drift['history'])} history row(s), "
           f"latest generated_at={drift['latest']['generated_at'] if drift['latest'] else None}")
+    print(f"  Data quality: {len(data_quality['history'])} history row(s)")
+    print(f"  System health: mlflow_reachable={system_health['mlflow_reachable']}, "
+          f"supabase_reachable={system_health['supabase_reachable']}")
+    print(f"  Training history: {len(training_history)} run(s) from MLflow")
 
 
 if __name__ == "__main__":

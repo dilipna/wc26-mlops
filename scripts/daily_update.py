@@ -50,12 +50,24 @@ MODEL_VERSION_HEURISTIC = "heuristic_l2_montecarlo_v1"
 
 
 def append_predictions_log(today: date, team_probs: dict[str, float], model_version: str):
+    # Idempotent per (date, model_version): drop any rows already logged for
+    # today under this series before writing fresh ones, so re-running the
+    # same day (retries, manual re-runs) never accumulates duplicates -- see
+    # PROJECT_BRAIN.md's 2026-07-05 duplicate-row incident.
     PREDICTIONS_LOG.parent.mkdir(parents=True, exist_ok=True)
-    write_header = not PREDICTIONS_LOG.exists()
-    with open(PREDICTIONS_LOG, "a", newline="", encoding="utf-8") as f:
+    existing_rows = []
+    if PREDICTIONS_LOG.exists():
+        with open(PREDICTIONS_LOG, newline="", encoding="utf-8") as f:
+            reader = csv.reader(f)
+            next(reader, None)
+            existing_rows = [
+                row for row in reader
+                if row and not (row[0] == today.isoformat() and row[3] == model_version)
+            ]
+    with open(PREDICTIONS_LOG, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        if write_header:
-            writer.writerow(["date", "team", "win_probability", "model_version"])
+        writer.writerow(["date", "team", "win_probability", "model_version"])
+        writer.writerows(existing_rows)
         for team, prob in team_probs.items():
             writer.writerow([today.isoformat(), team, prob, model_version])
 

@@ -14,9 +14,11 @@ from datetime import datetime, timezone
 
 import requests
 
+from src.sports.football import FOOTBALL
+
 BASE_URL = "https://api.the-odds-api.com/v4"
-MATCH_ODDS_SPORT_KEY = "soccer_fifa_world_cup"
-OUTRIGHT_SPORT_KEY = "soccer_fifa_world_cup_winner"
+MATCH_ODDS_SPORT_KEY = FOOTBALL.odds_api_match_sport_key
+OUTRIGHT_SPORT_KEY = FOOTBALL.odds_api_outright_sport_key
 DEFAULT_REGION = "uk"
 
 

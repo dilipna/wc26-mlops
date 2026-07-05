@@ -66,7 +66,7 @@ def append_new_results(score_events: list[dict]) -> int:
     return len(new_rows)
 
 
-def load_live_matches() -> list[Match]:
+def load_live_matches(tournament_name: str = "FIFA World Cup") -> list[Match]:
     """All logged 2026 results as Match objects, sorted chronologically.
     `neutral=True` for all of them (a simplification -- see DECISIONS.md's
     knockout draw / neutral-venue notes; only matters for the co-host
@@ -83,7 +83,7 @@ def load_live_matches() -> list[Match]:
                     away_team=row["away_team"],
                     home_score=int(row["home_score"]),
                     away_score=int(row["away_score"]),
-                    tournament="FIFA World Cup",
+                    tournament=tournament_name,
                     neutral=True,
                 )
             )

@@ -22,44 +22,6 @@ date,team,win_probability,model_version
 2026-07-02,Algeria,0.001458269755311134,bookmaker_outright_baseline_v1
 2026-07-02,Cape Verde,0.0010524564419109868,bookmaker_outright_baseline_v1
 2026-07-02,Bosnia and Herzegovina,0.001352386690468978,bookmaker_outright_baseline_v1
-2026-07-03,France,0.307815328471407,bookmaker_outright_baseline_v1
-2026-07-03,Argentina,0.17122788534211214,bookmaker_outright_baseline_v1
-2026-07-03,Spain,0.12573592804316241,bookmaker_outright_baseline_v1
-2026-07-03,England,0.08141401340794766,bookmaker_outright_baseline_v1
-2026-07-03,Brazil,0.0659854220076204,bookmaker_outright_baseline_v1
-2026-07-03,Portugal,0.06596042752958721,bookmaker_outright_baseline_v1
-2026-07-03,Mexico,0.02973093162047897,bookmaker_outright_baseline_v1
-2026-07-03,Colombia,0.02749918783188391,bookmaker_outright_baseline_v1
-2026-07-03,United States,0.02749918783188391,bookmaker_outright_baseline_v1
-2026-07-03,Morocco,0.028703658573314878,bookmaker_outright_baseline_v1
-2026-07-03,Norway,0.022348944857083667,bookmaker_outright_baseline_v1
-2026-07-03,Belgium,0.018956694298419185,bookmaker_outright_baseline_v1
-2026-07-03,Switzerland,0.013391629656427121,bookmaker_outright_baseline_v1
-2026-07-03,Egypt,0.0029327425148613284,bookmaker_outright_baseline_v1
-2026-07-03,Paraguay,0.0023917751142090416,bookmaker_outright_baseline_v1
-2026-07-03,Canada,0.003212589710827239,bookmaker_outright_baseline_v1
-2026-07-03,Australia,0.002230896022673463,bookmaker_outright_baseline_v1
-2026-07-03,Ghana,0.0019081933439572827,bookmaker_outright_baseline_v1
-2026-07-03,Cape Verde,0.0010545638221431896,bookmaker_outright_baseline_v1
-2026-07-03,France,0.307815328471407,bookmaker_outright_baseline_v1
-2026-07-03,Argentina,0.17122788534211214,bookmaker_outright_baseline_v1
-2026-07-03,Spain,0.12573592804316241,bookmaker_outright_baseline_v1
-2026-07-03,England,0.08141401340794766,bookmaker_outright_baseline_v1
-2026-07-03,Brazil,0.0659854220076204,bookmaker_outright_baseline_v1
-2026-07-03,Portugal,0.06596042752958721,bookmaker_outright_baseline_v1
-2026-07-03,Mexico,0.02973093162047897,bookmaker_outright_baseline_v1
-2026-07-03,Colombia,0.02749918783188391,bookmaker_outright_baseline_v1
-2026-07-03,United States,0.02749918783188391,bookmaker_outright_baseline_v1
-2026-07-03,Morocco,0.028703658573314878,bookmaker_outright_baseline_v1
-2026-07-03,Norway,0.022348944857083667,bookmaker_outright_baseline_v1
-2026-07-03,Belgium,0.018956694298419185,bookmaker_outright_baseline_v1
-2026-07-03,Switzerland,0.013391629656427121,bookmaker_outright_baseline_v1
-2026-07-03,Egypt,0.0029327425148613284,bookmaker_outright_baseline_v1
-2026-07-03,Paraguay,0.0023917751142090416,bookmaker_outright_baseline_v1
-2026-07-03,Canada,0.003212589710827239,bookmaker_outright_baseline_v1
-2026-07-03,Australia,0.002230896022673463,bookmaker_outright_baseline_v1
-2026-07-03,Ghana,0.0019081933439572827,bookmaker_outright_baseline_v1
-2026-07-03,Cape Verde,0.0010545638221431896,bookmaker_outright_baseline_v1
 2026-07-03,France,0.3078332124074377,bookmaker_outright_baseline_v1
 2026-07-03,Argentina,0.17123783360740266,bookmaker_outright_baseline_v1
 2026-07-03,Spain,0.1257432332456195,bookmaker_outright_baseline_v1
@@ -79,50 +41,14 @@ date,team,win_probability,model_version
 2026-07-03,Australia,0.0019348595723418826,bookmaker_outright_baseline_v1
 2026-07-03,Ghana,0.001908304209156449,bookmaker_outright_baseline_v1
 2026-07-03,Cape Verde,0.0010546250918402808,bookmaker_outright_baseline_v1
-2026-07-03,France,0.3078332124074377,bookmaker_outright_baseline_v1
-2026-07-03,Argentina,0.17123783360740266,bookmaker_outright_baseline_v1
-2026-07-03,Spain,0.1257432332456195,bookmaker_outright_baseline_v1
-2026-07-03,England,0.08141874352653862,bookmaker_outright_baseline_v1
-2026-07-03,Brazil,0.06598925573179523,bookmaker_outright_baseline_v1
-2026-07-03,Portugal,0.06596425980159379,bookmaker_outright_baseline_v1
-2026-07-03,Mexico,0.02973265897461001,bookmaker_outright_baseline_v1
-2026-07-03,Colombia,0.027500785522676385,bookmaker_outright_baseline_v1
-2026-07-03,United States,0.027500785522676385,bookmaker_outright_baseline_v1
-2026-07-03,Morocco,0.028705326243330925,bookmaker_outright_baseline_v1
-2026-07-03,Norway,0.022350243321010602,bookmaker_outright_baseline_v1
-2026-07-03,Belgium,0.018957795674071496,bookmaker_outright_baseline_v1
-2026-07-03,Switzerland,0.01363047420579594,bookmaker_outright_baseline_v1
-2026-07-03,Egypt,0.002932912905919469,bookmaker_outright_baseline_v1
-2026-07-03,Paraguay,0.002391914075297674,bookmaker_outright_baseline_v1
-2026-07-03,Canada,0.003212776360885138,bookmaker_outright_baseline_v1
-2026-07-03,Australia,0.0019348595723418826,bookmaker_outright_baseline_v1
-2026-07-03,Ghana,0.001908304209156449,bookmaker_outright_baseline_v1
-2026-07-03,Cape Verde,0.0010546250918402808,bookmaker_outright_baseline_v1
-2026-07-04,France,0.3146020006373687,bookmaker_outright_baseline_v1
-2026-07-04,Argentina,0.16494933761627886,bookmaker_outright_baseline_v1
-2026-07-04,Spain,0.12723630425331664,bookmaker_outright_baseline_v1
-2026-07-04,England,0.0809772077389965,bookmaker_outright_baseline_v1
-2026-07-04,Brazil,0.06677280997968227,bookmaker_outright_baseline_v1
-2026-07-04,Portugal,0.06588066637527053,bookmaker_outright_baseline_v1
-2026-07-04,Mexico,0.030085703587436386,bookmaker_outright_baseline_v1
-2026-07-04,Colombia,0.027827328943685767,bookmaker_outright_baseline_v1
-2026-07-04,United States,0.02722509570535227,bookmaker_outright_baseline_v1
-2026-07-04,Morocco,0.02850129464933624,bookmaker_outright_baseline_v1
-2026-07-04,Norway,0.021089971836541713,bookmaker_outright_baseline_v1
-2026-07-04,Belgium,0.019564314299430185,bookmaker_outright_baseline_v1
-2026-07-04,Switzerland,0.014359129761049676,bookmaker_outright_baseline_v1
-2026-07-04,Egypt,0.003548482082585271,bookmaker_outright_baseline_v1
-2026-07-04,Canada,0.0032509247615174195,bookmaker_outright_baseline_v1
-2026-07-04,Ghana,0.002121297338688343,bookmaker_outright_baseline_v1
-2026-07-04,Paraguay,0.002008130433463037,bookmaker_outright_baseline_v1
 2026-07-04,France,0.3137668636894684,bookmaker_outright_baseline_v1
 2026-07-04,Argentina,0.16170061460866525,bookmaker_outright_baseline_v1
 2026-07-04,Spain,0.12689854499374117,bookmaker_outright_baseline_v1
 2026-07-04,England,0.08076224706492695,bookmaker_outright_baseline_v1
 2026-07-04,Brazil,0.06659555605053946,bookmaker_outright_baseline_v1
 2026-07-04,Portugal,0.06570578071487798,bookmaker_outright_baseline_v1
-2026-07-04,Colombia,0.03329777802526973,bookmaker_outright_baseline_v1
 2026-07-04,Mexico,0.030005838606862383,bookmaker_outright_baseline_v1
+2026-07-04,Colombia,0.03329777802526973,bookmaker_outright_baseline_v1
 2026-07-04,United States,0.02715282444424268,bookmaker_outright_baseline_v1
 2026-07-04,Morocco,0.02842563561291425,bookmaker_outright_baseline_v1
 2026-07-04,Norway,0.021033986767549178,bookmaker_outright_baseline_v1
@@ -166,20 +92,20 @@ date,team,win_probability,model_version
 2026-07-04,Argentina,0.3283,heuristic_l2_montecarlo_v1
 2026-07-04,Belgium,0.0462,heuristic_l2_montecarlo_v1
 2026-07-04,Spain,0.1213,heuristic_l2_montecarlo_v1
-2026-07-05,France,0.3335948132008106,bookmaker_outright_baseline_v1
-2026-07-05,Argentina,0.15507594705696884,bookmaker_outright_baseline_v1
-2026-07-05,Spain,0.13026725318553625,bookmaker_outright_baseline_v1
-2026-07-05,England,0.07873086542892264,bookmaker_outright_baseline_v1
-2026-07-05,Brazil,0.06675008155930397,bookmaker_outright_baseline_v1
-2026-07-05,Portugal,0.06325988121633383,bookmaker_outright_baseline_v1
-2026-07-05,Colombia,0.031948756985649765,bookmaker_outright_baseline_v1
-2026-07-05,Mexico,0.02925111332699384,bookmaker_outright_baseline_v1
-2026-07-05,Morocco,0.031708975942020406,bookmaker_outright_baseline_v1
-2026-07-05,United States,0.025940097376631537,bookmaker_outright_baseline_v1
-2026-07-05,Norway,0.021988262160711897,bookmaker_outright_baseline_v1
-2026-07-05,Belgium,0.017210822422956424,bookmaker_outright_baseline_v1
-2026-07-05,Switzerland,0.01109180459741668,bookmaker_outright_baseline_v1
-2026-07-05,Egypt,0.003181325539743307,bookmaker_outright_baseline_v1
+2026-07-05,France,0.33308530272532766,bookmaker_outright_baseline_v1
+2026-07-05,Argentina,0.1553422500037013,bookmaker_outright_baseline_v1
+2026-07-05,Spain,0.12881766261718844,bookmaker_outright_baseline_v1
+2026-07-05,England,0.07886606538649452,bookmaker_outright_baseline_v1
+2026-07-05,Brazil,0.06898739674077418,bookmaker_outright_baseline_v1
+2026-07-05,Portugal,0.0626193293493181,bookmaker_outright_baseline_v1
+2026-07-05,Colombia,0.03200362073654849,bookmaker_outright_baseline_v1
+2026-07-05,Mexico,0.030230021065188052,bookmaker_outright_baseline_v1
+2026-07-05,Morocco,0.03111172512759434,bookmaker_outright_baseline_v1
+2026-07-05,United States,0.026515315086838673,bookmaker_outright_baseline_v1
+2026-07-05,Norway,0.021215540026080944,bookmaker_outright_baseline_v1
+2026-07-05,Belgium,0.016815839745893776,bookmaker_outright_baseline_v1
+2026-07-05,Switzerland,0.011110851911361425,bookmaker_outright_baseline_v1
+2026-07-05,Egypt,0.00327907947769007,bookmaker_outright_baseline_v1
 2026-07-05,Mexico,0.0276,stacked_l2_montecarlo_v1
 2026-07-05,France,0.1848,stacked_l2_montecarlo_v1
 2026-07-05,Switzerland,0.0206,stacked_l2_montecarlo_v1

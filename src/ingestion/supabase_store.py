@@ -29,6 +29,22 @@ def _client():
         return None
 
 
+def is_reachable() -> bool:
+    """Cheap real check for the admin dashboard's System Health section: can
+    a client be constructed AND does a trivial query succeed. Best-effort,
+    like everything else in this module -- returns False, never raises, if
+    Supabase is unconfigured/unreachable."""
+    client = _client()
+    if client is None:
+        return False
+    try:
+        client.table("match_results").select("match_date").limit(1).execute()
+        return True
+    except Exception as exc:
+        print(f"[supabase_store] reachability check failed (non-fatal): {exc}")
+        return False
+
+
 def _insert(table: str, rows: list[dict]) -> int:
     if not rows:
         return 0

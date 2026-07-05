@@ -74,9 +74,11 @@ def load_fifa_rankings(path: Path = DATA_DIR / "fifa_ranking.csv") -> dict[str, 
     return by_team
 
 
-def world_cup_matches(matches: list[Match], year: int) -> list[Match]:
+def world_cup_matches(
+    matches: list[Match], year: int, tournament_name: str = "FIFA World Cup"
+) -> list[Match]:
     return [
         m
         for m in matches
-        if m.tournament == "FIFA World Cup" and m.date.year == year
+        if m.tournament == tournament_name and m.date.year == year
     ]
