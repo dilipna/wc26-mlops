@@ -294,18 +294,37 @@ A full read-only audit (3 parallel investigations: reproducibility/fragility, co
 verification against claimed status, dashboard UI honesty) found the following. Each
 maps to a backlog item in §8.
 
-**NEW, unresolved, top priority (found 2026-07-05, see §11 Phase 8 for full discovery):**
-- **Production has not deployed a dashboard change since commit `3e704ae`, despite later
-  commits — including `028bc2e`, a full redesign — being pushed to `origin/main` and in
-  sync (`git rev-list --left-right --count origin/main...HEAD` → `0 0`).** The
-  2026-07-04 "Vercel Root Directory" auto-deploy bug (`9eed947`) was fixed *before*
-  `028bc2e` was pushed, so that's not the explanation. This means every dashboard
-  redesign this file has described as "live" since `3e704ae` — the ops-console redesign,
-  the recruiter-lens trim, the SpOps pivot — **was never actually visible at
-  `fifa2026mlops.vercel.app`.** Not yet root-caused. **Before trusting any future push to
-  actually update the production URL: check Vercel's project dashboard directly (build
-  logs, deployment list, which commit each deployment maps to, whether `028bc2e`'s build
-  even succeeded) rather than assuming `git push` alone is sufficient verification.**
+**RESOLVED 2026-07-05, same session (was "unresolved, top priority" a few hours earlier):**
+- **Root cause found via `vercel alias ls`: `fifa2026mlops.vercel.app` was never a
+  tracked project Domain — it was a one-off CLI alias (`vercel alias set <deployment>
+  fifa2026mlops.vercel.app`), pinned to whatever deployment it was last manually pointed
+  at (a build from ~1 day prior). Vercel's *other* auto-generated aliases
+  (`dashboard-asmq333.vercel.app`, `dashboard-hazel-kappa-52.vercel.app`,
+  `dashboard-git-main-asmq333.vercel.app`) DID correctly track every new production
+  deployment the whole time** — confirmed by comparing `vercel alias ls` output, all
+  three pointed at the latest deployment while `fifa2026mlops.vercel.app` alone pointed at
+  an old one. So every "ops-console redesign"/"SpOps pivot" build this file described as
+  shipped *was* building and deploying successfully to Vercel the whole time — it just
+  never reached the one URL Dilip actually checks. Not a build failure, not the Root
+  Directory bug (already fixed, unrelated) — a stale manual alias, nothing more.
+  **Fix applied:** deployed the current commit directly via `vercel --prod` (Vercel CLI
+  was already authenticated on this machine as `dsharp0707-7862` — no token needed),
+  then `vercel alias set <new-deployment> fifa2026mlops.vercel.app` to repoint it, then
+  `vercel domains add fifa2026mlops.vercel.app dashboard` to register it as a real project
+  domain (not a one-off alias) so it has a better chance of auto-following future
+  deployments the way the other aliases do. Verified live via `curl` (fresh `Age: 0`,
+  not cached) and Playwright screenshots of both `/` and `/admin` on the real production
+  URL — both correct.
+  **Operational note for next time a dashboard change needs deploying:** the Vercel
+  project's Root Directory is set to `dashboard`, and the CLI's local project link
+  (`.vercel/project.json`) exists at **both** `dashboard/.vercel/` and repo-root
+  `.vercel/` (the latter added this session specifically so `vercel --prod` can be run
+  **from the repo root**, matching the Root Directory setting — running it from inside
+  `dashboard/` errors looking for `dashboard/dashboard`). After any deploy that should
+  reach the public URL, also re-run `vercel alias set <new-deployment-url>
+  fifa2026mlops.vercel.app` if the domain-registration above doesn't turn out to
+  auto-follow — `vercel alias ls` shows the ground truth, don't assume from `git push`
+  succeeding or even from Vercel's dashboard showing "Ready"/"Production" on a commit.
 - **Predictions-timeseries duplicate rows.** `dashboard/data/predictions_timeseries.json`
   had systemic duplicate `(date, team, model_version)` rows (251 rows, only 135 unique —
   every team's most recent 2-3 days duplicated). Caused a real user-visible bug (Argentina/
@@ -972,17 +991,19 @@ sport switcher/Eval table.
 
 **Where this stands after this session:** the public site is now byte-identical in design
 to what's actually live (matching `3e704ae`), plus one real addition (the Admin Dashboard
-nav button) and one real fix (the predictions-timeseries dedup). Phases 1, 2, 4, 5, 6 (the
-backend `Sport` interface, verification pass, `/admin` itself, the DAG branch, and
+nav button) and one real fix (the predictions-timeseries dedup) — **and this time it's
+actually confirmed live** at `fifa2026mlops.vercel.app` (deployed via `vercel --prod` CLI,
+alias repointed, domain registered properly — see §7's resolved entry). Phases 1, 2, 4, 5,
+6 (the backend `Sport` interface, verification pass, `/admin` itself, the DAG branch, and
 `ReplayScrubber`) are **still real and still exist in the working tree** — only the
 *public-facing* Phase 3/Phase 7 redesign work was reverted. Real gaps that remain, in
-priority order: (1) **the stuck-production-deploy mystery is unresolved** — push this
-session's commit and *actually check* (Vercel dashboard build log, not just `git push`
-succeeding) whether it reaches the live URL, since `028bc2e` demonstrably didn't; (2) the
-predictions-timeseries duplicate-row bug's real fix (append-time dedup) is still needed in
-the backend pipeline; (3) Render redeploy still pending (carried over, older issue); (4)
+priority order: (1) the predictions-timeseries duplicate-row bug's real fix (append-time
+dedup) is still needed in the backend pipeline; (2) **Render still not redeployed** — no
+Render API key, deploy hook, or CLI is configured on this machine, so this could not be
+triggered the way the Vercel deploy was; needs Dilip to click "Manual Deploy" on Render's
+dashboard, or supply a deploy-hook URL/API key for a future session to automate; (3)
 nothing from Phases 1/2/5/6 (the backend sport-plugin core, data-quality monitoring, DAG
-branch) has been committed — only this session's dashboard revert was; (5) §6's demo
+branch) has been committed — only this session's dashboard revert was; (4) §6's demo
 script is stale against actual `page.tsx` history, unrelated to this session, still unfixed.
 
 ---
