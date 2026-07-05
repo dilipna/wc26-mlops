@@ -58,7 +58,7 @@ export default function ExplainMatch({ teams }: { teams: TeamStatus[] }) {
       </div>
       <p className="mt-1 text-xs text-text-secondary">
         Real per-match Shapley values from the deployed serving API (<code className="font-mono">POST /explain</code>)
-        — genuine local interpretability ("why did the model say this, for this specific match"), not the global
+        — genuine local interpretability (&ldquo;why did the model say this, for this specific match&rdquo;), not the global
         feature importance above. Bars below show each feature&apos;s real contribution to the home team&apos;s win
         probability for the matchup selected.
       </p>
