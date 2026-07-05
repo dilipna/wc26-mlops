@@ -21,6 +21,7 @@ Run: python scripts/daily_update.py
 
 import csv
 import json
+import os
 import sys
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -74,7 +75,23 @@ def main():
     today = datetime.now(timezone.utc).date()
     print(f"=== Daily update: {today.isoformat()} ===")
 
-    print("Odds API quota:", odds_api.get_quota_status())
+    if not os.environ.get("ODDS_API_KEY"):
+        print(
+            "ODDS_API_KEY not set -- skipping live update; existing dashboard and "
+            "predictions data are unaffected. Set ODDS_API_KEY in .env to fetch new "
+            "results/odds (see .env.example)."
+        )
+        return
+
+    try:
+        print("Odds API quota:", odds_api.get_quota_status())
+    except Exception as exc:
+        print(
+            f"Odds API request failed ({exc}) -- likely an invalid/expired "
+            "ODDS_API_KEY or lapsed free-tier account. Skipping live update; "
+            "existing dashboard and predictions data are unaffected."
+        )
+        return
 
     score_events = odds_api.fetch_scores(days_from=3)
     added = live_results_store.append_new_results(score_events)

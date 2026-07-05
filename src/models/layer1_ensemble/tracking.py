@@ -9,10 +9,13 @@ tracking, not a dependency of producing predictions (see DECISIONS.md).
 import os
 import socket
 import sys
+from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 import mlflow
+import mlflow.artifacts
 import mlflow.sklearn
+from mlflow import MlflowClient
 
 # mlflow's fluent API prints run-summary lines containing emoji (e.g. "🏃
 # View run..."). Windows consoles default to a codepage (e.g. cp1252) that
@@ -67,6 +70,78 @@ def load_latest_stack():
     except Exception as exc:  # noqa: BLE001 -- best-effort, see module docstring
         print(f"[mlflow] registry load failed, training locally instead ({exc.__class__.__name__}: {exc})")
         return None, f"trained_locally (registry load failed: {exc.__class__.__name__})"
+
+
+def get_registry_info() -> dict | None:
+    """Best-effort lookup of the current registered model version -- for
+    the dashboard's model-registry card and the serving layer's
+    model_version field. Returns None (never raises) if MLflow is
+    unreachable or the model has no registered versions yet, same
+    best-effort philosophy as load_latest_stack above."""
+    uri = _tracking_uri()
+    if not _is_reachable(uri):
+        return None
+    try:
+        mlflow.set_tracking_uri(uri)
+        versions = MlflowClient().search_model_versions(f"name='{REGISTERED_MODEL_NAME}'")
+        if not versions:
+            return None
+        latest = max(versions, key=lambda v: int(v.version))
+        created_at = datetime.fromtimestamp(latest.creation_timestamp / 1000, tz=timezone.utc)
+        info = {
+            "version": latest.version,
+            "run_id": latest.run_id,
+            "created_at": created_at.isoformat(),
+            "params": {},
+            "metrics": {},
+            "ensemble_weights": {},
+        }
+        try:
+            run = MlflowClient().get_run(latest.run_id)
+            info["params"] = dict(run.data.params)
+            info["metrics"] = dict(run.data.metrics)
+        except Exception as exc:  # noqa: BLE001 -- run detail is a nice-to-have, not required
+            print(f"[mlflow] run detail lookup failed (non-fatal): {exc.__class__.__name__}: {exc}")
+        try:
+            info["ensemble_weights"] = mlflow.artifacts.load_dict(
+                f"runs:/{latest.run_id}/meta_learner_weights.json"
+            )
+        except Exception as exc:  # noqa: BLE001 -- artifact is a nice-to-have, not required
+            print(f"[mlflow] ensemble-weights artifact lookup failed (non-fatal): {exc.__class__.__name__}: {exc}")
+        return info
+    except Exception as exc:  # noqa: BLE001 -- best-effort, see module docstring
+        print(f"[mlflow] registry info lookup failed (non-fatal): {exc.__class__.__name__}: {exc}")
+        return None
+
+
+def relative_member_influence(ensemble_weights: dict) -> dict[str, float]:
+    """Derives a simple per-member "relative influence" from the
+    meta-learner's real logistic-regression coefficients (the
+    meta_learner_weights.json artifact returned in get_registry_info's
+    "ensemble_weights"): each base member (xgboost/elo_logreg/
+    fifa_heuristic) contributes one 3-class probability block to the
+    meta-learner's input, so summing |coefficient| over a member's block
+    across all output classes gives an honest, if coarse, stand-in for
+    "how much this member moves the final prediction" -- explicitly NOT
+    SHAP (see the dashboard Model Card); real numbers derived from the
+    actual fitted model, not fabricated. Returns {} if the shape is
+    missing/malformed (e.g. MLflow unreachable, so ensemble_weights={})."""
+    member_order = ensemble_weights.get("member_order")
+    coef = ensemble_weights.get("coef")
+    if not member_order or not coef:
+        return {}
+    n_members = len(member_order)
+    n_classes_per_member = len(coef[0]) // n_members
+    raw = {
+        member: sum(
+            abs(row[i * n_classes_per_member + j])
+            for row in coef
+            for j in range(n_classes_per_member)
+        )
+        for i, member in enumerate(member_order)
+    }
+    total = sum(raw.values()) or 1.0
+    return {member: value / total for member, value in raw.items()}
 
 
 def log_run(ensemble, run_name: str, params: dict, metrics: dict, register: bool = False) -> None:

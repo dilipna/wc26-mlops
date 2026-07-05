@@ -10,7 +10,10 @@ Run: uvicorn src.serving.app:app --host 0.0.0.0 --port 8000
 Docs: http://localhost:8000/docs
 """
 
+import os
 import sys
+import time
+import uuid
 from contextlib import asynccontextmanager
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -22,7 +25,18 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv()
 
 from fastapi import Depends, FastAPI, HTTPException, Request  # noqa: E402
+from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
+
+# Dashboard origins allowed to call this API directly from the browser (the
+# Live Inference Console). Portfolio project, so no auth/rate-limiting is
+# added here (see PROJECT_BRAIN.md), but CORS is deliberately scoped to
+# known dashboard origins rather than "*". Override/extend via env var.
+DEFAULT_DASHBOARD_ORIGINS = [
+    "https://fifa2026mlops.vercel.app",
+    "https://dashboard-hazel-kappa-52.vercel.app",
+    "http://localhost:3000",
+]
 
 from src.features.data_loading import load_fifa_rankings  # noqa: E402
 from src.features.team_timeline import build_timelines  # noqa: E402
@@ -51,6 +65,8 @@ class ModelState:
 
         stack, source = tracking.load_latest_stack()
         self.model_source = source
+        registry_info = tracking.get_registry_info()
+        self.model_version = f"v{registry_info['version']}" if registry_info else f"local-{self.today.isoformat()}"
         self.ensemble = Layer1Ensemble(
             self.matches,
             self.timelines,
@@ -96,6 +112,29 @@ app = FastAPI(
 )
 instrument(app)
 
+_dashboard_origins = os.environ.get("DASHBOARD_ORIGINS")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_dashboard_origins.split(",") if _dashboard_origins else DEFAULT_DASHBOARD_ORIGINS,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
+
+
+@app.middleware("http")
+async def request_metadata(request: Request, call_next):
+    """Every response carries a request ID and measured latency -- the
+    Live Inference Console on the dashboard reads these headers to show a
+    genuine round-trip (request ID, latency) instead of fabricated
+    inference metadata."""
+    request_id = str(uuid.uuid4())
+    start = time.perf_counter()
+    response = await call_next(request)
+    latency_ms = (time.perf_counter() - start) * 1000
+    response.headers["X-Request-ID"] = request_id
+    response.headers["X-Response-Time-Ms"] = f"{latency_ms:.1f}"
+    return response
+
 
 def get_model_state(request: Request) -> ModelState:
     return request.app.state.model_state
@@ -118,13 +157,19 @@ class PredictResponse(BaseModel):
     home_team: str
     away_team: str
     as_of: date
+    model_version: str
     model: OutcomeProbs
     baseline: OutcomeProbs
 
 
 @app.get("/health")
 def health(state: ModelState = Depends(get_model_state)):
-    return {"status": "ok", "model_source": state.model_source, "as_of": state.today.isoformat()}
+    return {
+        "status": "ok",
+        "model_source": state.model_source,
+        "model_version": state.model_version,
+        "as_of": state.today.isoformat(),
+    }
 
 
 @app.post("/predict", response_model=PredictResponse)
@@ -141,6 +186,7 @@ def predict(req: PredictRequest, state: ModelState = Depends(get_model_state)):
         home_team=home,
         away_team=away,
         as_of=as_of,
+        model_version=state.model_version,
         model=OutcomeProbs(home_win=p_win, draw=p_draw, away_win=p_loss),
         baseline=OutcomeProbs(home_win=b_win, draw=b_draw, away_win=b_loss),
     )
@@ -148,4 +194,5 @@ def predict(req: PredictRequest, state: ModelState = Depends(get_model_state)):
 
 @app.get("/champions")
 def champions(refresh: bool = False, state: ModelState = Depends(get_model_state)):
-    return state.champion_probabilities(refresh=refresh)
+    result = state.champion_probabilities(refresh=refresh)
+    return {**result, "model_version": state.model_version}

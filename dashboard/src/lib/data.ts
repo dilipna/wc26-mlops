@@ -5,6 +5,8 @@ import upcomingRaw from "../../data/upcoming_matches.json";
 import summaryRaw from "../../data/summary.json";
 import proofTrackerRaw from "../../data/proof_tracker.json";
 import teamsRaw from "../../data/teams.json";
+import modelRegistryRaw from "../../data/model_registry.json";
+import driftRaw from "../../data/drift.json";
 
 export type PredictionRow = {
   date: string;
@@ -87,12 +89,60 @@ export type TeamStatus = {
   current_probability: number | null;
 };
 
+export type ModelRegistry = {
+  registered_model_name: string;
+  feature_names: string[];
+  mlflow_reachable: boolean;
+  version: string | null;
+  run_id: string | null;
+  trained_at: string | null;
+  params: Record<string, string>;
+  metrics: Record<string, number>;
+  member_influence: Record<string, number>;
+};
+
+export type DriftColumnInfo = {
+  drift_detected: boolean;
+  drift_score: number;
+  stattest_name: string;
+};
+
+export type DriftSnapshot = {
+  generated_at: string;
+  reference_window: [string, string];
+  current_window: [string, string];
+  reference_rows: number;
+  current_rows: number;
+  dataset_drift: boolean;
+  share_of_drifted_columns: number;
+  number_of_drifted_columns: number;
+  number_of_columns: number;
+  columns: Record<string, DriftColumnInfo>;
+};
+
+export type DriftHistoryRow = {
+  generated_at: string;
+  reference_rows: string;
+  current_rows: string;
+  dataset_drift: string;
+  share_of_drifted_columns: string;
+  [key: string]: string; // per-feature `${col}_drift_score` / `${col}_drift_detected`
+};
+
+export type DriftData = {
+  latest: DriftSnapshot | null;
+  history: DriftHistoryRow[];
+};
+
 export const predictions = predictionsRaw as unknown as PredictionRow[];
 export const proofTracker = proofTrackerRaw as unknown as ProofTrackerData;
 export const teams = teamsRaw as unknown as TeamStatus[];
 export const backtest = backtestRaw as unknown as Record<string, BacktestYear>;
 export const results = resultsRaw as unknown as MatchResult[];
 export const upcomingMatches = upcomingRaw as unknown as UpcomingMatch[];
+export const modelRegistry = modelRegistryRaw as unknown as ModelRegistry;
+export const drift = driftRaw as unknown as DriftData;
+
 export const summary = summaryRaw as unknown as {
   generated_at: string;
   latest_predictions_date: string | null;

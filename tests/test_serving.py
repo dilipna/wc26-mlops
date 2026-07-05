@@ -19,6 +19,7 @@ class FakeState:
         self.timelines = {"France": object(), "Brazil": object()}
         self.today = date(2026, 7, 4)
         self.model_source = "trained_locally (test stub)"
+        self.model_version = "v42"
 
     def champion_probabilities(self, refresh=False):
         return {"as_of": self.today.isoformat(), "model_source": self.model_source, "probabilities": {"France": 0.4}}
@@ -32,6 +33,7 @@ def test_health():
     resp = client.get("/health")
     assert resp.status_code == 200
     assert resp.json()["status"] == "ok"
+    assert resp.json()["model_version"] == "v42"
 
 
 def test_predict_known_teams():
@@ -40,6 +42,7 @@ def test_predict_known_teams():
     body = resp.json()
     assert body["model"] == {"home_win": 0.5, "draw": 0.3, "away_win": 0.2}
     assert body["baseline"] == {"home_win": 0.5, "draw": 0.25, "away_win": 0.25}
+    assert body["model_version"] == "v42"
 
 
 def test_predict_unknown_team_404():
@@ -51,3 +54,18 @@ def test_champions():
     resp = client.get("/champions")
     assert resp.status_code == 200
     assert resp.json()["probabilities"]["France"] == 0.4
+    assert resp.json()["model_version"] == "v42"
+
+
+def test_response_carries_request_id_and_latency_headers():
+    resp = client.get("/health")
+    assert "X-Request-ID" in resp.headers
+    assert "X-Response-Time-Ms" in resp.headers
+    # two requests must get distinct request IDs
+    resp2 = client.get("/health")
+    assert resp.headers["X-Request-ID"] != resp2.headers["X-Request-ID"]
+
+
+def test_cors_allows_configured_dashboard_origin():
+    resp = client.get("/health", headers={"Origin": "https://fifa2026mlops.vercel.app"})
+    assert resp.headers.get("access-control-allow-origin") == "https://fifa2026mlops.vercel.app"
