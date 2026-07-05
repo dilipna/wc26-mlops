@@ -148,10 +148,13 @@ Legend: ✅ done and verified · 🚧 built but incomplete/unverified/needs work
   dashboard's Live Inference Console can call this API directly from the browser. Verified
   end-to-end: a real cross-origin POST from `Origin: http://localhost:3000` returns 200 with
   a genuine request ID, latency, and model version.
-- 🚧 Render deploy — first attempt (2026-07-04) failed on a dependency conflict (now fixed
-  and pushed, commit `3e704ae`). **Needs: retry the deploy on Render, then verify the live
-  URL** (and that `DASHBOARD_ORIGINS`/CORS is set correctly for the production dashboard
-  origin once it is retried).
+- ✅ Render deploy — **confirmed live 2026-07-05** at `https://wc26-serving.onrender.com`
+  (triggered via a deploy hook Dilip supplied; `/health` responds with a real, freshly
+  trained model). `NEXT_PUBLIC_SERVING_API_URL` now set on Vercel production and the
+  admin dashboard's System Health card confirms `healthy`. Still running whatever backend
+  code was last actually pushed (`028bc2e` / `3e704ae`-era `src/serving/app.py`) — the
+  newer uncommitted serving changes (`/feature-importance` endpoint, etc., see §11 Phase
+  4) aren't live yet; that's an honest, labeled gap on the admin dashboard, not a bug.
 
 **Chatbot** (floating widget, FIFA/match Q&A backed by this system's own data)
 - ⬜ Not built. No longer blocked — Anthropic API key received from Dilip 2026-07-04,
@@ -666,7 +669,7 @@ docker compose -f docker-compose.airflow.yml up -d   # Postgres + Airflow + MLfl
 
 # LIVE PUBLIC URLS:
 # Dashboard: https://fifa2026mlops.vercel.app (also https://dashboard-hazel-kappa-52.vercel.app)
-# FastAPI serving: pending Render deploy retry (fix pushed, commit 3e704ae -- see §3 item)
+# FastAPI serving: https://wc26-serving.onrender.com (confirmed live 2026-07-05, see §3)
 ```
 Requires: Python 3.10 (pandas, numpy, sklearn, xgboost, mlflow, fastapi, uvicorn,
 opentelemetry-*, optuna, evidently, supabase -- see requirements.txt or requirements-lock.txt),
@@ -993,17 +996,30 @@ sport switcher/Eval table.
 to what's actually live (matching `3e704ae`), plus one real addition (the Admin Dashboard
 nav button) and one real fix (the predictions-timeseries dedup) — **and this time it's
 actually confirmed live** at `fifa2026mlops.vercel.app` (deployed via `vercel --prod` CLI,
-alias repointed, domain registered properly — see §7's resolved entry). Phases 1, 2, 4, 5,
-6 (the backend `Sport` interface, verification pass, `/admin` itself, the DAG branch, and
-`ReplayScrubber`) are **still real and still exist in the working tree** — only the
-*public-facing* Phase 3/Phase 7 redesign work was reverted. Real gaps that remain, in
-priority order: (1) the predictions-timeseries duplicate-row bug's real fix (append-time
-dedup) is still needed in the backend pipeline; (2) **Render still not redeployed** — no
-Render API key, deploy hook, or CLI is configured on this machine, so this could not be
-triggered the way the Vercel deploy was; needs Dilip to click "Manual Deploy" on Render's
-dashboard, or supply a deploy-hook URL/API key for a future session to automate; (3)
-nothing from Phases 1/2/5/6 (the backend sport-plugin core, data-quality monitoring, DAG
-branch) has been committed — only this session's dashboard revert was; (4) §6's demo
+alias repointed, domain registered properly — see §7's resolved entry). **Render is also
+now confirmed live**: Dilip supplied the deploy hook URL
+(`https://api.render.com/deploy/srv-d94kfvkvikkc73cjl1lg?key=...` — the key itself is not
+recorded here; if a future session needs it, ask Dilip rather than searching this file) —
+triggering it (`curl "<hook-url>"`) returned `202 Accepted`, and
+`https://wc26-serving.onrender.com/health` responded with a fresh `model_version:
+"local-2026-07-05"`. Also set `NEXT_PUBLIC_SERVING_API_URL=https://wc26-serving.onrender.com`
+as a **Vercel production env var** (there were previously zero env vars configured — this
+is why the admin dashboard's System Health card showed "unreachable" even though nothing
+was actually broken) and redeployed; confirmed live via `curl` that the admin page now
+shows `healthy` for the Serving API card. One remaining honest gap, not a regression:
+Training section's live feature-importance card shows "unavailable, serving API
+unreachable" — that's correct, because `GET /feature-importance` (Phase 4, §11) only
+exists in the *uncommitted* `src/serving/app.py` changes, never pushed to Render; it'll
+start working once that backend work is committed and deployed (see gap list below).
+
+Phases 1, 2, 4, 5, 6 (the backend `Sport` interface, verification pass, `/admin` itself,
+the DAG branch, and `ReplayScrubber`) are **still real and still exist in the working
+tree** — only the *public-facing* Phase 3/Phase 7 redesign work was reverted. Real gaps
+that remain, in priority order: (1) the predictions-timeseries duplicate-row bug's real
+fix (append-time dedup) is still needed in the backend pipeline; (2) nothing from Phases
+1/2/5/6 (the backend sport-plugin core, data-quality monitoring, DAG branch, the new
+`/feature-importance` endpoint) has been committed — only this session's dashboard revert
+was, so Render is running an older backend than what's in the working tree; (3) §6's demo
 script is stale against actual `page.tsx` history, unrelated to this session, still unfixed.
 
 ---
