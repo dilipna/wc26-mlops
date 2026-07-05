@@ -15,6 +15,15 @@ class FakeEnsemble:
     def xgb_feature_importance(self):
         return {"elo_diff": 0.6, "rank_points_diff": 0.4}
 
+    def shap_values_for_match(self, team_a, team_b, as_of, neutral=True):
+        return {
+            "team_a": team_a,
+            "team_b": team_b,
+            "base_values": {"loss": 0.3, "draw": 0.3, "win": 0.4},
+            "feature_values": {"elo_diff": 120.0},
+            "shap_values": {"elo_diff": {"loss": -0.1, "draw": -0.05, "win": 0.15}},
+        }
+
 
 class FakeState:
     def __init__(self):
@@ -75,6 +84,21 @@ def test_feature_importance():
     body = resp.json()
     assert body["importances"] == {"elo_diff": 0.6, "rank_points_diff": 0.4}
     assert body["model_version"] == "v42"
+
+
+def test_explain_known_teams():
+    resp = client.post("/explain", json={"home_team": "France", "away_team": "Brazil"})
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["team_a"] == "France"
+    assert body["team_b"] == "Brazil"
+    assert body["shap_values"]["elo_diff"]["win"] == 0.15
+    assert body["model_version"] == "v42"
+
+
+def test_explain_unknown_team_404():
+    resp = client.post("/explain", json={"home_team": "Wakanda", "away_team": "Brazil"})
+    assert resp.status_code == 404
 
 
 def test_cors_allows_configured_dashboard_origin():

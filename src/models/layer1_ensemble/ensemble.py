@@ -156,6 +156,48 @@ class Layer1Ensemble:
         p_loss, p_draw, p_win = self.baseline_match_probs(team_a, team_b, as_of, neutral=True)
         return p_win + 0.5 * p_draw
 
+    def shap_values_for_match(
+        self, team_a: str, team_b: str, as_of: date, neutral: bool = True, background_size: int = 100
+    ) -> dict:
+        """Real, per-match Shapley contributions to Layer 1's blended
+        (loss, draw, win) probabilities for team_a -- genuine LOCAL
+        interpretability ("why did the model say this, for this specific
+        match"), the actual gap named in CLAUDE.md ("SHAP values on Layer
+        1 to explain individual probability shifts"). Distinct from
+        xgb_feature_importance() below, which is GLOBAL and XGBoost-only.
+
+        Uses a model-agnostic Exact explainer against the full stack's
+        predict_proba (all 3 members + meta-learner), not
+        shap.TreeExplainer(self.xgb) -- verified directly that
+        TreeExplainer raises ValueError on this xgboost version for
+        multi-class models (xgboost 3.x stores multi:softprob's
+        base_score as a per-class array; shap's XGBoost JSON loader
+        expects a scalar). Exact is model-agnostic so it sidesteps that
+        parsing entirely, and with only 6 features it's exact (64
+        coalitions evaluated), not a sampling approximation.
+        """
+        import shap
+
+        row = build_feature_row(team_a, team_b, as_of, self.timelines, self.rankings, neutral)
+        x_row = np.array(row).reshape(1, -1)
+        background = shap.sample(self.X_train_, min(background_size, len(self.X_train_)), random_state=0)
+        explainer = shap.explainers.Exact(self.stack.predict_proba, background)
+        explanation = explainer(x_row)
+
+        values = explanation.values[0]  # (n_features, 3) -> [loss, draw, win]
+        base = explanation.base_values[0]
+        outcomes = ["loss", "draw", "win"]
+        return {
+            "team_a": team_a,
+            "team_b": team_b,
+            "base_values": {o: float(base[i]) for i, o in enumerate(outcomes)},
+            "feature_values": dict(zip(FEATURE_NAMES, (float(v) for v in row))),
+            "shap_values": {
+                name: {o: float(values[f][i]) for i, o in enumerate(outcomes)}
+                for f, name in enumerate(FEATURE_NAMES)
+            },
+        }
+
     def xgb_feature_importance(self) -> dict[str, float]:
         """The fitted XGBoost member's real `feature_importances_` (gain-
         based, xgboost's default), mapped to FEATURE_NAMES -- for the admin
