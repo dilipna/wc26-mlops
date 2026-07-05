@@ -9,3 +9,4 @@ data/live/*
 !data/live/.gitkeep
 !data/live/results_log.csv
 data/monitoring/*.html
+.vercel
