@@ -134,3 +134,39 @@ date,team,win_probability,model_version
 2026-07-05,Morocco,0.0115,heuristic_l2_montecarlo_v1
 2026-07-05,France,0.2631,heuristic_l2_montecarlo_v1
 2026-07-05,Norway,0.0,heuristic_l2_montecarlo_v1
+2026-07-06,France,0.3364275562221635,bookmaker_outright_baseline_v1
+2026-07-06,Argentina,0.16116854493343594,bookmaker_outright_baseline_v1
+2026-07-06,England,0.138044626627564,bookmaker_outright_baseline_v1
+2026-07-06,Spain,0.12925517582128576,bookmaker_outright_baseline_v1
+2026-07-06,Portugal,0.06371734019359157,bookmaker_outright_baseline_v1
+2026-07-06,Norway,0.04883211282063488,bookmaker_outright_baseline_v1
+2026-07-06,Colombia,0.03402926080668736,bookmaker_outright_baseline_v1
+2026-07-06,United States,0.02698616761140349,bookmaker_outright_baseline_v1
+2026-07-06,Morocco,0.028562945604023806,bookmaker_outright_baseline_v1
+2026-07-06,Belgium,0.01774317013335135,bookmaker_outright_baseline_v1
+2026-07-06,Switzerland,0.0116763402359474,bookmaker_outright_baseline_v1
+2026-07-06,Egypt,0.0035567589899109324,bookmaker_outright_baseline_v1
+2026-07-06,Portugal,0.0502,stacked_l2_montecarlo_v1
+2026-07-06,Argentina,0.254,stacked_l2_montecarlo_v1
+2026-07-06,Switzerland,0.022,stacked_l2_montecarlo_v1
+2026-07-06,Egypt,0.0031,stacked_l2_montecarlo_v1
+2026-07-06,England,0.113,stacked_l2_montecarlo_v1
+2026-07-06,France,0.1884,stacked_l2_montecarlo_v1
+2026-07-06,Spain,0.1782,stacked_l2_montecarlo_v1
+2026-07-06,Belgium,0.0399,stacked_l2_montecarlo_v1
+2026-07-06,United States,0.0019,stacked_l2_montecarlo_v1
+2026-07-06,Colombia,0.0553,stacked_l2_montecarlo_v1
+2026-07-06,Norway,0.0386,stacked_l2_montecarlo_v1
+2026-07-06,Morocco,0.0554,stacked_l2_montecarlo_v1
+2026-07-06,Portugal,0.0245,heuristic_l2_montecarlo_v1
+2026-07-06,Argentina,0.3108,heuristic_l2_montecarlo_v1
+2026-07-06,Switzerland,0.0022,heuristic_l2_montecarlo_v1
+2026-07-06,Egypt,0.0002,heuristic_l2_montecarlo_v1
+2026-07-06,England,0.207,heuristic_l2_montecarlo_v1
+2026-07-06,France,0.2546,heuristic_l2_montecarlo_v1
+2026-07-06,Spain,0.1166,heuristic_l2_montecarlo_v1
+2026-07-06,Belgium,0.0452,heuristic_l2_montecarlo_v1
+2026-07-06,United States,0.0013,heuristic_l2_montecarlo_v1
+2026-07-06,Colombia,0.0245,heuristic_l2_montecarlo_v1
+2026-07-06,Norway,0.0003,heuristic_l2_montecarlo_v1
+2026-07-06,Morocco,0.0128,heuristic_l2_montecarlo_v1
