@@ -7,7 +7,7 @@
   {
     "team": "Argentina",
     "status": "alive",
-    "current_probability": 0.254
+    "current_probability": 0.2432
   },
   {
     "team": "Australia",
@@ -22,7 +22,7 @@
   {
     "team": "Belgium",
     "status": "alive",
-    "current_probability": 0.0399
+    "current_probability": 0.0492
   },
   {
     "team": "Bosnia and Herzegovina",
@@ -47,7 +47,7 @@
   {
     "team": "Colombia",
     "status": "alive",
-    "current_probability": 0.0553
+    "current_probability": 0.0513
   },
   {
     "team": "Croatia",
@@ -77,17 +77,17 @@
   {
     "team": "Egypt",
     "status": "alive",
-    "current_probability": 0.0031
+    "current_probability": 0.0029
   },
   {
     "team": "England",
     "status": "alive",
-    "current_probability": 0.113
+    "current_probability": 0.1129
   },
   {
     "team": "France",
     "status": "alive",
-    "current_probability": 0.1884
+    "current_probability": 0.1718
   },
   {
     "team": "Germany",
@@ -137,7 +137,7 @@
   {
     "team": "Morocco",
     "status": "alive",
-    "current_probability": 0.0554
+    "current_probability": 0.0454
   },
   {
     "team": "Netherlands",
@@ -152,7 +152,7 @@
   {
     "team": "Norway",
     "status": "alive",
-    "current_probability": 0.0386
+    "current_probability": 0.0351
   },
   {
     "team": "Panama",
@@ -166,8 +166,8 @@
   },
   {
     "team": "Portugal",
-    "status": "alive",
-    "current_probability": 0.0502
+    "status": "eliminated",
+    "current_probability": null
   },
   {
     "team": "Qatar",
@@ -202,7 +202,7 @@
   {
     "team": "Spain",
     "status": "alive",
-    "current_probability": 0.1782
+    "current_probability": 0.2659
   },
   {
     "team": "Sweden",
@@ -212,7 +212,7 @@
   {
     "team": "Switzerland",
     "status": "alive",
-    "current_probability": 0.022
+    "current_probability": 0.0223
   },
   {
     "team": "Tunisia",
@@ -226,8 +226,8 @@
   },
   {
     "team": "United States",
-    "status": "alive",
-    "current_probability": 0.0019
+    "status": "eliminated",
+    "current_probability": null
   },
   {
     "team": "Uruguay",
