@@ -22,7 +22,7 @@
   {
     "team": "Belgium",
     "status": "alive",
-    "current_probability": 0.0463
+    "current_probability": 0.0462
   },
   {
     "team": "Bosnia and Herzegovina",
@@ -82,12 +82,12 @@
   {
     "team": "England",
     "status": "alive",
-    "current_probability": 0.1062
+    "current_probability": 0.1061
   },
   {
     "team": "France",
     "status": "alive",
-    "current_probability": 0.167
+    "current_probability": 0.1671
   },
   {
     "team": "Germany",
@@ -202,7 +202,7 @@
   {
     "team": "Spain",
     "status": "alive",
-    "current_probability": 0.2586
+    "current_probability": 0.2587
   },
   {
     "team": "Sweden",
