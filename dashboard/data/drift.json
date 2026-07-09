@@ -1,13 +1,13 @@
 {
   "latest": {
-    "generated_at": "2026-07-08",
+    "generated_at": "2026-07-09",
     "reference_window": [
       "2016-01-01",
       "2026-01-01"
     ],
     "current_window": [
       "2026-01-01",
-      "2026-07-08"
+      "2026-07-09"
     ],
     "reference_rows": 19282,
     "current_rows": 822,
@@ -131,6 +131,23 @@
     },
     {
       "generated_at": "2026-07-08",
+      "reference_rows": "19282",
+      "current_rows": "822",
+      "dataset_drift": "False",
+      "share_of_drifted_columns": "0.2",
+      "elo_diff_drift_score": "0.1021560761069513",
+      "elo_diff_drift_detected": "True",
+      "form_goals_against_diff_drift_score": "0.0899948033409884",
+      "form_goals_against_diff_drift_detected": "False",
+      "form_goals_for_diff_drift_score": "0.06665413080155227",
+      "form_goals_for_diff_drift_detected": "False",
+      "form_win_rate_diff_drift_score": "0.02806010197924747",
+      "form_win_rate_diff_drift_detected": "False",
+      "rank_points_diff_drift_score": "0.09240943299086908",
+      "rank_points_diff_drift_detected": "False"
+    },
+    {
+      "generated_at": "2026-07-09",
       "reference_rows": "19282",
       "current_rows": "822",
       "dataset_drift": "False",
