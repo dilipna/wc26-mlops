@@ -1,39 +1,39 @@
 {
-  "generated_at": "2026-07-10T09:34:18.000033+00:00",
-  "latest_predictions_date": "2026-07-10",
+  "generated_at": "2026-07-11T07:54:59.546986+00:00",
+  "latest_predictions_date": "2026-07-11",
   "primary_series": "stacked_l2_montecarlo_v1",
   "top_favorites": [
     {
-      "date": "2026-07-10",
-      "team": "France",
-      "win_probability": 0.288,
-      "model_version": "stacked_l2_montecarlo_v1"
-    },
-    {
-      "date": "2026-07-10",
-      "team": "Argentina",
-      "win_probability": 0.2818,
-      "model_version": "stacked_l2_montecarlo_v1"
-    },
-    {
-      "date": "2026-07-10",
+      "date": "2026-07-11",
       "team": "Spain",
-      "win_probability": 0.2225,
+      "win_probability": 0.3276,
       "model_version": "stacked_l2_montecarlo_v1"
     },
     {
-      "date": "2026-07-10",
+      "date": "2026-07-11",
+      "team": "Argentina",
+      "win_probability": 0.2804,
+      "model_version": "stacked_l2_montecarlo_v1"
+    },
+    {
+      "date": "2026-07-11",
+      "team": "France",
+      "win_probability": 0.2407,
+      "model_version": "stacked_l2_montecarlo_v1"
+    },
+    {
+      "date": "2026-07-11",
       "team": "England",
-      "win_probability": 0.1,
+      "win_probability": 0.0907,
       "model_version": "stacked_l2_montecarlo_v1"
     },
     {
-      "date": "2026-07-10",
+      "date": "2026-07-11",
       "team": "Switzerland",
-      "win_probability": 0.0392,
+      "win_probability": 0.0343,
       "model_version": "stacked_l2_montecarlo_v1"
     }
   ],
-  "completed_results_count": 97,
+  "completed_results_count": 98,
   "upcoming_matches_count": 3
 }
