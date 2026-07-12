@@ -1,47 +1,32 @@
 [
   {
-    "commence_time": "2026-07-11T21:00:00Z",
-    "home_team": "Norway",
-    "away_team": "England",
-    "model": {
-      "home_win": 0.2114405810593654,
-      "draw": 0.2749546404134717,
-      "away_win": 0.5136047785271629
-    },
-    "bookmaker": {
-      "England": 0.493568012418173,
-      "Norway": 0.24675566174929736,
-      "Draw": 0.2596763258325297
-    }
-  },
-  {
-    "commence_time": "2026-07-12T01:00:00Z",
-    "home_team": "Argentina",
-    "away_team": "Switzerland",
-    "model": {
-      "home_win": 0.6112359013714286,
-      "draw": 0.24997046608824816,
-      "away_win": 0.1387936325403234
-    },
-    "bookmaker": {
-      "Argentina": 0.5633055778236091,
-      "Switzerland": 0.16901477147802163,
-      "Draw": 0.2676796506983692
-    }
-  },
-  {
     "commence_time": "2026-07-14T19:00:00Z",
     "home_team": "France",
     "away_team": "Spain",
     "model": {
-      "home_win": 0.29441035565854784,
-      "draw": 0.3074550874862714,
-      "away_win": 0.3981345568551808
+      "home_win": 0.2944404100558853,
+      "draw": 0.30737749130498443,
+      "away_win": 0.39818209863913034
     },
     "bookmaker": {
-      "France": 0.40670599641061167,
-      "Spain": 0.3005076215659702,
-      "Draw": 0.2927863820234181
+      "France": 0.4149086918902975,
+      "Spain": 0.2896132769181867,
+      "Draw": 0.29547803119151567
+    }
+  },
+  {
+    "commence_time": "2026-07-15T19:00:00Z",
+    "home_team": "England",
+    "away_team": "Argentina",
+    "model": {
+      "home_win": 0.19820221879864253,
+      "draw": 0.2607137427873977,
+      "away_win": 0.5410840384139598
+    },
+    "bookmaker": {
+      "Argentina": 0.30983707085830137,
+      "England": 0.3772692028221859,
+      "Draw": 0.31289372631951284
     }
   }
 ]
