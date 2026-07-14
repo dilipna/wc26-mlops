@@ -22,7 +22,7 @@ export default function FavoritesLeaderboard({ favorites }: { favorites: Predict
           <div className="font-mono text-sm text-foreground/35">0{i + 1}</div>
           <div
             className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-foreground/10 font-mono text-[11px] text-foreground/60"
-            style={{ background: "#171510" }}
+            style={{ background: "var(--card-alt)" }}
           >
             {teamCode(row.team)}
           </div>

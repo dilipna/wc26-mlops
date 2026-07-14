@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Big_Shoulders, IBM_Plex_Mono, Lora, Manrope } from "next/font/google";
+import { Big_Shoulders, IBM_Plex_Mono, Lora, Space_Grotesk } from "next/font/google";
 import "flag-icons/css/flag-icons.min.css";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
-  weight: ["400", "500", "600", "700", "800"],
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  weight: ["400", "500", "700"],
   subsets: ["latin"],
 });
 
@@ -42,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${bigShoulders.variable} ${plexMono.variable} ${lora.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${bigShoulders.variable} ${plexMono.variable} ${lora.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
