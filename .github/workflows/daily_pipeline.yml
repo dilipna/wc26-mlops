@@ -75,7 +75,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/ dashboard/data/ reports/
+          git add data/ dashboard/data/
+          # reports/ only exists once check_drift (continue-on-error) has
+          # succeeded at least once -- don't let a missing dir fail the commit
+          git add reports/ 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No data changes to commit"
