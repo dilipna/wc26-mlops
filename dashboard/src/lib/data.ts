@@ -1,4 +1,5 @@
 import predictionsRaw from "../../data/predictions_timeseries.json";
+import proofLedgerRaw from "../../data/proof_ledger.json";
 import backtestRaw from "../../data/backtest.json";
 import resultsRaw from "../../data/results.json";
 import upcomingRaw from "../../data/upcoming_matches.json";
@@ -180,7 +181,64 @@ export type TrainingRun = {
   metrics: Record<string, number>;
 };
 
+export type LedgerProvenance = {
+  recorded_pre_match: boolean;
+  first_public_commit: string;
+  committed_at: string;
+  file: string;
+  committed_model_probs: Record<OutcomeKey, number>;
+  github_url: string;
+  github_commit_url: string;
+};
+
+export type LedgerEntry = {
+  id: string;
+  match: { home_team: string; away_team: string; commence_time: string };
+  prediction: {
+    logged_at: string | null;
+    model: Record<OutcomeKey, number>;
+    market: Record<OutcomeKey, number> | null;
+    model_pick: OutcomeKey;
+    market_pick: OutcomeKey | null;
+    disagreement: boolean;
+    divergence: number | null;
+  };
+  result: { home_score: number; away_score: number; actual_outcome: OutcomeKey } | null;
+  grading: {
+    model_correct: boolean;
+    market_correct: boolean | null;
+    model_brier: number;
+    market_brier: number | null;
+  } | null;
+  provenance: LedgerProvenance | null;
+  note?: string;
+  prev_hash: string;
+  entry_hash: string;
+};
+
+export type ProofLedger = {
+  version: string;
+  generated_at: string;
+  repo: string;
+  how_to_verify: string[];
+  summary: {
+    n_entries: number;
+    n_graded: number;
+    n_pending: number;
+    model_accuracy: number | null;
+    market_accuracy: number | null;
+    model_avg_brier: number | null;
+    market_avg_brier: number | null;
+    n_disagreements: number;
+    model_won_disagreements: number;
+    best_call: string | null;
+    n_with_git_provenance: number;
+  };
+  entries: LedgerEntry[];
+};
+
 export const predictions = predictionsRaw as unknown as PredictionRow[];
+export const proofLedger = proofLedgerRaw as unknown as ProofLedger;
 export const dataQuality = dataQualityRaw as unknown as DataQualityData;
 export const systemHealth = systemHealthRaw as unknown as SystemHealth;
 export const trainingHistory = trainingHistoryRaw as unknown as TrainingRun[];
