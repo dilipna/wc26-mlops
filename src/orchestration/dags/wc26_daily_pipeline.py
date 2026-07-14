@@ -76,6 +76,14 @@ with DAG(
         bash_command=f"cd {PROJECT_DIR} && python scripts/check_data_quality.py",
     )
 
-    daily_update >> verify_predictions >> export_dashboard_data
+    # Runs after export_dashboard_data because the ledger reads the freshly
+    # exported upcoming_matches.json (pending fixtures) alongside the graded
+    # proof_tracker.json -- see scripts/build_proof_ledger.py.
+    build_proof_ledger = BashOperator(
+        task_id="build_proof_ledger",
+        bash_command=f"cd {PROJECT_DIR} && python scripts/build_proof_ledger.py",
+    )
+
+    daily_update >> verify_predictions >> export_dashboard_data >> build_proof_ledger
     daily_update >> check_drift
     daily_update >> check_data_quality

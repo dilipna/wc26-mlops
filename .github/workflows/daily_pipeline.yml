@@ -21,6 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: build_proof_ledger.py walks the commit history of
+          # dashboard/data/upcoming_matches.json to attach pre-kickoff git
+          # provenance (commit SHA + timestamp) to every ledger entry.
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -54,12 +59,23 @@ jobs:
       - name: Export dashboard data
         run: python scripts/export_dashboard_data.py
 
+      - name: Build tamper-evident prediction ledger
+        # After the export: the ledger reads the freshly exported
+        # upcoming_matches.json + proof_tracker.json, then attaches git
+        # provenance from the public commit history. Committing it below
+        # extends the SHA-signed, chronological public proof trail.
+        run: python scripts/build_proof_ledger.py
+
+      - name: Generate final retrospective (auto-fires once per completed sport)
+        continue-on-error: true # post-tournament artifact, must never block the daily run
+        run: python scripts/generate_retrospective.py
+
       - name: Commit and push refreshed data
         id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/ dashboard/data/
+          git add data/ dashboard/data/ reports/
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No data changes to commit"
