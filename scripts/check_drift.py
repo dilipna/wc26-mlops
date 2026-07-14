@@ -26,6 +26,11 @@ from src.ingestion import live_results_store  # noqa: E402
 from src.monitoring.drift_report import feature_frame, run_drift_report, summarize  # noqa: E402
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "data" / "monitoring"
+# Dated, git-tracked copy of the full Evidently HTML report -- one per
+# pipeline day, committed by the daily GitHub Actions workflow so the
+# drift-report history is public and auditable (data/monitoring/*.html
+# stays gitignored as the un-dated scratch copy).
+REPORTS_DIR = Path(__file__).resolve().parent.parent / "reports" / "drift"
 HISTORY_PATH = OUT_DIR / "drift_history.csv"
 REFERENCE_START = date(2016, 1, 1)
 TOURNAMENT_START = date(2026, 1, 1)
@@ -83,6 +88,8 @@ def main():
         )
     )
     report.save_html(str(OUT_DIR / "drift_report.html"))
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    report.save_html(str(REPORTS_DIR / f"{today.isoformat()}.html"))
     append_history(today.isoformat(), len(reference), len(current), summary)
 
     print(

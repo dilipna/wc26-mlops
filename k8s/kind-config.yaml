@@ -1,0 +1,21 @@
+# kind cluster for the WC26 stack (Tier 2 -- local cluster by design, per
+# CLAUDE.md: "a local cluster (kind or minikube) is expected and fine").
+#
+# ${PROJECT_DIR} is substituted with the repo root by `make k8s-up` -- the
+# repo is mounted into the kind node so the Airflow pods can bind-mount
+# the project read-write exactly like docker-compose.airflow.yml does.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: wc26
+nodes:
+  - role: control-plane
+    extraMounts:
+      - hostPath: ${PROJECT_DIR}
+        containerPath: /project
+    extraPortMappings:
+      - containerPort: 30080 # airflow webserver NodePort
+        hostPort: 8081
+      - containerPort: 30500 # mlflow NodePort
+        hostPort: 5001
+      - containerPort: 30800 # serving API NodePort
+        hostPort: 8001
