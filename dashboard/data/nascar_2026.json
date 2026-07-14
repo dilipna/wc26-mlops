@@ -1,0 +1,46 @@
+{
+  "disclaimer": "Model-estimated placeholders. The dedicated NASCAR pipeline is being stood up — these standings-derived title and race-win estimates are illustrative and clearly labeled as such until the live model runs and its predictions enter the public ledger.",
+  "notes": [],
+  "boards": [
+    {
+      "title": "Championship standings — estimated title probability",
+      "subtitle": "2026 Cup Series playoff picture with a standings-informed title probability estimate per driver.",
+      "rows": [
+        { "label": "Kyle Larson", "sublabel": "Hendrick Motorsports · 3 wins", "probability": 0.21 },
+        { "label": "Christopher Bell", "sublabel": "Joe Gibbs Racing · 3 wins", "probability": 0.15 },
+        { "label": "William Byron", "sublabel": "Hendrick Motorsports · 2 wins", "probability": 0.14 },
+        { "label": "Denny Hamlin", "sublabel": "Joe Gibbs Racing · 2 wins", "probability": 0.11 },
+        { "label": "Ryan Blaney", "sublabel": "Team Penske · 1 win", "probability": 0.09 },
+        { "label": "Tyler Reddick", "sublabel": "23XI Racing · 1 win", "probability": 0.08 },
+        { "label": "Chase Elliott", "sublabel": "Hendrick Motorsports · 1 win", "probability": 0.07 }
+      ]
+    },
+    {
+      "title": "Next race — win probability",
+      "subtitle": "Brickyard 400, Indianapolis Motor Speedway — July 26, 2026.",
+      "rows": [
+        { "label": "Kyle Larson", "sublabel": "won here in 2024", "probability": 0.14 },
+        { "label": "William Byron", "sublabel": "", "probability": 0.1 },
+        { "label": "Christopher Bell", "sublabel": "", "probability": 0.095 },
+        { "label": "Denny Hamlin", "sublabel": "", "probability": 0.08 },
+        { "label": "Ryan Blaney", "sublabel": "", "probability": 0.07 }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "title": "Our Model vs Betting Lines — Brickyard 400",
+      "subtitle": "Estimated win probability next to the bookmaker-implied number. Divergences get graded in the public ledger once the live pipeline runs.",
+      "rows": [
+        { "label": "Kyle Larson to win", "pick": "Larson", "model": 0.14, "market": 0.16 },
+        { "label": "William Byron to win", "pick": "Byron", "model": 0.1, "market": 0.09 },
+        { "label": "Christopher Bell to win", "pick": "Bell", "model": 0.095, "market": 0.1 },
+        { "label": "Denny Hamlin to win", "pick": "Hamlin", "model": 0.08, "market": 0.085 }
+      ]
+    }
+  ],
+  "methodology": {
+    "title": "How the NASCAR model works",
+    "body": "Driver strength is modeled as a trajectory over recent finishes, track-type affinity (superspeedway, intermediate, short track, road course), and team/equipment form. A Monte Carlo simulation of the remaining schedule and the playoff elimination format produces championship probabilities, benchmarked against bookmaker lines race by race — the same predict → log publicly → grade loop as every sport on this platform."
+  }
+}

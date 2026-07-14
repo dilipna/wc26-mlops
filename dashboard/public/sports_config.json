@@ -1,0 +1,31 @@
+{
+  "sports": [
+    {
+      "id": "fifa_wc26",
+      "name": "FIFA World Cup 2026",
+      "short": "FIFA",
+      "path": "/",
+      "is_active": true,
+      "is_live": true,
+      "end_date": "2026-07-19",
+      "start_date": "2026-06-11"
+    },
+    {
+      "id": "nfl_2026",
+      "name": "NFL 2026 Season",
+      "short": "NFL",
+      "path": "/nfl",
+      "is_active": true,
+      "is_live": false,
+      "start_date": "2026-09-10"
+    },
+    {
+      "id": "nascar_2026",
+      "name": "NASCAR Cup Series 2026",
+      "short": "NASCAR",
+      "path": "/nascar",
+      "is_active": true,
+      "is_live": true
+    }
+  ]
+}

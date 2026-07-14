@@ -1,0 +1,36 @@
+{
+  "disclaimer": "Preseason placeholder estimates. The NFL model pipeline goes live with Week 1 on September 10, 2026 — until then, every number on this page is an illustrative, market-informed prior, not live model output. It is labeled this way on purpose: this platform never presents fabricated numbers as real predictions.",
+  "notes": ["Live predictions begin Week 1 — September 10, 2026"],
+  "boards": [
+    {
+      "title": "Preseason title probability leaderboard",
+      "subtitle": "Super Bowl LXI title probabilities — preseason estimates, refreshed when the live pipeline starts.",
+      "rows": [
+        { "label": "Kansas City Chiefs", "sublabel": "AFC West", "probability": 0.11 },
+        { "label": "Buffalo Bills", "sublabel": "AFC East", "probability": 0.09 },
+        { "label": "Philadelphia Eagles", "sublabel": "NFC East", "probability": 0.085 },
+        { "label": "San Francisco 49ers", "sublabel": "NFC West", "probability": 0.075 },
+        { "label": "Baltimore Ravens", "sublabel": "AFC North", "probability": 0.07 },
+        { "label": "Detroit Lions", "sublabel": "NFC North", "probability": 0.065 },
+        { "label": "Green Bay Packers", "sublabel": "NFC North", "probability": 0.05 },
+        { "label": "Cincinnati Bengals", "sublabel": "AFC North", "probability": 0.045 }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "title": "Our Model vs Vegas — opening matchups",
+      "subtitle": "Illustrative Week 1 matchups. The two columns will diverge once the live model runs — that divergence, graded after each game, is the whole point of this platform.",
+      "rows": [
+        { "label": "Cowboys at Eagles — Week 1", "pick": "Eagles", "model": 0.62, "market": 0.64 },
+        { "label": "Chiefs at Chargers — Week 1", "pick": "Chiefs", "model": 0.57, "market": 0.6 },
+        { "label": "Ravens at Bills — Week 1", "pick": "Bills", "model": 0.54, "market": 0.52 },
+        { "label": "Lions at Packers — Week 1", "pick": "Lions", "model": 0.51, "market": 0.55 }
+      ]
+    }
+  ],
+  "methodology": {
+    "title": "How the NFL model will work",
+    "body": "Same two-layer architecture as the World Cup system: Layer 1 scores each game from team strength trajectories (an Elo-style rating updated weekly, rolling offensive/defensive form, rest days, home advantage) blended in a stacked ensemble; Layer 2 simulates the remaining season and playoff bracket thousands of times to produce title probabilities. Every prediction is logged to the tamper-evident public ledger before kickoff and graded against the closing Vegas line after each game — identical to the FIFA proof system."
+  }
+}
