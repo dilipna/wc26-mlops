@@ -31,11 +31,17 @@ const GROUPS: { label: string; items: string[] }[] = [
   },
   {
     label: "MLOps Infrastructure",
-    items: ["Airflow", "Docker", "MLflow", "Supabase"],
+    items: [
+      "Airflow",
+      "Docker",
+      "MLflow",
+      "Supabase",
+      "FastAPI + OpenTelemetry — live serving API",
+      "Evidently — daily drift reports",
+      "Kubernetes — local kind cluster",
+    ],
   },
 ];
-
-const COMING_NEXT = ["FastAPI + OpenTelemetry", "Evidently (drift monitoring)", "Kubernetes (kind)"];
 
 export default function TechStack() {
   return (
@@ -63,27 +69,6 @@ export default function TechStack() {
           </div>
         </motion.div>
       ))}
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.5, delay: 0.35 }}
-      >
-        <div className="font-mono mb-3 text-[11px] uppercase tracking-[0.16em] text-foreground/40">
-          Coming Next
-        </div>
-        <div className="flex flex-wrap gap-2.5">
-          {COMING_NEXT.map((item) => (
-            <span
-              key={item}
-              className="font-mono rounded-full border border-dashed border-foreground/25 px-4 py-2 text-[12.5px] text-foreground/50"
-            >
-              {item}
-            </span>
-          ))}
-        </div>
-      </motion.div>
     </div>
   );
 }
