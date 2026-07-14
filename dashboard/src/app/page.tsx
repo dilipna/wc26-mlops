@@ -4,7 +4,8 @@ import SectionHeading from "@/components/SectionHeading";
 import FavoritesLeaderboard from "@/components/FavoritesLeaderboard";
 import ProbabilityChart from "@/components/ProbabilityChart";
 import UpcomingMatches from "@/components/UpcomingMatches";
-import ProofTracker from "@/components/ProofTracker";
+import ProofLedgerShowcase from "@/components/ProofLedgerShowcase";
+import CompletedShowcase from "@/components/CompletedShowcase";
 import CountryLookup from "@/components/CountryLookup";
 import ModelValidation from "@/components/ModelValidation";
 import MethodologySection from "@/components/MethodologySection";
@@ -14,7 +15,7 @@ import TechStack from "@/components/TechStack";
 import Footer from "@/components/Footer";
 import {
   backtest,
-  proofTracker,
+  proofLedger,
   results,
   seriesByTeam,
   summary,
@@ -88,14 +89,16 @@ export default function Home() {
         <ResultsTicker results={results} />
       </section>
 
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section id="proof" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
-          eyebrow="Live Track Record"
-          title="Our AI vs Reality"
-          subtitle="Every pre-kickoff prediction is logged before the match starts. Once it finishes, we grade it here -- no cherry-picking, no hindsight."
+          eyebrow="Verified Track Record"
+          title="Don't Trust Us. Check."
+          subtitle="Every prediction is committed to a public, SHA-timestamped git history BEFORE kickoff, hash-chained so it can't be quietly edited, and graded against the market once the match ends. The receipts are one click away."
         />
-        <ProofTracker data={proofTracker} />
+        <ProofLedgerShowcase ledger={proofLedger} />
       </section>
+
+      <CompletedShowcase />
 
       <section id="backtest" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading

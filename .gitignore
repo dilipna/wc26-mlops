@@ -10,3 +10,4 @@ data/live/*
 !data/live/results_log.csv
 data/monitoring/*.html
 .vercel
+reports/preview/
