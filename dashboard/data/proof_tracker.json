@@ -1,6 +1,256 @@
 {
-  "generated_at": "2026-07-05T17:34:06.695333+00:00",
+  "generated_at": "2026-07-14T22:36:19.197168+00:00",
   "graded_matches": [
+    {
+      "home_team": "France",
+      "away_team": "Spain",
+      "commence_time": "2026-07-14T19:00:00+00:00",
+      "logged_at": "2026-07-14T00:33:14.581282+00:00",
+      "home_score": 0,
+      "away_score": 2,
+      "actual_outcome": "away_win",
+      "model": {
+        "home_win": 0.296201413919319,
+        "draw": 0.306008960894743,
+        "away_win": 0.397789625185938
+      },
+      "model_predicted_outcome": "away_win",
+      "model_correct": true,
+      "model_brier": 0.544034097289377,
+      "bookmaker": {
+        "home_win": 0.400485646242024,
+        "draw": 0.295468613031296,
+        "away_win": 0.30404574072668
+      },
+      "bookmaker_predicted_outcome": "home_win",
+      "bookmaker_correct": false,
+      "bookmaker_brier": 0.7320427851332049
+    },
+    {
+      "home_team": "Norway",
+      "away_team": "England",
+      "commence_time": "2026-07-11T21:00:00+00:00",
+      "logged_at": "2026-07-07T21:40:33.129045+00:00",
+      "home_score": 1,
+      "away_score": 2,
+      "actual_outcome": "away_win",
+      "model": {
+        "home_win": 0.21038934987973,
+        "draw": 0.276327917636229,
+        "away_win": 0.513282732484041
+      },
+      "model_predicted_outcome": "away_win",
+      "model_correct": true,
+      "model_brier": 0.3575144951061916,
+      "bookmaker": {
+        "home_win": 0.233117985217663,
+        "draw": 0.259445571547187,
+        "away_win": 0.507436443235149
+      },
+      "bookmaker_predicted_outcome": "away_win",
+      "bookmaker_correct": true,
+      "bookmaker_brier": 0.36427485708022966
+    },
+    {
+      "home_team": "Spain",
+      "away_team": "Belgium",
+      "commence_time": "2026-07-10T19:00:00+00:00",
+      "logged_at": "2026-07-07T21:40:33.129045+00:00",
+      "home_score": 2,
+      "away_score": 1,
+      "actual_outcome": "home_win",
+      "model": {
+        "home_win": 0.596185879095815,
+        "draw": 0.236199618406301,
+        "away_win": 0.167614502497884
+      },
+      "model_predicted_outcome": "home_win",
+      "model_correct": true,
+      "model_brier": 0.2469507254245151,
+      "bookmaker": {
+        "home_win": 0.589413498943853,
+        "draw": 0.24122326987175,
+        "away_win": 0.169363231184397
+      },
+      "bookmaker_predicted_outcome": "home_win",
+      "bookmaker_correct": true,
+      "bookmaker_brier": 0.25545384485436806
+    },
+    {
+      "home_team": "France",
+      "away_team": "Morocco",
+      "commence_time": "2026-07-09T20:00:00+00:00",
+      "logged_at": "2026-07-07T21:40:33.129045+00:00",
+      "home_score": 2,
+      "away_score": 0,
+      "actual_outcome": "home_win",
+      "model": {
+        "home_win": 0.499561090572596,
+        "draw": 0.287151327108252,
+        "away_win": 0.213287582319152
+      },
+      "model_predicted_outcome": "home_win",
+      "model_correct": true,
+      "model_brier": 0.37838657950046883,
+      "bookmaker": {
+        "home_win": 0.603278852127509,
+        "draw": 0.243586731291712,
+        "away_win": 0.15313441658078
+      },
+      "bookmaker_predicted_outcome": "home_win",
+      "bookmaker_correct": true,
+      "bookmaker_brier": 0.24017231437218348
+    },
+    {
+      "home_team": "Switzerland",
+      "away_team": "Colombia",
+      "commence_time": "2026-07-07T20:00:00+00:00",
+      "logged_at": "2026-07-07T21:40:33.129045+00:00",
+      "home_score": 0,
+      "away_score": 0,
+      "actual_outcome": "draw",
+      "model": {
+        "home_win": 0.262935564139517,
+        "draw": 0.308041571495906,
+        "away_win": 0.429022864364577
+      },
+      "model_predicted_outcome": "away_win",
+      "model_correct": false,
+      "model_brier": 0.7320021958148077,
+      "bookmaker": {
+        "home_win": 0.159099050592057,
+        "draw": 0.630695916261837,
+        "away_win": 0.210205033146106
+      },
+      "bookmaker_predicted_outcome": "draw",
+      "bookmaker_correct": true,
+      "bookmaker_brier": 0.20588417012493354
+    },
+    {
+      "home_team": "Argentina",
+      "away_team": "Egypt",
+      "commence_time": "2026-07-07T16:00:00+00:00",
+      "logged_at": "2026-07-05T17:34:01.274242+00:00",
+      "home_score": 3,
+      "away_score": 2,
+      "actual_outcome": "home_win",
+      "model": {
+        "home_win": 0.734455600215066,
+        "draw": 0.179618024823821,
+        "away_win": 0.0859263749611137
+      },
+      "model_predicted_outcome": "home_win",
+      "model_correct": true,
+      "model_brier": 0.11015980501270957,
+      "bookmaker": {
+        "home_win": 0.689885097090749,
+        "draw": 0.205080069787667,
+        "away_win": 0.105034833121584
+      },
+      "bookmaker_predicted_outcome": "home_win",
+      "bookmaker_correct": true,
+      "bookmaker_brier": 0.1492614041994076
+    },
+    {
+      "home_team": "United States",
+      "away_team": "Belgium",
+      "commence_time": "2026-07-07T00:00:00+00:00",
+      "logged_at": "2026-07-05T17:34:01.274242+00:00",
+      "home_score": 1,
+      "away_score": 4,
+      "actual_outcome": "away_win",
+      "model": {
+        "home_win": 0.165323822099632,
+        "draw": 0.239358912389345,
+        "away_win": 0.595317265511023
+      },
+      "model_predicted_outcome": "away_win",
+      "model_correct": true,
+      "model_brier": 0.24839277068731674,
+      "bookmaker": {
+        "home_win": 0.371928468042468,
+        "draw": 0.279842834783502,
+        "away_win": 0.34822869717403
+      },
+      "bookmaker_predicted_outcome": "home_win",
+      "bookmaker_correct": false,
+      "bookmaker_brier": 0.6414486287075458
+    },
+    {
+      "home_team": "Portugal",
+      "away_team": "Spain",
+      "commence_time": "2026-07-06T19:00:00+00:00",
+      "logged_at": "2026-07-05T17:34:01.274242+00:00",
+      "home_score": 0,
+      "away_score": 1,
+      "actual_outcome": "away_win",
+      "model": {
+        "home_win": 0.218667447189068,
+        "draw": 0.284758706717624,
+        "away_win": 0.496573846093308
+      },
+      "model_predicted_outcome": "away_win",
+      "model_correct": true,
+      "model_brier": 0.38234086594896194,
+      "bookmaker": {
+        "home_win": 0.241651114958069,
+        "draw": 0.263313556944067,
+        "away_win": 0.495035328097864
+      },
+      "bookmaker_predicted_outcome": "away_win",
+      "bookmaker_correct": true,
+      "bookmaker_brier": 0.38271861050024614
+    },
+    {
+      "home_team": "Mexico",
+      "away_team": "England",
+      "commence_time": "2026-07-06T00:00:00+00:00",
+      "logged_at": "2026-07-05T17:34:01.274242+00:00",
+      "home_score": 2,
+      "away_score": 3,
+      "actual_outcome": "away_win",
+      "model": {
+        "home_win": 0.273435580299415,
+        "draw": 0.311471791266009,
+        "away_win": 0.415092628434576
+      },
+      "model_predicted_outcome": "away_win",
+      "model_correct": true,
+      "model_brier": 0.5138983266397071,
+      "bookmaker": {
+        "home_win": 0.308862153204731,
+        "draw": 0.303250127119612,
+        "away_win": 0.387887719675657
+      },
+      "bookmaker_predicted_outcome": "away_win",
+      "bookmaker_correct": true,
+      "bookmaker_brier": 0.5620379130041907
+    },
+    {
+      "home_team": "Brazil",
+      "away_team": "Norway",
+      "commence_time": "2026-07-05T20:00:00+00:00",
+      "logged_at": "2026-07-05T17:34:01.274242+00:00",
+      "home_score": 1,
+      "away_score": 2,
+      "actual_outcome": "away_win",
+      "model": {
+        "home_win": 0.550636385595385,
+        "draw": 0.275152457577046,
+        "away_win": 0.174211156827569
+      },
+      "model_predicted_outcome": "home_win",
+      "model_correct": false,
+      "model_brier": 1.0608365175602992,
+      "bookmaker": {
+        "home_win": 0.534275689137034,
+        "draw": 0.254582612255903,
+        "away_win": 0.211141698607063
+      },
+      "bookmaker_predicted_outcome": "home_win",
+      "bookmaker_correct": false,
+      "bookmaker_brier": 0.972560238142442
+    },
     {
       "home_team": "Paraguay",
       "away_team": "France",
@@ -78,12 +328,12 @@
     }
   ],
   "summary": {
-    "n_graded": 3,
-    "model_accuracy": 1.0,
-    "model_avg_brier": 0.18737927360142273,
-    "n_bookmaker_graded": 3,
-    "bookmaker_accuracy": 1.0,
-    "bookmaker_avg_brier": 0.1577111836838098
+    "n_graded": 13,
+    "model_accuracy": 0.8461538461538461,
+    "model_avg_brier": 0.3951272461375864,
+    "n_bookmaker_graded": 13,
+    "bookmaker_accuracy": 0.7692307692307693,
+    "bookmaker_avg_brier": 0.38299910132078313
   },
   "calibration": [
     {
@@ -95,19 +345,19 @@
     {
       "bucket_label": "20-40%",
       "predicted_mid": 0.30000000000000004,
-      "n": 0,
-      "actual_rate": null
-    },
-    {
-      "bucket_label": "40-60%",
-      "predicted_mid": 0.5,
       "n": 1,
       "actual_rate": 1.0
     },
     {
+      "bucket_label": "40-60%",
+      "predicted_mid": 0.5,
+      "n": 9,
+      "actual_rate": 0.7777777777777778
+    },
+    {
       "bucket_label": "60-80%",
       "predicted_mid": 0.7,
-      "n": 2,
+      "n": 3,
       "actual_rate": 1.0
     },
     {

@@ -8,11 +8,22 @@
     "rank_points_diff",
     "neutral"
   ],
-  "mlflow_reachable": false,
-  "version": null,
-  "run_id": null,
-  "trained_at": null,
-  "params": {},
-  "metrics": {},
-  "member_influence": {}
+  "mlflow_reachable": true,
+  "version": "10",
+  "run_id": "332704aff3a14ec49d7a43395ff44cf2",
+  "trained_at": "2026-07-14T22:36:06.426000+00:00",
+  "params": {
+    "train_start": "1992-01-01",
+    "train_end": "2026-07-14",
+    "n_training_rows": "62802",
+    "cv_folds": "5"
+  },
+  "metrics": {
+    "train_set_insample_log_loss": 0.9074939417082983
+  },
+  "member_influence": {
+    "xgboost": 0.650793704061402,
+    "elo_logreg": 0.2699637942146814,
+    "fifa_heuristic": 0.07924250172391664
+  }
 }
