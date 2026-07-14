@@ -1,0 +1,51 @@
+# FastAPI model-serving endpoint (src/serving/app.py) -- self-contained
+# COPY-based image (docker/serving/Dockerfile), no bind mounts needed.
+# Reads the MLflow registry via the in-cluster service DNS; falls back to
+# local training if unreachable, same as everywhere else.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: serving
+  namespace: wc26
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: serving
+  template:
+    metadata:
+      labels:
+        app: serving
+    spec:
+      containers:
+        - name: serving
+          image: wc26/serving:local
+          imagePullPolicy: Never
+          env:
+            - name: MLFLOW_TRACKING_URI
+              value: http://mlflow:5000
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            # first boot trains a model locally if the registry is empty (~10-30s)
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 12
+      # the model-state bootstrap (data load + optional local training) is
+      # memory-hungry for a moment; give the pod room on a laptop cluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: serving
+  namespace: wc26
+spec:
+  type: NodePort
+  selector:
+    app: serving
+  ports:
+    - port: 8000
+      nodePort: 30800
