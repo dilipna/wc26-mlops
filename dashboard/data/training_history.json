@@ -1,1 +1,158 @@
-[]
+[
+  {
+    "run_id": "332704aff3a14ec49d7a43395ff44cf2",
+    "run_name": "daily_2026-07-14",
+    "status": "FINISHED",
+    "start_time": "2026-07-14T22:35:43.089000+00:00",
+    "params": {
+      "train_start": "1992-01-01",
+      "train_end": "2026-07-14",
+      "n_training_rows": "62802",
+      "cv_folds": "5"
+    },
+    "metrics": {
+      "train_set_insample_log_loss": 0.9074939417082983
+    }
+  },
+  {
+    "run_id": "687df23409d440d49d2e347682e25053",
+    "run_name": "daily_2026-07-14",
+    "status": "FINISHED",
+    "start_time": "2026-07-14T22:00:28.164000+00:00",
+    "params": {
+      "train_start": "1992-01-01",
+      "train_end": "2026-07-14",
+      "n_training_rows": "62800",
+      "cv_folds": "5"
+    },
+    "metrics": {
+      "train_set_insample_log_loss": 0.9072616985099672
+    }
+  },
+  {
+    "run_id": "7cb65d87f1424613a9356edf810b9efc",
+    "run_name": "daily_2026-07-14",
+    "status": "FINISHED",
+    "start_time": "2026-07-14T00:33:08.037000+00:00",
+    "params": {
+      "train_start": "1992-01-01",
+      "train_end": "2026-07-14",
+      "n_training_rows": "62800",
+      "cv_folds": "5"
+    },
+    "metrics": {
+      "train_set_insample_log_loss": 0.9072616985099672
+    }
+  },
+  {
+    "run_id": "4c8f1b751a944c46a6588375d0021423",
+    "run_name": "daily_2026-07-12",
+    "status": "FINISHED",
+    "start_time": "2026-07-12T19:51:40.939000+00:00",
+    "params": {
+      "train_start": "1992-01-01",
+      "train_end": "2026-07-12",
+      "n_training_rows": "62798",
+      "cv_folds": "5"
+    },
+    "metrics": {
+      "train_set_insample_log_loss": 0.9073160258320934
+    }
+  },
+  {
+    "run_id": "8e197f76399b4c6680aad86c5365afba",
+    "run_name": "daily_2026-07-12",
+    "status": "FINISHED",
+    "start_time": "2026-07-12T19:50:49.159000+00:00",
+    "params": {
+      "train_start": "1992-01-01",
+      "train_end": "2026-07-12",
+      "n_training_rows": "62798",
+      "cv_folds": "5"
+    },
+    "metrics": {
+      "train_set_insample_log_loss": 0.9073160258320934
+    }
+  },
+  {
+    "run_id": "5c0895d85e5744e5b222ca77bab9b17a",
+    "run_name": "daily_2026-07-07",
+    "status": "FINISHED",
+    "start_time": "2026-07-07T21:40:24.806000+00:00",
+    "params": {
+      "train_start": "1992-01-01",
+      "train_end": "2026-07-07",
+      "n_training_rows": "62788",
+      "cv_folds": "5"
+    },
+    "metrics": {
+      "train_set_insample_log_loss": 0.907492287869893
+    }
+  },
+  {
+    "run_id": "a8ae628cd4464c148b1279b60dec28a1",
+    "run_name": "daily_2026-07-07",
+    "status": "FINISHED",
+    "start_time": "2026-07-07T21:38:07.548000+00:00",
+    "params": {
+      "train_start": "1992-01-01",
+      "train_end": "2026-07-07",
+      "n_training_rows": "62788",
+      "cv_folds": "5"
+    },
+    "metrics": {
+      "train_set_insample_log_loss": 0.907492287869893
+    }
+  },
+  {
+    "run_id": "3563265cfdbb45be85fdef7accf6db04",
+    "run_name": "daily_2026-07-05",
+    "status": "FINISHED",
+    "start_time": "2026-07-05T17:33:51.271000+00:00",
+    "params": {
+      "train_start": "1992-01-01",
+      "train_end": "2026-07-05",
+      "n_training_rows": "62782",
+      "cv_folds": "5"
+    },
+    "metrics": {
+      "train_set_insample_log_loss": 0.9075825527807982
+    }
+  },
+  {
+    "run_id": "db693953f3434180a81d35ebde1bac36",
+    "run_name": "daily_2026-07-05",
+    "status": "FINISHED",
+    "start_time": "2026-07-05T02:02:41.876000+00:00",
+    "params": {
+      "train_start": "1992-01-01",
+      "train_end": "2026-07-05",
+      "n_training_rows": "62782",
+      "cv_folds": "5"
+    },
+    "metrics": {
+      "train_set_insample_log_loss": 0.9075825527807982
+    }
+  },
+  {
+    "run_id": "aa2bc0a06d40458ca547accc5f6432ab",
+    "run_name": "backtest_2022",
+    "status": "FINISHED",
+    "start_time": "2026-07-03T18:23:23.898000+00:00",
+    "params": {
+      "year": "2022",
+      "champion": "Argentina",
+      "train_start": "1992-01-01",
+      "train_end": "2022-11-20",
+      "n_sims": "10000",
+      "cv_folds": "5"
+    },
+    "metrics": {
+      "model_brier": 0.12278016000000001,
+      "model_log_loss": 0.4313984901346689,
+      "baseline_brier": 0.22458120999999998,
+      "baseline_log_loss": 0.6422639702453755,
+      "model_champion_prob": 0.6496
+    }
+  }
+]
