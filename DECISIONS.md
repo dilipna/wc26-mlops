@@ -2,6 +2,78 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-14 — Proof system, multi-sport architecture, golden-dark rebrand (the "semifinal brief")
+
+Large single-session brief executed the evening of the France–Spain semifinal (model said
+Spain 40%, market said France 40%, Spain won 0–2 — the project's signature call). Decisions:
+
+**"Leaderboard shows 0% / chart is empty" did NOT reproduce against production.** Verified
+with a real headless-Chromium run against the live URL: counters animate to real values,
+the chart draws 5 series, zero console errors. The only mechanism that can ever show 0% is
+`AnimatedCounter`'s pre-hydration SSR fallback, which rendered a literal `0%` until client
+JS fired — on a slow connection or with JS blocked, that IS what a visitor sees. Fixed at
+the root: the server now renders the real value (the count-up animation still overwrites
+it). Separately, the local clone was 10 commits behind origin (the cloud pipeline had been
+committing daily since 07-05 while local work stalled at 07-05) — reconciled by discarding
+regenerable local data, fast-forwarding, and re-running the real pipeline to ingest the
+semifinal result on top of the complete cloud data.
+
+**Proof system = git provenance + hash chain + append-only mirror, not blockchain.** The
+strongest evidence a skeptic can independently check is GitHub's own SHA-timestamped
+history of the *daily-committed* `dashboard/data/upcoming_matches.json` — the France–Spain
+Spain call is verifiably public since commit `89a1898` (July 11, 3 days pre-kickoff).
+`scripts/build_proof_ledger.py` walks that history and attaches the earliest pre-kickoff
+commit to every entry (16/16 covered); `src/verification/ledger.py` hash-chains the
+entries (SHA-256, each entry embeds the previous hash) so the committed ledger can't be
+quietly edited; Supabase's insert-only `match_predictions` table remains the raw snapshot
+source. Anchoring hashes to an external blockchain was considered and rejected: it adds a
+paid/flaky dependency and zero real skeptic value over GitHub's history + Actions run log
+for a portfolio project. Note the ledger's hashes are *recomputed* on every daily rebuild
+(entries change as results land) — tamper-evidence comes from each committed version being
+internally consistent AND timestamped by git, not from hash stability across days;
+`--verify` recomputes the chain from genesis.
+
+**Timestamp normalization bug caught by checking the join, not trusting it:** Supabase
+returns `+00:00` where the Odds API snapshots say `Z`, so provenance matching initially
+found 3/16 entries; normalizing both sides fixed it to 16/16. Same class of bug as the
+2026-07-04 team-name canonicalization issue.
+
+**Multi-sport nav is config-only.** `dashboard/public/sports_config.json` is the single
+source of truth; a generic `app/[sport]/page.tsx` route generates a page per configured
+sport from `dashboard/data/<sport id>.json` (NFL and NASCAR pages ship with data files
+whose copy explicitly labels every number as a preseason/illustrative placeholder — this
+project's "never present fabricated numbers as real" rule applied to marketing pages too).
+No sport name appears in component logic; flipping `is_active: false` removes the sport
+from the tab row and renders it in the new Completed showcase with zero code changes. The
+brief's config schema was extended with one field (`path`) because something must map a
+sport to its route without hardcoding names in code.
+
+**Retrospective PDF generates itself on July 19.** `scripts/generate_retrospective.py`
+runs in the daily workflow (`continue-on-error`), fires only once `end_date` passes, and
+builds `reports/FIFA_WC26_Final_Retrospective_2026-07-19.pdf` from the ledger via
+matplotlib (chosen over reportlab: one dependency, already-styled charts, and the
+calibration/timeline charts are the substance of the report). Verified today with
+`RETRO_FORCE=1` into a gitignored `reports/preview/`. Adding matplotlib meant regenerating
+`requirements-lock.txt` inside `python:3.10-slim` per that file's own header.
+
+**Design tokens over inline hexes, chart palette validated not eyeballed.** The golden-dark
+rebrand (#090909/#F0C000, Space Grotesk) is applied entirely through CSS design tokens in
+`globals.css` (`@theme` — this repo uses Tailwind v4's CSS-first config; there is no
+tailwind.config.ts to extend, that's the v4 equivalent), and every previously-hardcoded
+component hex was replaced with a `var(--…)` token. Chart series colors were validated with
+the dataviz skill's `validate_palette.js` against the #111111 card surface — the raw brand
+gold (#F0C000, OKLCH L 0.83) is out of the dark-mode lightness band for data marks, so
+series-1 gold is #B58D00 (in-band) while UI accents keep the brand hex. All four checks
+pass (lightness band, chroma floor, CVD separation, contrast).
+
+**Kubernetes: kind, verified live, still local-only by design.** `k8s/` manifests mirror
+the compose stack (Airflow scheduler+webserver on LocalExecutor — the scheduler IS the
+worker, same single-DAG reasoning as 2026-07-03; MLflow; serving; postgres), `make k8s-up`
+substitutes the repo path into kind's extraMounts so Airflow pods bind-mount the project
+read-write exactly like compose. Verified by actually creating the cluster, loading the
+three locally-built images, and applying the manifests. Not moved to a cloud cluster — same
+CLAUDE.md Tier-2 cost reasoning as before.
+
 ## 2026-07-05 — Cloud-scheduled daily pipeline (GitHub Actions), alongside the local Airflow DAG
 
 **Found while asked to make the project safe to leave running unattended through July 19:**
