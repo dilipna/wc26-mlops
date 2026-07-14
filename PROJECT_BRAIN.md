@@ -1105,6 +1105,44 @@ from this session — the two items that were open going into this follow-up are
 
 ## 12. Session log
 
+**2026-07-14 (session: semifinal-night mega-brief — proof system, multi-sport, golden rebrand).**
+Executed a large single-session brief the evening France–Spain was played (model picked
+Spain 39.8% pre-kickoff, market picked France 40%, Spain won 0–2). Full reasoning in
+DECISIONS.md's 2026-07-14 entry; summary + operational notes:
+- **Local clone was 10 commits stale** — the GitHub Actions daily pipeline HAS been running
+  and committing daily since 07-05 (so the §7 "needs secrets before this can run" caveat is
+  resolved: ODDS_API_KEY + deploy hooks are clearly configured; SUPABASE secrets are NOT set
+  in Actions — cloud runs don't mirror to Supabase, only local runs do, which is why graded
+  snapshots carry local-run timestamps). Reconciled, re-ran the pipeline locally, ingested
+  the semifinal result (13 graded fixtures now; model 84.6% vs market 76.9%).
+- **"Broken live site" claims didn't reproduce** — leaderboard/chart work in a real
+  browser; root-caused the only real mechanism (AnimatedCounter's SSR `0%` fallback) and
+  fixed it (SSR now renders true values).
+- **New: tamper-evident prediction ledger** (`src/verification/ledger.py`,
+  `scripts/build_proof_ledger.py`, `data/proof/prediction_ledger.json`, 6 tests) — every
+  WC26 prediction with pre-kickoff git provenance (16/16), hash-chained, rebuilt+committed
+  daily by the workflow (now `fetch-depth: 0` for the history walk), rendered as the site's
+  "Don't Trust Us. Check." section with the France–Spain call as the signature card.
+- **New: multi-sport architecture** — `dashboard/public/sports_config.json` is the single
+  source of truth (FIFA/NFL/NASCAR tabs with LIVE/FINAL badges, generic `[sport]` route,
+  clearly-labeled placeholder data files for NFL/NASCAR), plus a Completed showcase +
+  auto-firing final-retrospective PDF generator (`scripts/generate_retrospective.py`,
+  fires July 19, verified today via RETRO_FORCE into gitignored reports/preview/).
+- **Design**: golden-dark token system (#090909/#F0C000, Space Grotesk) via Tailwind v4
+  `@theme` tokens; chart palette validated with the dataviz validator (gold series color is
+  #B58D00 in-band, brand gold stays for UI accents). All component hexes replaced with vars.
+- **Tier 2 closed out**: Evidently now writes dated HTML reports to `reports/drift/`
+  (committed daily); FastAPI+OTel moved from "Coming Next" to active (it was already built
+  and deployed); `k8s/` manifests + `make k8s-up`/`k8s-down` (kind) created and verified
+  live on this machine (cluster created, images loaded, pods came up).
+- matplotlib==3.8.3 added; `requirements-lock.txt` regenerated inside python:3.10-slim per
+  its header. 60/60 tests passing. README fully rewritten (hiring-manager framing, mermaid
+  diagram, verify-it-yourself audit guide).
+- **Operational notes for future sessions**: `kind` CLI isn't installed globally on this
+  machine (a scratch download was used — Docker Desktop provides kubectl only);
+  reports/preview/ is gitignored test output; the proof ledger's hashes change on every
+  rebuild by design (git commits timestamp each version — see DECISIONS.md).
+
 **2026-07-04 (session: Evidently + audit + mission reset).**
 - Built Evidently drift monitoring (`src/monitoring/drift_report.py`,
   `scripts/check_drift.py`), pinned `evidently==0.4.40` to avoid a litestar/multipart
