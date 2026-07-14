@@ -22,7 +22,7 @@ function HeroGlobe() {
           className="absolute inset-0 rounded-full"
           style={{
             background:
-              "conic-gradient(from 0deg, #1b2a4a, #24406e, #1b2a4a 35%, #12203a 60%, #1b2a4a 100%)",
+              "conic-gradient(from 0deg, var(--globe-a), var(--globe-b), var(--globe-a) 35%, var(--globe-c) 60%, var(--globe-a) 100%)",
             animation: "wc-spin 60s linear infinite",
             filter: "brightness(0.85) saturate(0.95)",
           }}
@@ -31,9 +31,9 @@ function HeroGlobe() {
           className="absolute inset-0 rounded-full"
           style={{
             background:
-              "radial-gradient(circle at 32% 28%, rgba(150,190,255,0.20), transparent 46%), radial-gradient(circle at 50% 50%, transparent 50%, rgba(4,6,14,0.5) 76%, rgba(2,3,8,0.92) 100%)",
+              "radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 46%), radial-gradient(circle at 50% 50%, transparent 50%, color-mix(in srgb, var(--background-deep) 50%, transparent) 76%, color-mix(in srgb, var(--background-deep) 92%, transparent) 100%)",
             boxShadow:
-              "inset -34px -28px 80px rgba(0,0,0,0.8), inset 10px 10px 44px rgba(120,170,255,0.12), 0 0 100px rgba(80,130,255,0.22), 0 0 28px rgba(120,170,255,0.2)",
+              "inset -34px -28px 80px rgba(0,0,0,0.8), inset 10px 10px 44px color-mix(in srgb, var(--accent) 12%, transparent), 0 0 100px color-mix(in srgb, var(--accent) 22%, transparent), 0 0 28px color-mix(in srgb, var(--accent) 20%, transparent)",
           }}
         />
       </div>
@@ -55,7 +55,7 @@ export default function Hero({
         className="absolute inset-0"
         style={{
           background:
-            "repeating-linear-gradient(115deg, rgba(232,228,220,0.05) 0px, rgba(232,228,220,0.05) 2px, transparent 2px, transparent 26px), radial-gradient(120% 90% at 50% 15%, rgba(232,228,220,0.10), transparent 60%), linear-gradient(180deg, #100f0d 0%, #0d0c0a 55%, #0a0908 100%)",
+            "repeating-linear-gradient(115deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 26px), radial-gradient(120% 90% at 50% 15%, rgba(255,255,255,0.10), transparent 60%), linear-gradient(180deg, var(--background-raised) 0%, var(--background) 55%, var(--background-deep) 100%)",
         }}
       />
       <HeroGlobe />
@@ -65,13 +65,13 @@ export default function Hero({
       />
       <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center opacity-50">
         <svg width="900" height="900" viewBox="0 0 900 900" className="max-w-none" style={{ animation: "wc-drift 14s ease-in-out infinite" }}>
-          <circle cx="450" cy="450" r="330" fill="none" stroke="#e8e4dc" strokeOpacity="0.1" strokeWidth="1" />
+          <circle cx="450" cy="450" r="330" fill="none" stroke="var(--foreground)" strokeOpacity="0.1" strokeWidth="1" />
           <circle
             cx="450"
             cy="450"
             r="230"
             fill="none"
-            stroke="#e8e4dc"
+            stroke="var(--foreground)"
             strokeOpacity="0.14"
             strokeWidth="1"
             strokeDasharray="6 10"
@@ -81,7 +81,7 @@ export default function Hero({
       </div>
       <div
         className="absolute inset-x-0 bottom-0 z-[1] h-[40%]"
-        style={{ background: "linear-gradient(180deg, transparent, #0d0c0a 85%)" }}
+        style={{ background: "linear-gradient(180deg, transparent, var(--background) 85%)" }}
       />
 
       <motion.div
@@ -89,7 +89,7 @@ export default function Hero({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 mb-7 inline-flex items-center gap-2 overflow-hidden rounded-full border border-foreground/20 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground"
-        style={{ background: "linear-gradient(180deg, #7A5A44, #28211a)" }}
+        style={{ background: "linear-gradient(180deg, var(--accent-warm), var(--card-alt))" }}
       >
         <span className="relative flex h-1.5 w-1.5">
           <span
@@ -127,11 +127,11 @@ export default function Hero({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
           className="relative z-10 mt-10 flex items-center gap-4 rounded-2xl border border-foreground/15 px-6 py-4"
-          style={{ background: "rgba(232,228,220,0.03)" }}
+          style={{ background: "var(--card)" }}
         >
           <div
             className="flex h-11 w-11 items-center justify-center rounded-full border border-foreground/15 font-mono text-xs text-accent"
-            style={{ background: "#1c1a15" }}
+            style={{ background: "var(--card-alt)" }}
           >
             {teamCode(topFavorite.team)}
           </div>

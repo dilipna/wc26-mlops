@@ -40,7 +40,7 @@ export default function CountryLookup({ teams }: { teams: TeamStatus[] }) {
       <select
         value={selected}
         onChange={(e) => setSelected(e.target.value)}
-        className="font-mono w-full rounded-xl border border-foreground/15 bg-transparent px-4 py-3 text-sm text-foreground [&>option]:bg-[#0d0c0a]"
+        className="font-mono w-full rounded-xl border border-foreground/15 bg-transparent px-4 py-3 text-sm text-foreground [&>option]:bg-background"
       >
         {teams.map((t) => (
           <option key={t.team} value={t.team}>
@@ -64,8 +64,8 @@ export default function CountryLookup({ teams }: { teams: TeamStatus[] }) {
               <span
                 className="font-mono mt-1 inline-block rounded-full px-2.5 py-0.5 text-[11px] uppercase tracking-wide"
                 style={{
-                  color: team.status === "alive" ? "var(--accent)" : "rgba(242,237,224,0.5)",
-                  border: `1px solid ${team.status === "alive" ? "var(--accent)" : "rgba(242,237,224,0.25)"}`,
+                  color: team.status === "alive" ? "var(--accent)" : "var(--secondary)",
+                  border: `1px solid ${team.status === "alive" ? "var(--accent)" : "var(--muted)"}`,
                 }}
               >
                 {team.status === "alive" ? "Still Alive" : "Eliminated"}

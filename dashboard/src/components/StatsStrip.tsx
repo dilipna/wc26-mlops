@@ -10,7 +10,7 @@ export default function StatsStrip({
   return (
     <div
       className="grid gap-px border-y border-foreground/10"
-      style={{ gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", background: "rgba(242,237,224,0.08)" }}
+      style={{ gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", background: "var(--card-border)" }}
     >
       {stats.map((s, i) => (
         <motion.div

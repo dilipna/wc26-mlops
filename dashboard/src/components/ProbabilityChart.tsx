@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import type { PredictionRow } from "@/lib/data";
 
-const LINE_COLORS = ["#C2D588", "#e8e4dc", "#7A5A44", "#a3c9a8", "#c9a86a", "#8a9a6e"];
+const LINE_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--chart-6)"];
 
 function buildChartRows(seriesByTeam: Map<string, PredictionRow[]>, teams: string[]) {
   const dateSet = new Set<string>();
@@ -80,23 +80,23 @@ export default function ProbabilityChart({
       <div className="h-[380px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={rows} margin={{ top: 10, right: 20, bottom: 0, left: -10 }}>
-            <CartesianGrid stroke="rgba(242,237,224,0.08)" vertical={false} />
+            <CartesianGrid stroke="var(--card-border)" vertical={false} />
             <XAxis
               dataKey="date"
-              stroke="rgba(242,237,224,0.35)"
-              tick={{ fontSize: 12, fill: "rgba(242,237,224,0.5)", fontFamily: "var(--font-plex-mono), monospace" }}
+              stroke="var(--muted)"
+              tick={{ fontSize: 12, fill: "var(--secondary)", fontFamily: "var(--font-plex-mono), monospace" }}
               tickLine={false}
             />
             <YAxis
-              stroke="rgba(242,237,224,0.35)"
-              tick={{ fontSize: 12, fill: "rgba(242,237,224,0.5)", fontFamily: "var(--font-plex-mono), monospace" }}
+              stroke="var(--muted)"
+              tick={{ fontSize: 12, fill: "var(--secondary)", fontFamily: "var(--font-plex-mono), monospace" }}
               tickLine={false}
               unit="%"
               width={44}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
-              wrapperStyle={{ fontSize: 13, color: "rgba(242,237,224,0.7)", fontFamily: "var(--font-plex-mono), monospace" }}
+              wrapperStyle={{ fontSize: 13, color: "var(--secondary)", fontFamily: "var(--font-plex-mono), monospace" }}
             />
             {teams.map((team, i) => (
               <Line

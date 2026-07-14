@@ -1,20 +1,50 @@
 @import "tailwindcss";
 
+/* Design tokens — the single source of truth for the site's palette.
+   Components must reference these (via Tailwind utilities or var(--…)),
+   never hardcode hex values. Chart series colors were validated with the
+   dataviz skill's validate_palette.js against the #111111 card surface
+   (lightness band, chroma floor, CVD separation, contrast: all PASS). */
 :root {
-  --background: #0d0c0a;
-  --foreground: #f2ede0;
-  --accent: #c2d588;
-  --accent-warm: #7a5a44;
+  --background: #090909;
+  --background-raised: #0f0f0f;
+  --background-deep: #050505;
+  --card: #111111;
+  --card-alt: #141414;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --foreground: #ffffff;
+  --secondary: #888888;
+  --muted: #444444;
+  --accent: #f0c000;
+  --accent-hover: #d4a900;
+  --accent-warm: #8a6d00;
   --accent-deep: #922020;
+  --globe-a: #1c1708;
+  --globe-b: #33290a;
+  --globe-c: #120e05;
+  --chart-1: #b58d00;
+  --chart-2: #4e97dc;
+  --chart-3: #d9634e;
+  --chart-4: #2fa97d;
+  --chart-5: #a379e8;
+  --chart-6: #7e8b3e;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-raised: var(--background-raised);
+  --color-background-deep: var(--background-deep);
+  --color-card: var(--card);
+  --color-card-alt: var(--card-alt);
+  --color-card-border: var(--card-border);
   --color-foreground: var(--foreground);
+  --color-secondary: var(--secondary);
+  --color-muted: var(--muted);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --color-accent-warm: var(--accent-warm);
   --color-accent-deep: var(--accent-deep);
-  --font-sans: var(--font-manrope);
+  --font-sans: var(--font-space-grotesk);
   --font-display: var(--font-big-shoulders);
   --font-mono: var(--font-plex-mono);
   --font-serif: var(--font-lora);
@@ -23,13 +53,13 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+  font-family: var(--font-space-grotesk), Arial, Helvetica, sans-serif;
   font-size: 1.0625rem;
   min-height: 100vh;
 }
 
 ::selection {
-  background: var(--foreground);
+  background: var(--accent);
   color: var(--background);
 }
 
@@ -70,8 +100,13 @@ body {
 }
 
 .glass-card {
-  background: rgba(232, 228, 220, 0.02);
-  border: 1px solid rgba(242, 237, 224, 0.1);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+}
+
+.glass-card-alt {
+  background: var(--card-alt);
+  border: 1px solid var(--card-border);
 }
 
 ::-webkit-scrollbar {
@@ -81,6 +116,6 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(194, 213, 136, 0.25);
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
   border-radius: 9999px;
 }

@@ -115,11 +115,11 @@ export default function UpcomingMatches({ matches }: { matches: UpcomingMatch[] 
               />
               <ProbabilityBar
                 label="MARKET"
-                labelColor="rgba(242,237,224,0.45)"
+                labelColor="var(--secondary)"
                 homePct={bookHome}
                 awayPct={bookAway}
                 drawPct={bookDraw}
-                fillColor="rgba(242,237,224,0.5)"
+                fillColor="var(--secondary)"
                 delay={0.2}
               />
             </div>

@@ -38,9 +38,15 @@ export default function AnimatedCounter({
     return unsubscribe;
   }, [rounded, suffix]);
 
+  // SSR-render the REAL value, not a literal 0 -- if client JS is slow,
+  // blocked, or the in-view trigger never fires, the page still shows the
+  // true number (the count-up animation overwrites this once it runs).
+  // This was the root cause of "the leaderboard shows 0% for all teams":
+  // the pre-hydration fallback, not the data pipeline.
   return (
     <span ref={ref} className={className}>
-      0{suffix}
+      {value.toFixed(decimals)}
+      {suffix}
     </span>
   );
 }
