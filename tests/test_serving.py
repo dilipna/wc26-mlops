@@ -104,3 +104,24 @@ def test_explain_unknown_team_404():
 def test_cors_allows_configured_dashboard_origin():
     resp = client.get("/health", headers={"Origin": "https://fifa2026mlops.vercel.app"})
     assert resp.headers.get("access-control-allow-origin") == "https://fifa2026mlops.vercel.app"
+
+
+def test_metrics_endpoint_exposes_prometheus_text():
+    client.get("/health")  # generate at least one request for the counter
+    resp = client.get("/metrics")
+    assert resp.status_code == 200
+    assert "text/plain" in resp.headers["content-type"]
+    body = resp.text
+    assert "wc26_serving_requests_total" in body
+    assert "wc26_serving_request_latency_seconds" in body
+
+
+def test_metrics_summary_counts_predictions():
+    before = client.get("/metrics-summary").json()
+    assert before["enabled"] is True
+    client.post("/predict", json={"home_team": "France", "away_team": "Brazil"})
+    after = client.get("/metrics-summary").json()
+    assert after["requests_total"] >= before.get("requests_total", 0)
+    assert after["predictions_total"] >= 1
+    # FakeEnsemble.match_probs -> p_win (home_win) is the argmax outcome.
+    assert after["predictions_by_outcome"].get("home_win", 0) >= 1

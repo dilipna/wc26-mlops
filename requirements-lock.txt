@@ -104,6 +104,7 @@ plotly==6.9.0
 pluggy==1.6.0
 polyfactory==3.3.0
 postgrest==2.31.0
+prometheus-client==0.21.1
 propcache==0.5.2
 protobuf==5.29.6
 pyarrow==21.0.0

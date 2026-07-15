@@ -24,9 +24,11 @@ from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv()
 
-from fastapi import Depends, FastAPI, HTTPException, Request  # noqa: E402
+from fastapi import Depends, FastAPI, HTTPException, Request, Response  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
+
+from src.serving import metrics  # noqa: E402
 
 # Dashboard origins allowed to call this API directly from the browser (the
 # Live Inference Console). Portfolio project, so no auth/rate-limiting is
@@ -100,7 +102,9 @@ class ModelState:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.model_state = ModelState()
+    state = ModelState()
+    app.state.model_state = state
+    metrics.set_model_info(state.model_version, state.model_source)
     yield
 
 
@@ -126,13 +130,24 @@ async def request_metadata(request: Request, call_next):
     """Every response carries a request ID and measured latency -- the
     Live Inference Console on the dashboard reads these headers to show a
     genuine round-trip (request ID, latency) instead of fabricated
-    inference metadata."""
+    inference metadata. The same measurement feeds the Prometheus request
+    counter/latency histogram (metrics.py) that Prometheus scrapes and
+    Grafana renders."""
     request_id = str(uuid.uuid4())
     start = time.perf_counter()
-    response = await call_next(request)
-    latency_ms = (time.perf_counter() - start) * 1000
+    metrics.IN_PROGRESS.inc() if metrics.enabled() else None
+    try:
+        response = await call_next(request)
+    finally:
+        metrics.IN_PROGRESS.dec() if metrics.enabled() else None
+    latency_s = time.perf_counter() - start
     response.headers["X-Request-ID"] = request_id
-    response.headers["X-Response-Time-Ms"] = f"{latency_ms:.1f}"
+    response.headers["X-Response-Time-Ms"] = f"{latency_s * 1000:.1f}"
+    # Label by the matched route template (e.g. "/predict"), not the raw
+    # URL, so the path label can't blow up in cardinality.
+    route = request.scope.get("route")
+    path = getattr(route, "path", request.url.path)
+    metrics.observe_request(request.method, path, response.status_code, latency_s)
     return response
 
 
@@ -182,6 +197,8 @@ def predict(req: PredictRequest, state: ModelState = Depends(get_model_state)):
     as_of = req.as_of or state.today
     p_loss, p_draw, p_win = state.ensemble.match_probs(home, away, as_of, neutral=req.neutral)
     b_loss, b_draw, b_win = state.ensemble.baseline_match_probs(home, away, as_of, neutral=req.neutral)
+    outcome = max(("home_win", p_win), ("draw", p_draw), ("away_win", p_loss), key=lambda kv: kv[1])[0]
+    metrics.observe_prediction(outcome)
     return PredictResponse(
         home_team=home,
         away_team=away,
@@ -212,6 +229,24 @@ def explain(req: PredictRequest, state: ModelState = Depends(get_model_state)):
 def champions(refresh: bool = False, state: ModelState = Depends(get_model_state)):
     result = state.champion_probabilities(refresh=refresh)
     return {**result, "model_version": state.model_version}
+
+
+@app.get("/metrics")
+def prometheus_metrics():
+    """Prometheus text exposition -- scraped by the `prometheus` service in
+    docker-compose.airflow.yml and rendered by the `grafana` service's
+    provisioned 'WC26 Serving' dashboard. RED metrics (request rate/errors/
+    duration) plus predictions-by-outcome and the loaded model version."""
+    return Response(content=metrics.render_latest(), media_type=metrics.CONTENT_TYPE_LATEST)
+
+
+@app.get("/metrics-summary")
+def metrics_summary():
+    """A small JSON projection of the same metrics for the dashboard's admin
+    Observability card -- genuine live counters (requests served, avg
+    latency, predictions by outcome, uptime) without asking the browser to
+    parse Prometheus text. Distinct from /metrics, which Prometheus scrapes."""
+    return metrics.summary()
 
 
 @app.get("/feature-importance")

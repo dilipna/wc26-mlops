@@ -1,0 +1,13 @@
+# Auto-loads every dashboard JSON under /var/lib/grafana/dashboards
+# (mounted from docker/grafana/dashboards/) at startup.
+apiVersion: 1
+
+providers:
+  - name: WC26
+    orgId: 1
+    folder: WC26
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

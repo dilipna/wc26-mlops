@@ -114,7 +114,7 @@ export default function AdminPage() {
       </section>
 
       <section id="observability" className="py-8">
-        <SectionHeading eyebrow="8 · Observability" title="Logs, alerts, deployments" />
+        <SectionHeading eyebrow="8 · Observability" title="Metrics, traces, deployments" />
         <ObservabilitySection />
       </section>
 
