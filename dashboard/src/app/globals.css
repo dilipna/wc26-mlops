@@ -45,9 +45,9 @@
   --color-accent-warm: var(--accent-warm);
   --color-accent-deep: var(--accent-deep);
   --font-sans: var(--font-space-grotesk);
-  --font-display: var(--font-big-shoulders);
+  --font-display: var(--font-space-grotesk);
   --font-mono: var(--font-plex-mono);
-  --font-serif: var(--font-lora);
+  --font-serif: var(--font-space-grotesk);
 }
 
 body {
@@ -63,8 +63,13 @@ body {
   color: var(--background);
 }
 
+/* Whole site set in Space Grotesk (2026-07-14): display + serif classes
+   now resolve to Space Grotesk, so headlines and body prose read in the
+   same face as everything else. Mono stays IBM Plex Mono -- it's a
+   functional monospace for tabular numbers and technical labels, not a
+   brand-type choice. */
 .font-display {
-  font-family: var(--font-big-shoulders), sans-serif;
+  font-family: var(--font-space-grotesk), sans-serif;
 }
 
 .font-mono {
@@ -72,7 +77,7 @@ body {
 }
 
 .font-serif {
-  font-family: var(--font-lora), serif;
+  font-family: var(--font-space-grotesk), sans-serif;
 }
 
 @keyframes wc-dash {
