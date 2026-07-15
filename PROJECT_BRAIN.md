@@ -165,13 +165,16 @@ Legend: ✅ done and verified · 🚧 built but incomplete/unverified/needs work
   (admin/admin). The admin Observability section (`ObservabilitySection.tsx`) now shows
   genuine live production counters instead of the "Not yet implemented" placeholder, and is
   explicit that the Grafana UI is a local/demo `docker compose up` artifact (Render's free
-  tier won't host a second Grafana process) rather than a public hosted panel. **Python side
-  verified end to end (unit tests + live `uvicorn` curl of both endpoints); the
-  Prometheus/Grafana containers themselves were NOT brought up live this session (Docker
-  Desktop was down) — config is convention-following and JSON/YAML-valid, bringing the stack
-  up + screenshotting the dashboard is the one open follow-up.** Prometheus/Grafana were the
-  Tier-3 item the site itself advertised as missing; the rest of Tier 3 (Feast, full
-  Alertmanager/log-aggregation, Terraform) remains deliberately unbuilt and honestly labeled.
+  tier won't host a second Grafana process) rather than a public hosted panel. **Verified
+  live end to end** (Docker was brought up the same session): unit tests + live `uvicorn`
+  curl, then the full compose stack — the rebuilt serving image imports `prometheus_client`,
+  Prometheus's `wc26-serving` scrape target is `up` (5 series scraped), Grafana's provisioned
+  datasource + "WC26 Serving API" dashboard both exist and a proxy query returns data, and
+  headless-Chromium screenshots confirm the Grafana dashboard renders every panel with live
+  data AND the admin Observability card shows live `/metrics-summary` counters. Prometheus/
+  Grafana were the Tier-3 item the site itself advertised as missing; the rest of Tier 3
+  (Feast, full Alertmanager/log-aggregation, Terraform) remains deliberately unbuilt and
+  honestly labeled.
 
 **FastAPI serving layer** (built beyond the original CLAUDE.md scope, in service of the
 "real serving API" story)
@@ -1169,12 +1172,18 @@ Observability over concept-drift / Feast / hold) before adding any infra, per CL
   text with route-templated path labels, `/metrics-summary` returned real counters
   (`requests_total:3, avg_latency_ms:4.3, predictions_total:1, predictions_by_outcome:
   {home_win:1}`).
-- **Not done (honest, clearly scoped)**: the Prometheus/Grafana *containers* weren't brought
-  up live (Docker Desktop was down) — config is JSON/YAML-valid and convention-following but
-  the running-stack + dashboard screenshot is the one open follow-up. And this needs a Render
-  redeploy (the daily pipeline's Render deploy-hook call handles that on next run, or Dilip
-  can trigger it) before `/metrics-summary` is live on production for the admin card to show
-  real numbers there.
+- **Follow-up closed same session**: Dilip started Docker; the full compose stack
+  (`mlflow`+`serving`+`prometheus`+`grafana`) was built and brought up, all four `healthy`,
+  and verified at every layer (Prometheus target `up`/scraping, Grafana datasource +
+  dashboard provisioned, proxy query returns data, headless-Chromium screenshots of both the
+  Grafana dashboard and the admin Observability card rendering live data). Two dashboard-JSON
+  polish fixes applied after the first screenshot (model-version stat `textMode` name→value
+  so it shows `v11`; 5xx panel `... or vector(0)` so it draws a flat 0 line instead of "No
+  data").
+- **Still needs for production**: a Render redeploy before `/metrics-summary` is live on the
+  deployed API (the daily pipeline's Render deploy-hook call handles that on its next run, or
+  trigger manually); and the branch merged/pushed. Until then the admin card on the live site
+  will show its honest cold-start/unreachable fallback for the metrics counters.
 
 **2026-07-14 (session: semifinal-night mega-brief — proof system, multi-sport, golden rebrand).**
 Executed a large single-session brief the evening France–Spain was played (model picked
