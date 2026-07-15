@@ -52,7 +52,7 @@
       "title": "Loaded model version",
       "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
       "datasource": { "type": "prometheus", "uid": "wc26-prometheus" },
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^model_version$/" }, "colorMode": "none", "textMode": "name" },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^model_version$/" }, "colorMode": "none", "textMode": "value" },
       "targets": [
         { "refId": "A", "expr": "wc26_serving_model_info", "format": "table", "instant": true, "datasource": { "type": "prometheus", "uid": "wc26-prometheus" } }
       ]
@@ -128,7 +128,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(wc26_serving_requests_total{status=~\"5..\"}[5m]))",
+          "expr": "sum(rate(wc26_serving_requests_total{status=~\"5..\"}[5m])) or vector(0)",
           "legendFormat": "5xx",
           "datasource": { "type": "prometheus", "uid": "wc26-prometheus" }
         }

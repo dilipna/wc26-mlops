@@ -50,12 +50,19 @@ extra), so a full `pip freeze` would add exactly the one line added manually —
 `importlib.metadata.requires`. The serving Dockerfile installs from the lock, so this is
 what makes the endpoints actually work on the redeployed Render image.
 
-**Not live-verified: the Grafana/Prometheus containers themselves** (Docker was down).
-Config files follow the existing healthcheck/provisioning conventions and are JSON/YAML-
-valid, but weren't brought up this session. The Python side *was* verified end to end: unit
-tests plus a real `uvicorn` process curled for `/metrics` (correct Prometheus text, bounded
-path labels) and `/metrics-summary` (real counters). Bringing the compose stack up and
-screenshotting the dashboard is the one open follow-up.
+**Live-verified end to end (Docker brought up same session, follow-up closed).** After the
+initial commit, Docker Desktop came up and the full stack was run and checked at every
+layer: the rebuilt `serving` image imports `prometheus_client` (the lock-file line works);
+Prometheus's `/api/v1/targets` shows the `wc26-serving` target `up` and scraped 5 series;
+Grafana's provisioned datasource (`wc26-prometheus`, default) and the "WC26 Serving API"
+dashboard both exist, and a datasource-proxy query returns real values. A headless-Chromium
+screenshot of the Grafana dashboard renders every panel with live data (uptime, in-flight,
+request rate by path, p50/p95/p99 latency, predictions-by-outcome pie), and a screenshot of
+the admin Observability card shows the live `/metrics-summary` counters. Two dashboard-JSON
+polish fixes were made after seeing the first screenshot: the model-version stat used
+`textMode: "name"` (rendered the field *name*, not `v11`) → `"value"`; and the 5xx panel
+read "No data" with zero errors → `... or vector(0)` so it draws a flat 0 line instead of
+looking broken.
 
 ## 2026-07-14 — Proof system, multi-sport architecture, golden-dark rebrand (the "semifinal brief")
 
