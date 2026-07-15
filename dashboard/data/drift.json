@@ -1,16 +1,16 @@
 {
   "latest": {
-    "generated_at": "2026-07-14",
+    "generated_at": "2026-07-15",
     "reference_window": [
       "2016-01-01",
       "2026-01-01"
     ],
     "current_window": [
       "2026-01-01",
-      "2026-07-14"
+      "2026-07-15"
     ],
     "reference_rows": 19282,
-    "current_rows": 830,
+    "current_rows": 832,
     "dataset_drift": false,
     "share_of_drifted_columns": 0.2,
     "number_of_drifted_columns": 1,
@@ -18,27 +18,27 @@
     "columns": {
       "elo_diff": {
         "drift_detected": true,
-        "drift_score": 0.10306035576971295,
+        "drift_score": 0.10433855370845714,
         "stattest_name": "Wasserstein distance (normed)"
       },
       "form_goals_against_diff": {
         "drift_detected": false,
-        "drift_score": 0.09189793038982608,
+        "drift_score": 0.09236799362123967,
         "stattest_name": "Wasserstein distance (normed)"
       },
       "form_goals_for_diff": {
         "drift_detected": false,
-        "drift_score": 0.06753140258876986,
+        "drift_score": 0.06761196042678522,
         "stattest_name": "Wasserstein distance (normed)"
       },
       "form_win_rate_diff": {
         "drift_detected": false,
-        "drift_score": 0.02931686996569484,
+        "drift_score": 0.03034377542383977,
         "stattest_name": "Wasserstein distance (normed)"
       },
       "rank_points_diff": {
         "drift_detected": false,
-        "drift_score": 0.09219259396476576,
+        "drift_score": 0.09235362080803512,
         "stattest_name": "Wasserstein distance (normed)"
       }
     }
@@ -263,6 +263,40 @@
       "form_win_rate_diff_drift_score": "0.02931686996569484",
       "form_win_rate_diff_drift_detected": "False",
       "rank_points_diff_drift_score": "0.09219259396476576",
+      "rank_points_diff_drift_detected": "False"
+    },
+    {
+      "generated_at": "2026-07-14",
+      "reference_rows": "19282",
+      "current_rows": "830",
+      "dataset_drift": "False",
+      "share_of_drifted_columns": "0.2",
+      "elo_diff_drift_score": "0.10306035576971295",
+      "elo_diff_drift_detected": "True",
+      "form_goals_against_diff_drift_score": "0.09189793038982608",
+      "form_goals_against_diff_drift_detected": "False",
+      "form_goals_for_diff_drift_score": "0.06753140258876986",
+      "form_goals_for_diff_drift_detected": "False",
+      "form_win_rate_diff_drift_score": "0.02931686996569484",
+      "form_win_rate_diff_drift_detected": "False",
+      "rank_points_diff_drift_score": "0.09219259396476576",
+      "rank_points_diff_drift_detected": "False"
+    },
+    {
+      "generated_at": "2026-07-15",
+      "reference_rows": "19282",
+      "current_rows": "832",
+      "dataset_drift": "False",
+      "share_of_drifted_columns": "0.2",
+      "elo_diff_drift_score": "0.10433855370845714",
+      "elo_diff_drift_detected": "True",
+      "form_goals_against_diff_drift_score": "0.09236799362123967",
+      "form_goals_against_diff_drift_detected": "False",
+      "form_goals_for_diff_drift_score": "0.06761196042678522",
+      "form_goals_for_diff_drift_detected": "False",
+      "form_win_rate_diff_drift_score": "0.03034377542383977",
+      "form_win_rate_diff_drift_detected": "False",
+      "rank_points_diff_drift_score": "0.09235362080803512",
       "rank_points_diff_drift_detected": "False"
     }
   ]

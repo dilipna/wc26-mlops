@@ -1996,5 +1996,83 @@
     "team": "Switzerland",
     "win_probability": 0.0014,
     "model_version": "heuristic_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "Spain",
+    "win_probability": 0.5645330285364738,
+    "model_version": "bookmaker_outright_baseline_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "England",
+    "win_probability": 0.24502796515995884,
+    "model_version": "bookmaker_outright_baseline_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "Argentina",
+    "win_probability": 0.19043900630356742,
+    "model_version": "bookmaker_outright_baseline_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "England",
+    "win_probability": 0.1283,
+    "model_version": "stacked_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "Colombia",
+    "win_probability": 0.0312,
+    "model_version": "stacked_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "Spain",
+    "win_probability": 0.6052,
+    "model_version": "stacked_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "Argentina",
+    "win_probability": 0.2261,
+    "model_version": "stacked_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "Switzerland",
+    "win_probability": 0.0092,
+    "model_version": "stacked_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "England",
+    "win_probability": 0.1965,
+    "model_version": "heuristic_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "Colombia",
+    "win_probability": 0.0177,
+    "model_version": "heuristic_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "Spain",
+    "win_probability": 0.4855,
+    "model_version": "heuristic_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "Argentina",
+    "win_probability": 0.2989,
+    "model_version": "heuristic_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-07-15",
+    "team": "Switzerland",
+    "win_probability": 0.0014,
+    "model_version": "heuristic_l2_montecarlo_v1"
   }
 ]
