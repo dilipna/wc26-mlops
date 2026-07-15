@@ -286,46 +286,53 @@ time you read this; check §3/§8 status first):
 
 ## 6. Interview demo script
 
-*(Rewritten 2026-07-05 for the ops-console redesign — section order/IDs below match
-`dashboard/src/app/page.tsx` as of this session.)*
+*(Rewritten 2026-07-14 to match the current public page — football-first, with the
+tamper-evident proof system as the lead engineering story and the multi-sport platform
+framing. Section order/IDs below match `dashboard/src/app/page.tsx`; the ops-console
+detail now lives on the read-only `/admin` route, not the public home page.)*
 
-1. **Open https://fifa2026mlops.vercel.app.** Say: "This predicts World Cup 2026 outcomes,
-   but that's the vehicle, not the point — this is a production MLOps system, and the
-   dashboard is built to prove that, not to look like a sports betting site."
-2. Scroll to **Live Inference** (`#inference`). Pick two teams, click "Run prediction."
-   Say: "This just called the actual deployed FastAPI serving layer from your browser —
-   that request ID, latency, and model version are the real HTTP response, not mocked
-   numbers." (Honest cold-start note: if Render's free tier has been idle, the first call
-   takes ~10s — the UI says so.)
-3. Scroll to **Registry** (`#registry`). Say: "The pipeline re-registers a new model
-   version in MLflow every day — this is that registry's actual current state: version
-   number, run ID, training window, and the relative influence of each ensemble member,
-   derived from the real fitted meta-learner coefficients, not SHAP (that's still Tier 2,
-   and the Model Card says so explicitly)."
-4. Scroll to **Pipeline** (`#pipeline`) and **Drift** (`#drift`). Say: "This is the Airflow
-   DAG's real task chain and schedule, and this is Evidently's actual feature-drift check
-   against the historical training distribution — labeled honestly as running in the local
-   docker-compose stack, not a fake 'live' status for infra that isn't continuously hosted."
-5. Scroll to **Performance** (`#performance`, Proof Tracker) and **Backtest** (`#backtest`,
-   Model Validation). Say: "Every prediction is logged before kickoff and graded once the
-   match finishes — Brier score and calibration, not accuracy alone, because this outputs a
-   3-outcome probability distribution, not a binary label. Before ever touching 2026 data,
-   the same two-layer pipeline was backtested on the 2018 and 2022 World Cups." (If Proof
-   Tracker shows 0 graded matches, say so plainly — correct until knockout matches finish.)
-6. Scroll to **Archive** (`#archive`). Say: "Every logged prediction is filterable here by
-   team, model series, and date — so any claim above can be checked against the raw log,
-   not just trusted."
-7. Scroll to **Model Card** (`#model-card`) and **CI/CD** (`#cicd`). Say: "This is the
-   architecture, features, and known limitations in one place, and every infra item here
-   links to its actual source file on GitHub — Dockerfiles, the CI workflow, the DAG,
-   `requirements-lock.txt` — not unlinked tech-stack pills."
-8. Open the **GitHub repo** (footer link). Show `DECISIONS.md` (dated engineering log),
-   `.github/workflows/ci.yml`, `tests/` (34 tests, genuinely passing).
-9. If backend is up (`make backend` / docker-compose): open the **MLflow UI**
-   (localhost:5000) and the **Airflow UI** (localhost:8080, admin/admin).
-10. Close with the honest fragility story (§7) if asked "what would you do differently" —
-    this project's own audit trail (this file + DECISIONS.md) *is* the answer to that
-    question, which is itself a strong signal.
+1. **Open https://fifa2026mlops.vercel.app.** The hero answers the question directly
+   ("Who wins the World Cup?") with today's model favorite. Say: "This is a daily-updating
+   ML prediction system. The World Cup is the vehicle — the point is that it's a real,
+   autonomous MLOps pipeline, and everything on this page is provable."
+2. Scroll through **Leaderboard → Country → The Race Charted → Fixtures → Results**. Say:
+   "Every number is the model's real output: P(champion) per team from 10,000 Monte Carlo
+   bracket simulations a day, each team's probability trajectory over time, and our model's
+   match call next to the bookmaker market." (The chart is the genuine time series — one
+   logged point per team per day.)
+3. **The centerpiece — scroll to "Don't Trust Us. Check." (`#proof`).** Say: "The hard
+   problem with any prediction project is proving you called it *beforehand*. Here's how
+   this one proves it." Walk the **signature call card**: model said Spain over France in
+   the semifinal, the market said France, Spain won 0–2 — and the 'proof it wasn't
+   backdated' cell links to the GitHub commit that made that prediction public *three days
+   before kickoff*. Then: "Every WC26 prediction is in a hash-chained ledger — click any
+   commit SHA, it opens the file at a commit GitHub timestamped before the match. Run
+   `python scripts/build_proof_ledger.py --verify` and it recomputes the chain from
+   genesis." This is the strongest 'not a mockup' signal on the site.
+4. Scroll to **Backtest** (`#backtest`). Say: "Before ever touching 2026, the exact
+   two-layer pipeline was replayed on the 2018 and 2022 World Cups — the eventual champion's
+   probability climbed round over round in both, and beat a FIFA-ranking baseline on Brier
+   and log-loss. Calibration and Brier, not accuracy alone, because this outputs a 3-outcome
+   distribution, not a binary label."
+5. Point at the **sport tabs** (FIFA · NFL · NASCAR, top nav). Say: "It's a platform, not a
+   one-off — `sports_config.json` drives the whole nav; flipping one flag moves a finished
+   sport into the Completed showcase with the full graded retrospective and an auto-generated
+   PDF. NFL/NASCAR are clearly labeled placeholders until those pipelines go live."
+6. Click **Admin Dashboard** (top-right). Say: "This is the read-only ops console — the
+   MLflow registry's real current version, the Airflow DAG task graph, the live Evidently
+   drift check, data-quality checks, a live inference call to the deployed FastAPI serving
+   API (real request ID + latency + model version), and live SHAP explanations. Anything
+   without real backing data says so instead of faking a number."
+7. Open the **GitHub repo** (footer link). Show `DECISIONS.md` (dated engineering log),
+   the **Actions tab** (a green daily-pipeline run each morning committing fresh data — the
+   commit trail *is* the proof trail), `.github/workflows/`, and `tests/` (60 tests passing).
+8. If backend is up (`make backend` / `make k8s-up`): open the **MLflow UI** and **Airflow
+   UI** (admin/admin) to show the pipeline actually running, not just its output.
+9. Close with the honest fragility story (§7) if asked "what would you do differently" —
+   this project's own audit trail (this file + DECISIONS.md) *is* the answer, which is
+   itself a strong signal. Known honest gaps to name proactively: Render free-tier cold
+   starts (~10s first call), and Supabase mirroring runs on local pipeline runs, not the
+   cloud Actions runs (CSV/git ledger is the source of truth regardless).
 
 ---
 
