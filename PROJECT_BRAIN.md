@@ -154,7 +154,24 @@ Legend: ✅ done and verified · 🚧 built but incomplete/unverified/needs work
   (global XGBoost importance) both still exist as complementary, coarser views — this
   doesn't replace them, it adds the genuinely local one CLAUDE.md asked for.
 
-**Tier 3** — not started, not prioritized until Tier 1/2 + the two mission gaps are closed.
+**Tier 3** — mostly not started/not prioritized, with one exception:
+- 🚧 **Observability (Prometheus + Grafana) — serving-API metrics done 2026-07-15.** The
+  FastAPI serving app now exposes a Prometheus `/metrics` endpoint (RED metrics +
+  predictions-by-outcome + loaded model version) via `src/serving/metrics.py`, recorded in
+  the *existing* request middleware (one measurement path, no double instrumentation), plus
+  a `/metrics-summary` JSON projection the admin dashboard reads client-side. `prometheus`
+  + `grafana` services (with a provisioned datasource and a real "WC26 Serving API"
+  dashboard JSON) added to `docker-compose.airflow.yml`; Grafana at `localhost:3001`
+  (admin/admin). The admin Observability section (`ObservabilitySection.tsx`) now shows
+  genuine live production counters instead of the "Not yet implemented" placeholder, and is
+  explicit that the Grafana UI is a local/demo `docker compose up` artifact (Render's free
+  tier won't host a second Grafana process) rather than a public hosted panel. **Python side
+  verified end to end (unit tests + live `uvicorn` curl of both endpoints); the
+  Prometheus/Grafana containers themselves were NOT brought up live this session (Docker
+  Desktop was down) — config is convention-following and JSON/YAML-valid, bringing the stack
+  up + screenshotting the dashboard is the one open follow-up.** Prometheus/Grafana were the
+  Tier-3 item the site itself advertised as missing; the rest of Tier 3 (Feast, full
+  Alertmanager/log-aggregation, Terraform) remains deliberately unbuilt and honestly labeled.
 
 **FastAPI serving layer** (built beyond the original CLAUDE.md scope, in service of the
 "real serving API" story)
@@ -1111,6 +1128,53 @@ from this session — the two items that were open going into this follow-up are
 ---
 
 ## 12. Session log
+
+**2026-07-15 (session: observability — Prometheus + Grafana on the serving API).** Fresh
+session under the "MLOps portfolio first / extend, don't rewrite" priority brief. Analyzed
+the full codebase + this file first; finding was that nearly the entire recruiter-capability
+menu is already built *and* visible, so rather than invent a gap, closed the one the site
+itself admitted: `ObservabilitySection.tsx` literally said "Not yet implemented" for
+Prometheus/Grafana. Confirmed the direction with Dilip via `AskUserQuestion` (chose
+Observability over concept-drift / Feast / hold) before adding any infra, per CLAUDE.md's
+"ask before adding infra."
+- **Backend**: `src/serving/metrics.py` (new) — Prometheus `/metrics` (RED metrics +
+  predictions-by-outcome + `model_info` gauge), recorded inside the *existing* request
+  middleware so there's one measurement path feeding both the `X-Response-Time-Ms` header
+  and the histogram. Dedicated `CollectorRegistry`; best-effort import (no-ops if
+  `prometheus_client` absent), same philosophy as `otel.py`. Path label = matched route
+  template, so cardinality is bounded. Predictions counted by argmax outcome in `/predict`.
+  New `/metrics` + `/metrics-summary` endpoints (the latter a JSON projection for the
+  browser, so the static admin page reads clean counters without parsing Prom text).
+  `prometheus-client==0.21.1` added to `requirements.txt`; appended by hand to
+  `requirements-lock.txt` (zero required deps — a full regen adds exactly that one line,
+  verified via `importlib.metadata.requires`; Docker was down so the normal in-container
+  regen wasn't possible). Serving Dockerfile installs from the lock, so the dep reaches the
+  Render image.
+- **Infra**: `prometheus` + `grafana` services added to `docker-compose.airflow.yml` (with
+  healthchecks matching the existing convention), `docker/prometheus/prometheus.yml` (scrapes
+  `serving:8000/metrics`), `docker/grafana/provisioning/*` (auto datasource + dashboard
+  loader), `docker/grafana/dashboards/wc26-serving.json` (real dashboard: uptime, in-flight,
+  request rate by path, p50/p95/p99 latency, predictions-by-outcome pie, 5xx rate). Grafana
+  on host `:3001` to avoid clashing with the dashboard dev server on `:3000`.
+- **Frontend**: `ObservabilitySection.tsx` rewritten — live client-side fetch of
+  `/metrics-summary` rendering genuine counters (requests served, avg latency, predictions
+  by outcome, uptime) with graceful cold-start/unconfigured fallbacks, plus an honest
+  "metrics pipeline" panel (OTel → Prometheus → Grafana) linking to every real committed
+  config file. Admin section heading updated "Logs, alerts, deployments" → "Metrics, traces,
+  deployments."
+- **Tests**: +2 serving tests (`/metrics` exposes Prometheus text with the expected series;
+  `/metrics-summary` counts a real prediction by outcome). **62/62 passing** (was 60).
+- **Verified**: full pytest green; `npm run lint` + `npm run build` clean (all routes,
+  `/admin` static); a real `uvicorn` process curled — `/metrics` returned correct Prometheus
+  text with route-templated path labels, `/metrics-summary` returned real counters
+  (`requests_total:3, avg_latency_ms:4.3, predictions_total:1, predictions_by_outcome:
+  {home_win:1}`).
+- **Not done (honest, clearly scoped)**: the Prometheus/Grafana *containers* weren't brought
+  up live (Docker Desktop was down) — config is JSON/YAML-valid and convention-following but
+  the running-stack + dashboard screenshot is the one open follow-up. And this needs a Render
+  redeploy (the daily pipeline's Render deploy-hook call handles that on next run, or Dilip
+  can trigger it) before `/metrics-summary` is live on production for the admin card to show
+  real numbers there.
 
 **2026-07-14 (session: semifinal-night mega-brief — proof system, multi-sport, golden rebrand).**
 Executed a large single-session brief the evening France–Spain was played (model picked

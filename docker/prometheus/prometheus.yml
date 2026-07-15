@@ -1,0 +1,18 @@
+# Prometheus scrape config for the WC26 serving API.
+# Brought up by the `prometheus` service in docker-compose.airflow.yml and
+# rendered by the provisioned Grafana dashboard (docker/grafana/).
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: wc26-serving
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["serving:8000"]
+        labels:
+          service: wc26-serving
+
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]

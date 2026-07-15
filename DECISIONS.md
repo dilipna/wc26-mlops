@@ -2,6 +2,61 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-07-15 — Observability: Prometheus + Grafana on the serving API (the one gap the site admitted)
+
+The admin dashboard's Observability section literally said "Not yet implemented" for
+Prometheus/Grafana. Rather than add another Tier-3 buzzword page, closed that specific,
+self-advertised gap with a real, runnable metrics pipeline. Decisions:
+
+**Prometheus `/metrics` built on the middleware that already exists, not a bolt-on
+instrumentator.** The serving app already measured per-request latency and set
+`X-Response-Time-Ms` in one HTTP middleware. Added the Prometheus counter/histogram
+recording *in that same middleware* (`src/serving/metrics.py`, `observe_request`) so there
+is exactly one measurement path feeding both the response header and the metric — no
+double instrumentation, no `prometheus-fastapi-instrumentator` dependency whose auto-labels
+we'd then have to reconcile with the existing ones. Metrics are RED (request Rate/Errors/
+Duration) plus two domain metrics: predictions-by-outcome (argmax of the model's own
+probs, incremented in `/predict`) and a `model_info` gauge carrying the loaded model
+version. Path label is the **matched route template** (`/predict`), never the raw URL, so
+label cardinality is bounded.
+
+**Dedicated `CollectorRegistry`, not the global default, and best-effort import.** A
+private registry means re-importing the module in a test process can't raise "Duplicate
+timeseries", and `/metrics` exposes exactly this app's series. The whole module degrades to
+no-ops if `prometheus_client` isn't installed — identical philosophy to `otel.py` /
+`tracking.py`, so the core `/predict` path never gains a hard dependency on the
+observability stack.
+
+**A separate `/metrics-summary` JSON endpoint for the browser, distinct from `/metrics`.**
+The public admin page is static and calls the serving API client-side. Rather than CORS-
+expose the Prometheus text format and parse it in the browser, `/metrics-summary` projects
+the same registry to clean JSON (requests served, avg latency, predictions by outcome,
+uptime). `/metrics` stays the scrape target for Prometheus; `/metrics-summary` is the
+dashboard's read. The admin card shows genuine live production counters, with an honest
+fallback when the Render free tier is cold/asleep.
+
+**Grafana runs in the local/demo compose stack, NOT on Render — and the UI says so.**
+Render's free tier won't host a second Grafana process, so the admin card is explicit: the
+live counters are real production numbers, but the Grafana dashboard is a
+`docker compose up` artifact (Grafana provisioned at `:3001`, datasource + dashboard JSON
+auto-loaded from `docker/grafana/`). Not faking a hosted panel; not claiming Alertmanager/
+log-aggregation that genuinely isn't built. This matches the project's non-negotiable
+"say so instead of fabricating a number."
+
+**Lock file appended by hand, not full-regenerated.** `requirements-lock.txt` is normally
+regenerated inside `python:3.10-slim` (its header), but Docker Desktop wasn't running this
+session. `prometheus-client` has zero required dependencies (only an optional `twisted`
+extra), so a full `pip freeze` would add exactly the one line added manually — verified via
+`importlib.metadata.requires`. The serving Dockerfile installs from the lock, so this is
+what makes the endpoints actually work on the redeployed Render image.
+
+**Not live-verified: the Grafana/Prometheus containers themselves** (Docker was down).
+Config files follow the existing healthcheck/provisioning conventions and are JSON/YAML-
+valid, but weren't brought up this session. The Python side *was* verified end to end: unit
+tests plus a real `uvicorn` process curled for `/metrics` (correct Prometheus text, bounded
+path labels) and `/metrics-summary` (real counters). Bringing the compose stack up and
+screenshotting the dashboard is the one open follow-up.
+
 ## 2026-07-14 — Proof system, multi-sport architecture, golden-dark rebrand (the "semifinal brief")
 
 Large single-session brief executed the evening of the France–Spain semifinal (model said
