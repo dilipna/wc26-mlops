@@ -1,40 +1,40 @@
 {
   "latest": {
-    "generated_at": "2026-07-15",
+    "generated_at": "2026-07-16",
     "missing_values": {
       "date": {
         "missing": 0,
-        "total": 49585,
+        "total": 49586,
         "pct": 0.0
       },
       "home_team": {
         "missing": 0,
-        "total": 49585,
+        "total": 49586,
         "pct": 0.0
       },
       "away_team": {
         "missing": 0,
-        "total": 49585,
+        "total": 49586,
         "pct": 0.0
       },
       "home_score": {
         "missing": 0,
-        "total": 49585,
+        "total": 49586,
         "pct": 0.0
       },
       "away_score": {
         "missing": 0,
-        "total": 49585,
+        "total": 49586,
         "pct": 0.0
       },
       "tournament": {
         "missing": 0,
-        "total": 49585,
+        "total": 49586,
         "pct": 0.0
       },
       "neutral": {
         "missing": 0,
-        "total": 49585,
+        "total": 49586,
         "pct": 0.0
       }
     },
@@ -55,11 +55,11 @@
     "duplicates_before_dedup": {
       "duplicate_rows": 152,
       "duplicate_keys": 76,
-      "total_rows": 49585
+      "total_rows": 49586
     },
     "historical_live_overlap": {
       "historical_count": 49484,
-      "live_count": 101,
+      "live_count": 102,
       "overlap_count": 74
     }
   },
@@ -197,6 +197,15 @@
       "duplicate_rows": "152",
       "historical_count": "49484",
       "live_count": "101",
+      "overlap_count": "74"
+    },
+    {
+      "generated_at": "2026-07-16",
+      "total_rows": "49586",
+      "schema_valid": "True",
+      "duplicate_rows": "152",
+      "historical_count": "49484",
+      "live_count": "102",
       "overlap_count": "74"
     }
   ]
