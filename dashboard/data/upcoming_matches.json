@@ -1,17 +1,32 @@
 [
   {
-    "commence_time": "2026-07-15T19:00:00Z",
-    "home_team": "England",
-    "away_team": "Argentina",
+    "commence_time": "2026-07-18T21:00:00Z",
+    "home_team": "France",
+    "away_team": "England",
     "model": {
-      "home_win": 0.19724563359102648,
-      "draw": 0.2676144153625911,
-      "away_win": 0.5351399510463823
+      "home_win": 0.43540429944107195,
+      "draw": 0.29697175142378046,
+      "away_win": 0.26762394913514764
     },
     "bookmaker": {
-      "Argentina": 0.31743083889670537,
-      "England": 0.35301601827780393,
-      "Draw": 0.32955314282549075
+      "England": 0.26156354970594387,
+      "France": 0.4859250903825046,
+      "Draw": 0.2525113599115516
+    }
+  },
+  {
+    "commence_time": "2026-07-19T19:00:00Z",
+    "home_team": "Spain",
+    "away_team": "Argentina",
+    "model": {
+      "home_win": 0.32976435295702683,
+      "draw": 0.30994616832140715,
+      "away_win": 0.3602894787215661
+    },
+    "bookmaker": {
+      "Argentina": 0.2712271149659206,
+      "Spain": 0.4121970078986804,
+      "Draw": 0.3165758771353988
     }
   }
 ]
