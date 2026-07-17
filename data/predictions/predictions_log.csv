@@ -357,3 +357,15 @@ date,team,win_probability,model_version
 2026-07-16,Colombia,0.0177,heuristic_l2_montecarlo_v1
 2026-07-16,Argentina,0.2989,heuristic_l2_montecarlo_v1
 2026-07-16,Switzerland,0.0014,heuristic_l2_montecarlo_v1
+2026-07-17,Spain,0.5814529085672103,bookmaker_outright_baseline_v1
+2026-07-17,Argentina,0.41854709143278956,bookmaker_outright_baseline_v1
+2026-07-17,Switzerland,0.0087,stacked_l2_montecarlo_v1
+2026-07-17,England,0.1168,stacked_l2_montecarlo_v1
+2026-07-17,Colombia,0.0289,stacked_l2_montecarlo_v1
+2026-07-17,Spain,0.593,stacked_l2_montecarlo_v1
+2026-07-17,Argentina,0.2526,stacked_l2_montecarlo_v1
+2026-07-17,Switzerland,0.0014,heuristic_l2_montecarlo_v1
+2026-07-17,England,0.1965,heuristic_l2_montecarlo_v1
+2026-07-17,Colombia,0.0177,heuristic_l2_montecarlo_v1
+2026-07-17,Spain,0.4855,heuristic_l2_montecarlo_v1
+2026-07-17,Argentina,0.2989,heuristic_l2_montecarlo_v1

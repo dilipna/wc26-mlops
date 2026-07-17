@@ -1,34 +1,34 @@
 {
-  "generated_at": "2026-07-16T08:12:18.659011+00:00",
-  "latest_predictions_date": "2026-07-16",
+  "generated_at": "2026-07-17T08:09:14.255858+00:00",
+  "latest_predictions_date": "2026-07-17",
   "primary_series": "stacked_l2_montecarlo_v1",
   "top_favorites": [
     {
-      "date": "2026-07-16",
+      "date": "2026-07-17",
       "team": "Spain",
-      "win_probability": 0.5932,
+      "win_probability": 0.593,
       "model_version": "stacked_l2_montecarlo_v1"
     },
     {
-      "date": "2026-07-16",
+      "date": "2026-07-17",
       "team": "Argentina",
-      "win_probability": 0.2524,
+      "win_probability": 0.2526,
       "model_version": "stacked_l2_montecarlo_v1"
     },
     {
-      "date": "2026-07-16",
+      "date": "2026-07-17",
       "team": "England",
       "win_probability": 0.1168,
       "model_version": "stacked_l2_montecarlo_v1"
     },
     {
-      "date": "2026-07-16",
+      "date": "2026-07-17",
       "team": "Colombia",
       "win_probability": 0.0289,
       "model_version": "stacked_l2_montecarlo_v1"
     },
     {
-      "date": "2026-07-16",
+      "date": "2026-07-17",
       "team": "Switzerland",
       "win_probability": 0.0087,
       "model_version": "stacked_l2_montecarlo_v1"
