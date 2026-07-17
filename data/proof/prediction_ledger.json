@@ -1,6 +1,6 @@
 {
   "version": "wc26-proof-ledger-v1",
-  "generated_at": "2026-07-16T08:12:18.875333+00:00",
+  "generated_at": "2026-07-17T08:09:14.452787+00:00",
   "repo": "https://github.com/dilipna/wc26-mlops",
   "how_to_verify": [
     "1. Every entry's provenance.github_url shows the prediction inside dashboard/data/upcoming_matches.json at a commit GitHub timestamped BEFORE kickoff -- open it, compare the probabilities.",
@@ -18,7 +18,7 @@
     "n_disagreements": 3,
     "model_won_disagreements": 2,
     "best_call": "2026-07-07-united-states-vs-belgium",
-    "n_with_git_provenance": 14
+    "n_with_git_provenance": 15
   },
   "entries": [
     {
@@ -694,26 +694,37 @@
       "prediction": {
         "logged_at": null,
         "model": {
-          "home_win": 0.43540429944107195,
-          "draw": 0.29697175142378046,
-          "away_win": 0.26762394913514764
+          "home_win": 0.43539963960468836,
+          "draw": 0.2968935880742942,
+          "away_win": 0.2677067723210174
         },
         "market": {
-          "home_win": 0.4859250903825046,
-          "draw": 0.2525113599115516,
-          "away_win": 0.26156354970594387
+          "home_win": 0.5001963226036926,
+          "draw": 0.24728031427226316,
+          "away_win": 0.2525233631240443
         },
         "model_pick": "home_win",
         "market_pick": "home_win",
         "disagreement": false,
-        "divergence": 0.101
+        "divergence": 0.1296
       },
       "result": null,
       "grading": null,
-      "provenance": null,
-      "note": "Reconstructed entry: this fixture was predicted before the daily GitHub Actions commit trail existed (2026-07-05), so there is no pre-kickoff commit to cite. Evidence is the Supabase append-only match_predictions snapshot (logged_at above) only.",
+      "provenance": {
+        "recorded_pre_match": true,
+        "first_public_commit": "95dd4108504638bda92c49ade6b4934ad8c869b0",
+        "committed_at": "2026-07-16T08:12:19Z",
+        "file": "dashboard/data/upcoming_matches.json",
+        "committed_model_probs": {
+          "home_win": 0.4354,
+          "draw": 0.297,
+          "away_win": 0.2676
+        },
+        "github_url": "https://github.com/dilipna/wc26-mlops/blob/95dd4108504638bda92c49ade6b4934ad8c869b0/dashboard/data/upcoming_matches.json",
+        "github_commit_url": "https://github.com/dilipna/wc26-mlops/commit/95dd4108504638bda92c49ade6b4934ad8c869b0"
+      },
       "prev_hash": "f277751ad173fb5bb9ead1bc77c55ef8cdadb1519cb211f0b34411be72a9217c",
-      "entry_hash": "ac60103a0671ae473a8ef496d96e67e73e73da31d91bece2f41c6c0cbcf0e00a"
+      "entry_hash": "b63e0cd3ad547c6fdd7fcd8f05935f9fd61e36f81ab4c11b548d4ced2557e3e6"
     },
     {
       "id": "2026-07-19-spain-vs-argentina",
@@ -725,19 +736,19 @@
       "prediction": {
         "logged_at": null,
         "model": {
-          "home_win": 0.32976435295702683,
-          "draw": 0.30994616832140715,
-          "away_win": 0.3602894787215661
+          "home_win": 0.32969856983608803,
+          "draw": 0.30995081543999153,
+          "away_win": 0.36035061472392055
         },
         "market": {
-          "home_win": 0.4121970078986804,
-          "draw": 0.3165758771353988,
-          "away_win": 0.2712271149659206
+          "home_win": 0.4166199769149364,
+          "draw": 0.31446167102472605,
+          "away_win": 0.26891835206033754
         },
         "model_pick": "away_win",
         "market_pick": "home_win",
         "disagreement": true,
-        "divergence": 0.1781
+        "divergence": 0.1829
       },
       "result": null,
       "grading": null,
@@ -754,8 +765,8 @@
         "github_url": "https://github.com/dilipna/wc26-mlops/blob/ecb4f638c2b0b41a46aca14bb4fd2f04a9b81422/dashboard/data/upcoming_matches.json",
         "github_commit_url": "https://github.com/dilipna/wc26-mlops/commit/ecb4f638c2b0b41a46aca14bb4fd2f04a9b81422"
       },
-      "prev_hash": "ac60103a0671ae473a8ef496d96e67e73e73da31d91bece2f41c6c0cbcf0e00a",
-      "entry_hash": "7fd4bdce2f5aae2ae757e0de58fc18fcffc1126ba0b1475f212f30817240a821"
+      "prev_hash": "b63e0cd3ad547c6fdd7fcd8f05935f9fd61e36f81ab4c11b548d4ced2557e3e6",
+      "entry_hash": "2b015fb39b5ef6215bfd2e63410b63aff81293d805afb48c773abcb28647d5d7"
     }
   ]
 }
