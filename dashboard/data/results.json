@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-07-18",
+    "home_team": "France",
+    "away_team": "England",
+    "home_score": "4",
+    "away_score": "6"
+  },
+  {
     "date": "2026-07-15",
     "home_team": "England",
     "away_team": "Argentina",

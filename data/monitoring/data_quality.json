@@ -1,39 +1,39 @@
 {
-  "generated_at": "2026-07-18",
+  "generated_at": "2026-07-19",
   "missing_values": {
     "date": {
       "missing": 0,
-      "total": 49586,
+      "total": 49587,
       "pct": 0.0
     },
     "home_team": {
       "missing": 0,
-      "total": 49586,
+      "total": 49587,
       "pct": 0.0
     },
     "away_team": {
       "missing": 0,
-      "total": 49586,
+      "total": 49587,
       "pct": 0.0
     },
     "home_score": {
       "missing": 0,
-      "total": 49586,
+      "total": 49587,
       "pct": 0.0
     },
     "away_score": {
       "missing": 0,
-      "total": 49586,
+      "total": 49587,
       "pct": 0.0
     },
     "tournament": {
       "missing": 0,
-      "total": 49586,
+      "total": 49587,
       "pct": 0.0
     },
     "neutral": {
       "missing": 0,
-      "total": 49586,
+      "total": 49587,
       "pct": 0.0
     }
   },
@@ -54,11 +54,11 @@
   "duplicates_before_dedup": {
     "duplicate_rows": 152,
     "duplicate_keys": 76,
-    "total_rows": 49586
+    "total_rows": 49587
   },
   "historical_live_overlap": {
     "historical_count": 49484,
-    "live_count": 102,
+    "live_count": 103,
     "overlap_count": 74
   }
 }
