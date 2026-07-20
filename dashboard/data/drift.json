@@ -1,16 +1,16 @@
 {
   "latest": {
-    "generated_at": "2026-07-19",
+    "generated_at": "2026-07-20",
     "reference_window": [
       "2016-01-01",
       "2026-01-01"
     ],
     "current_window": [
       "2026-01-01",
-      "2026-07-19"
+      "2026-07-20"
     ],
     "reference_rows": 19282,
-    "current_rows": 836,
+    "current_rows": 838,
     "dataset_drift": false,
     "share_of_drifted_columns": 0.2,
     "number_of_drifted_columns": 1,
@@ -18,27 +18,27 @@
     "columns": {
       "elo_diff": {
         "drift_detected": true,
-        "drift_score": 0.1057384982942688,
+        "drift_score": 0.10721814022785307,
         "stattest_name": "Wasserstein distance (normed)"
       },
       "form_goals_against_diff": {
         "drift_detected": false,
-        "drift_score": 0.09482406187784165,
+        "drift_score": 0.09528377589402313,
         "stattest_name": "Wasserstein distance (normed)"
       },
       "form_goals_for_diff": {
         "drift_detected": false,
-        "drift_score": 0.06833135364972584,
+        "drift_score": 0.06979786864864351,
         "stattest_name": "Wasserstein distance (normed)"
       },
       "form_win_rate_diff": {
         "drift_detected": false,
-        "drift_score": 0.03147728609031715,
+        "drift_score": 0.031573337331728055,
         "stattest_name": "Wasserstein distance (normed)"
       },
       "rank_points_diff": {
         "drift_detected": false,
-        "drift_score": 0.09360352966341655,
+        "drift_score": 0.09431519184878451,
         "stattest_name": "Wasserstein distance (normed)"
       }
     }
@@ -365,6 +365,23 @@
       "form_win_rate_diff_drift_score": "0.03147728609031715",
       "form_win_rate_diff_drift_detected": "False",
       "rank_points_diff_drift_score": "0.09360352966341655",
+      "rank_points_diff_drift_detected": "False"
+    },
+    {
+      "generated_at": "2026-07-20",
+      "reference_rows": "19282",
+      "current_rows": "838",
+      "dataset_drift": "False",
+      "share_of_drifted_columns": "0.2",
+      "elo_diff_drift_score": "0.10721814022785307",
+      "elo_diff_drift_detected": "True",
+      "form_goals_against_diff_drift_score": "0.09528377589402313",
+      "form_goals_against_diff_drift_detected": "False",
+      "form_goals_for_diff_drift_score": "0.06979786864864351",
+      "form_goals_for_diff_drift_detected": "False",
+      "form_win_rate_diff_drift_score": "0.031573337331728055",
+      "form_win_rate_diff_drift_detected": "False",
+      "rank_points_diff_drift_score": "0.09431519184878451",
       "rank_points_diff_drift_detected": "False"
     }
   ]

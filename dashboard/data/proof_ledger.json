@@ -1,6 +1,6 @@
 {
   "version": "wc26-proof-ledger-v1",
-  "generated_at": "2026-07-19T08:15:39.997284+00:00",
+  "generated_at": "2026-07-20T08:57:15.415232+00:00",
   "repo": "https://github.com/dilipna/wc26-mlops",
   "how_to_verify": [
     "1. Every entry's provenance.github_url shows the prediction inside dashboard/data/upcoming_matches.json at a commit GitHub timestamped BEFORE kickoff -- open it, compare the probabilities.",
@@ -8,9 +8,9 @@
     "3. Recompute the hash chain locally: python scripts/build_proof_ledger.py --verify (each entry_hash = sha256(prev_hash + canonical entry JSON); genesis = sha256('wc26-proof-ledger-v1'))."
   ],
   "summary": {
-    "n_entries": 14,
+    "n_entries": 13,
     "n_graded": 13,
-    "n_pending": 1,
+    "n_pending": 0,
     "model_accuracy": 0.8462,
     "market_accuracy": 0.7692,
     "model_avg_brier": 0.3951,
@@ -18,7 +18,7 @@
     "n_disagreements": 3,
     "model_won_disagreements": 2,
     "best_call": "2026-07-07-united-states-vs-belgium",
-    "n_with_git_provenance": 14
+    "n_with_git_provenance": 13
   },
   "entries": [
     {
@@ -683,48 +683,6 @@
       },
       "prev_hash": "d965fe264fd3a24443c8bb52c4dfc2deb45f8b38e719b89932af9abfe521e3a4",
       "entry_hash": "f277751ad173fb5bb9ead1bc77c55ef8cdadb1519cb211f0b34411be72a9217c"
-    },
-    {
-      "id": "2026-07-19-spain-vs-argentina",
-      "match": {
-        "home_team": "Spain",
-        "away_team": "Argentina",
-        "commence_time": "2026-07-19T19:00:00Z"
-      },
-      "prediction": {
-        "logged_at": null,
-        "model": {
-          "home_win": 0.3292434034215821,
-          "draw": 0.3102590384638485,
-          "away_win": 0.36049755811456935
-        },
-        "market": {
-          "home_win": 0.41538961409900943,
-          "draw": 0.3168262865418682,
-          "away_win": 0.26778409935912245
-        },
-        "model_pick": "away_win",
-        "market_pick": "home_win",
-        "disagreement": true,
-        "divergence": 0.1854
-      },
-      "result": null,
-      "grading": null,
-      "provenance": {
-        "recorded_pre_match": true,
-        "first_public_commit": "ecb4f638c2b0b41a46aca14bb4fd2f04a9b81422",
-        "committed_at": "2026-07-14T18:37:08-04:00",
-        "file": "dashboard/data/upcoming_matches.json",
-        "committed_model_probs": {
-          "home_win": 0.3024,
-          "draw": 0.3184,
-          "away_win": 0.3792
-        },
-        "github_url": "https://github.com/dilipna/wc26-mlops/blob/ecb4f638c2b0b41a46aca14bb4fd2f04a9b81422/dashboard/data/upcoming_matches.json",
-        "github_commit_url": "https://github.com/dilipna/wc26-mlops/commit/ecb4f638c2b0b41a46aca14bb4fd2f04a9b81422"
-      },
-      "prev_hash": "f277751ad173fb5bb9ead1bc77c55ef8cdadb1519cb211f0b34411be72a9217c",
-      "entry_hash": "e3340c6768dce681cbe099a82bd19c5a8bb82be1af160ed2cc5ebc578cfe7fdb"
     }
   ]
 }
