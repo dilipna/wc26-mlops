@@ -1,6 +1,6 @@
 {
   "latest": {
-    "generated_at": "2026-08-01",
+    "generated_at": "2026-08-02",
     "missing_values": {
       "date": {
         "missing": 0,
@@ -345,6 +345,15 @@
     },
     {
       "generated_at": "2026-08-01",
+      "total_rows": "49588",
+      "schema_valid": "True",
+      "duplicate_rows": "152",
+      "historical_count": "49484",
+      "live_count": "104",
+      "overlap_count": "74"
+    },
+    {
+      "generated_at": "2026-08-02",
       "total_rows": "49588",
       "schema_valid": "True",
       "duplicate_rows": "152",
