@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-27",
+  "generated_at": "2026-08-28",
   "reference_window": [
     "2016-01-01",
     "2026-01-01"
   ],
   "current_window": [
     "2026-01-01",
-    "2026-08-27"
+    "2026-08-28"
   ],
   "reference_rows": 19282,
   "current_rows": 838,
