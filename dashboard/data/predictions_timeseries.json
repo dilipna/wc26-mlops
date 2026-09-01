@@ -4942,5 +4942,65 @@
     "team": "Colombia",
     "win_probability": 0.0177,
     "model_version": "heuristic_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-09-01",
+    "team": "Argentina",
+    "win_probability": 0.2105,
+    "model_version": "stacked_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-09-01",
+    "team": "Switzerland",
+    "win_probability": 0.0076,
+    "model_version": "stacked_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-09-01",
+    "team": "Spain",
+    "win_probability": 0.6143,
+    "model_version": "stacked_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-09-01",
+    "team": "England",
+    "win_probability": 0.1396,
+    "model_version": "stacked_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-09-01",
+    "team": "Colombia",
+    "win_probability": 0.028,
+    "model_version": "stacked_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-09-01",
+    "team": "Argentina",
+    "win_probability": 0.2989,
+    "model_version": "heuristic_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-09-01",
+    "team": "Switzerland",
+    "win_probability": 0.0014,
+    "model_version": "heuristic_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-09-01",
+    "team": "Spain",
+    "win_probability": 0.4855,
+    "model_version": "heuristic_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-09-01",
+    "team": "England",
+    "win_probability": 0.1965,
+    "model_version": "heuristic_l2_montecarlo_v1"
+  },
+  {
+    "date": "2026-09-01",
+    "team": "Colombia",
+    "win_probability": 0.0177,
+    "model_version": "heuristic_l2_montecarlo_v1"
   }
 ]
