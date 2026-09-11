@@ -1,6 +1,6 @@
 {
   "version": "wc26-proof-ledger-v1",
-  "generated_at": "2026-09-10T10:40:42.378891+00:00",
+  "generated_at": "2026-09-11T10:39:17.534378+00:00",
   "repo": "https://github.com/dilipna/wc26-mlops",
   "how_to_verify": [
     "1. Every entry's provenance.github_url shows the prediction inside dashboard/data/upcoming_matches.json at a commit GitHub timestamped BEFORE kickoff -- open it, compare the probabilities.",
