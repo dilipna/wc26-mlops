@@ -1147,8 +1147,12 @@ Why this session happened: Prof. Kenneth Regan (UB) replied to Dilip's RA email 
 - **Bug fixed: 5 World Cup matches double-counted in Elo** (`load_combined_matches`
   dedup).
 - `daily_update.py` now skips Layer 2 logging once the final is played.
-- **Known, not done:** the CI daily workflow still runs daily and spends Odds API quota for
-  a finished tournament. Consider disabling its schedule.
+- **Schedule disabled:** the `daily_pipeline.yml` cron trigger is commented out; only
+  `workflow_dispatch` remains. The tournament is over, so a daily run just spends Odds API
+  quota. Uncomment the two lines to resume. The local Airflow DAG still declares a 06:00
+  schedule but only runs while Docker is up locally.
+- **Showable summary:** `docs/pele-benchmark-summary.md` has the headline numbers, the
+  leakage fix, the withdrawn claims, and a p-value methods table.
 - **Audit fix, same session:** the PELE deadline for group games is now anchored on the
   earlier of PELE's ET date label and the venue-local date. The label-only rule leaked 3
   post-match PELE versions. All interpretation copy now cites numbers from
