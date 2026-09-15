@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { activeSports, liveBadge } from "@/lib/sports";
+import PeleTab from "./PeleTab";
 
 // Sport-level tabs, rendered entirely from sports_config.json: active
 // sports show here (with a LIVE/FINAL badge where applicable); sports
@@ -41,6 +42,7 @@ export default function SportTabs() {
           </Link>
         );
       })}
+      <PeleTab />
     </div>
   );
 }

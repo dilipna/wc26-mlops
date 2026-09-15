@@ -13,7 +13,7 @@
 
 ## Leakage bug found in audit, and the fix
 
-For matches without a known kickoff time, the rule was to use PELE's last forecast published before 15:00 UTC on PELE's own date label. PELE dates matches in US Eastern time, so late Pacific kickoffs carry the *next* day's label. For Australia–Turkey that let in a PELE version published about 10 hours after the match; three group matches were affected. The deadline now uses the earlier of PELE's label and the local match date, with a regression test. Every PELE forecast is now at least 0.4 h before kickoff. The fix *worsened* PELE's score, from 0.1479 to 0.1492.
+For matches without a known kickoff time, the rule was to use PELE's last forecast published before 15:00 UTC on PELE's own date label. PELE dates matches in US Eastern time, so late Pacific kickoffs carry the *next* day's label. For Australia–Turkey that let in a PELE version published about 10 hours after the match; three matches carried a next-day label, but only Australia–Turkey actually received a post-match version. The deadline now uses the earlier of PELE's label and the local match date, with a regression test. Every PELE forecast is now at least 0.4 h before kickoff. The fix *worsened* PELE's score, from 0.1479 to 0.1492.
 
 ## Three claims withdrawn
 
@@ -30,7 +30,7 @@ For matches without a known kickoff time, the rule was to use PELE's last foreca
 - **Our replay side:** trained only on data before the opening match. It reproduces our live forecasts to within 1.1 percentage points.
 - **Scoring:** draws are scored as a real outcome (3-outcome scoring, not binary). Knockout results include extra time; a shootout counts as a draw.
 
-Code: [`scripts/compare_vs_pele.py`](../scripts/compare_vs_pele.py) · Data: [`data/benchmarks/pele_comparison.json`](../data/benchmarks/pele_comparison.json) · Live page: [fifa2026mlops.vercel.app/#pele](https://fifa2026mlops.vercel.app/#pele)
+Code: [`scripts/compare_vs_pele.py`](../scripts/compare_vs_pele.py) · Data: [`data/benchmarks/pele_comparison.json`](../data/benchmarks/pele_comparison.json) · Live page: [fifa2026mlops.vercel.app/pele](https://fifa2026mlops.vercel.app/pele)
 
 ---
 

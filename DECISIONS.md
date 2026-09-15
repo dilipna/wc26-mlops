@@ -19,7 +19,7 @@ than any 2026 kickoff). **Correction from the same-day audit:** that deadline mu
 anchored on the *earlier* of PELE's date label and the venue-local match date. PELE labels
 matches by US Eastern date, so a 21:00 Pacific kickoff carries the next day's label. The
 label-only rule let a PELE version published about 10 hours after Australia–Turkey through
-(3 group matches were affected). Now fixed, with a regression test. The minimum lead of any
+(3 matches carried a next-day label; only Australia–Turkey actually received a post-match version). Now fixed, with a regression test. The minimum lead of any
 PELE forecast before kickoff is 0.4 h. Re-scoring moved PELE's replay RPS from 0.1479 to
 0.1492; the leaked versions had flattered PELE slightly. Result: 102 of the 103 matches PELE
 covered. Canada–South Africa is
