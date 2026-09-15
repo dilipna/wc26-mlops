@@ -119,9 +119,16 @@ def parse_match_rows(rows: list[dict], version: int, published_at: datetime) -> 
 
 
 def conservative_deadline(local_date: date) -> datetime:
-    """When the exact kickoff isn't known: 15:00 UTC (11:00 US Eastern) on
-    PELE's own date label -- earlier than any 2026 World Cup kickoff, so a
-    version published before it is unambiguously pre-kickoff."""
+    """When the exact kickoff isn't known: 15:00 UTC on the match's
+    venue-local date. Every 2026 World Cup kickoff was at or after 16:00 UTC
+    on its local date, so a version published before this is unambiguously
+    pre-kickoff.
+
+    Callers must pass the EARLIER of PELE's label and the venue-local result
+    date: PELE labels by US Eastern date, so a 21:00 Pacific kickoff (04:00
+    UTC) carries the NEXT day's label -- anchoring on the label alone let a
+    version published ~10h after Australia-Turkey through (caught in audit,
+    2026-09-14)."""
     return datetime(local_date.year, local_date.month, local_date.day, 15, tzinfo=timezone.utc)
 
 
@@ -147,7 +154,7 @@ def latest_pre_kickoff(
     ]
     if not candidates:
         return None
-    cutoff = deadline or conservative_deadline(min(f.local_date for f in candidates))
+    cutoff = deadline or conservative_deadline(min(min(f.local_date for f in candidates), around))
     before = [f for f in candidates if f.published_at < cutoff]
     return max(before, key=lambda f: f.version) if before else None
 

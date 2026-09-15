@@ -15,7 +15,14 @@ another (`pS7DN`). Datawrapper keeps every published version at
 `Last-Modified` header. That gave me 127 versions of the forecast table and 133 of the
 ratings, each with a publish time. For every match I use the last version published before
 kickoff: exact kickoff for knockout games, 15:00 UTC on match day for group games (earlier
-than any 2026 kickoff). Result: 102 of the 103 matches PELE covered. Canada–South Africa is
+than any 2026 kickoff). **Correction from the same-day audit:** that deadline must be
+anchored on the *earlier* of PELE's date label and the venue-local match date. PELE labels
+matches by US Eastern date, so a 21:00 Pacific kickoff carries the next day's label. The
+label-only rule let a PELE version published about 10 hours after Australia–Turkey through
+(3 group matches were affected). Now fixed, with a regression test. The minimum lead of any
+PELE forecast before kickoff is 0.4 h. Re-scoring moved PELE's replay RPS from 0.1479 to
+0.1492; the leaked versions had flattered PELE slightly. Result: 102 of the 103 matches PELE
+covered. Canada–South Africa is
 excluded because PELE only posted an "advance" probability, not W/D/L. Everything is
 normalized into `data/external/pele/` so the benchmark reruns offline.
 `scripts/fetch_pele_forecasts.py` refreshes it.
@@ -41,20 +48,28 @@ from conclusive is this?"
 **Findings, as they came out:**
 - *Live* (n=21): ours RPS 0.139, PELE 0.149, bookmakers 0.156. The gap is not significant
   (p=0.47).
-- *Replay* (n=102): PELE 0.148, ours 0.155. Again not significant (p=0.36). PELE's edge
-  sits in the group stage (0.152 vs 0.163); the two are level in the knockouts.
-- Telling these two models apart would take about 916 matches, roughly 9 World Cups.
-- PELE is better calibrated (ECE 0.031 vs 0.073). Both get the draw rate right. Ours is too
-  timid on favorites: 59% on average, and favorites won 65%. Sharpening our probabilities
-  closes about 70% of the gap, but that was tuned in-sample, so it is a hypothesis to test
-  on 2018/2022, not a result.
-- A 50/50 blend of ours and PELE beats ours alone on log loss (p=0.03). The models make
-  different mistakes.
-- Ratings agree closely (Spearman 0.95). The biggest disagreement is Norway: PELE #8, our
-  Elo #19. Norway knocked out Brazil. That is squad-value information a results-only model
-  cannot see.
-- I tested one PELE idea directly: scoring co-host matches as home games. It made no
-  difference (ΔRPS +0.0002, p=0.83).
+- *Replay* (n=102, after the deadline fix): PELE 0.149, ours 0.155. Not significant
+  (p=0.48). Group stage: 0.154 vs 0.163 (p=0.35). Knockouts: 0.138 vs 0.135 (p=0.84).
+- Detecting the full-tournament gap at 80% power would take about 1,545 matches, roughly
+  15 World Cups.
+- *Calibration, decile bins, n reported per bin:* ECE is 0.055 for PELE and 0.073 for ours.
+  The bootstrap 95% CI of the difference is [−0.021, +0.059], so there is no reliable gap.
+  Only one bin has n<10: PELE's 90–100% bin, n=2. Draw rate is 23.5% actual, 23.3% predicted
+  by ours, 22.8% by PELE.
+- Favorites: ours predicted 59.0% on average and they won 64.7%. That +5.7 pt gap has a 95%
+  CI of [−3.1, +14.7], so it is NOT established. An earlier "too timid on favorites" claim
+  was withdrawn.
+- A 50/50 blend beats ours alone on log loss only (p=0.045; RPS p=0.19, Brier p=0.15). It is
+  not better than PELE alone (log loss p=0.43). Per-match RPS correlation between the models
+  is 0.83, so the earlier "they make different mistakes" claim was withdrawn: they mostly
+  miss the same matches.
+- Ratings agree closely (Spearman 0.95). Norway's rank gap (PELE #8, ours #19) is NOT a
+  rating disagreement: 1952 vs 1946 on similar numbers. Our Elo spreads other teams wider
+  (Japan 1995 vs 1870; Iran 1902 vs 1728). An earlier "squad-value information we can't see"
+  claim was withdrawn because the data doesn't show it.
+- I tested one PELE idea directly: scoring the 14 co-host matches as home games. It made no
+  difference (ΔRPS +0.0002, p=0.83). On those 14 matches PELE scored 0.168 vs our 0.185,
+  with p=0.63.
 
 **Bug 1: the live bracket froze for two months.** Knockout draws are resolved by spotting
 the shootout winner in a later fixture. The code only looked at *upcoming* fixtures. After

@@ -52,6 +52,22 @@ def test_selection_never_uses_a_version_published_after_kickoff():
     assert pele.oriented(chosen, "Argentina") == pytest.approx((0.33, 0.3, 0.37))
 
 
+def test_unknown_kickoff_deadline_uses_the_earlier_of_label_and_local_date():
+    # Regression (audit 2026-09-14): Australia-Turkey was played late on
+    # June 13 local (04:00 UTC June 14); PELE labels it June 14 (US Eastern).
+    # A version published June 14 14:28 UTC is AFTER the match and must lose.
+    def fc(version, published):
+        return pele.PeleForecast(version, published, date(2026, 6, 14), "group", "Australia", "Turkey",
+                                 "three_way", 0.3, 0.3, 0.4, 1.0, 1.2)
+
+    forecasts = [
+        fc(40, datetime(2026, 6, 13, 9, tzinfo=timezone.utc)),
+        fc(41, datetime(2026, 6, 14, 14, 28, tzinfo=timezone.utc)),
+    ]
+    chosen = pele.latest_pre_kickoff(forecasts, "Australia", "Turkey", date(2026, 6, 13), None)
+    assert chosen.version == 40
+
+
 def test_scoring_rules_known_values():
     assert outcome_index(2, 1) == 0 and outcome_index(1, 1) == 1 and outcome_index(0, 3) == 2
     perfect = (1.0, 0.0, 0.0)

@@ -28,6 +28,7 @@ Writes: data/benchmarks/pele_comparison.json
 
 import csv
 import json
+import random
 import subprocess
 import sys
 from datetime import date, datetime, timezone
@@ -43,6 +44,7 @@ from src.benchmarks.scoring import (  # noqa: E402
     outcome_index,
     paired_comparison,
     reliability,
+    rps,
 )
 from src.features.data_loading import load_fifa_rankings  # noqa: E402
 from src.features.team_timeline import build_timelines, snapshot_as_of  # noqa: E402
@@ -190,9 +192,69 @@ def head_to_head(rows, a: str, b: str) -> dict:
     }
 
 
-def calibration(rows, key: str) -> dict:
+LOW_CONFIDENCE_BIN = 10
+
+
+def calibration(rows, key: str, n_bins: int = 10) -> dict:
+    """Decile reliability over every (probability, happened?) pair -- 3 per
+    match, so bin n counts outcome probabilities, not matches."""
     pairs = [(r[key][i], 1 if r["outcome"] == i else 0) for r in rows for i in range(3)]
-    return reliability(pairs)
+    rel = reliability(pairs, n_bins=n_bins)
+    for b in rel["bins"]:
+        b["low_confidence"] = b["n"] < LOW_CONFIDENCE_BIN
+    return rel
+
+
+def bootstrap_ci(stat, rows, n_boot: int = 2000, seed: int = 11) -> dict:
+    rng = random.Random(seed)
+    n = len(rows)
+    draws = sorted(stat([rows[rng.randrange(n)] for _ in range(n)]) for _ in range(n_boot))
+    return {"point": stat(rows), "ci95": [draws[int(0.025 * n_boot)], draws[int(0.975 * n_boot) - 1]]}
+
+
+def favorite_gap(key: str):
+    """Observed favorite win rate minus mean predicted favorite probability."""
+    def stat(rows):
+        gaps = []
+        for r in rows:
+            fav = 0 if r[key][0] >= r[key][2] else 2
+            gaps.append((1 if r["outcome"] == fav else 0) - r[key][fav])
+        return sum(gaps) / len(gaps)
+    return stat
+
+
+def diagnostics(rows) -> dict:
+    """Every number the dashboard/README interpretation text cites."""
+    n = len(rows)
+    ours_rps = [rps(r["replay"], r["outcome"]) for r in rows]
+    pele_rps = [rps(r["pele"], r["outcome"]) for r in rows]
+    mo, mp = sum(ours_rps) / n, sum(pele_rps) / n
+    cov = sum((a - mo) * (b - mp) for a, b in zip(ours_rps, pele_rps))
+    corr = cov / (sum((a - mo) ** 2 for a in ours_rps) * sum((b - mp) ** 2 for b in pele_rps)) ** 0.5
+
+    def fav_rates(key):
+        pred = won = 0.0
+        for r in rows:
+            fav = 0 if r[key][0] >= r[key][2] else 2
+            pred += r[key][fav]
+            won += 1 if r["outcome"] == fav else 0
+        return {"mean_predicted": pred / n, "observed": won / n,
+                "gap": bootstrap_ci(favorite_gap(key), rows)}
+
+    ece = lambda key: (lambda rs: calibration(rs, key)["ece"])  # noqa: E731
+    host = [r for r in rows if r["host_match"]]
+    return {
+        "draw_rate": {
+            "observed": sum(1 for r in rows if r["outcome"] == 1) / n,
+            "mean_predicted_ours": sum(r["replay"][1] for r in rows) / n,
+            "mean_predicted_pele": sum(r["pele"][1] for r in rows) / n,
+        },
+        "favorites": {"ours": fav_rates("replay"), "pele": fav_rates("pele")},
+        "ece_decile_diff_ours_minus_pele": bootstrap_ci(lambda rs: ece("replay")(rs) - ece("pele")(rs), rows),
+        "per_match_rps_correlation": corr,
+        "mean_abs_prob_diff_ours_vs_pele": sum(abs(a - b) for r in rows for a, b in zip(r["replay"], r["pele"])) / (3 * n),
+        "host_matches_ours_vs_pele": head_to_head(host, "replay", "pele") if host else {},
+    }
 
 
 def stage_reached(ko_results) -> dict[str, str]:
@@ -302,6 +364,7 @@ def main():
         "group": track([r for r in rows if r["stage"] == "group"]),
         "knockout": track([r for r in rows if r["stage"] != "group"]),
         "calibration": {k: calibration(rows, k) for k in ("replay", "pele")},
+        "diagnostics": diagnostics(rows),
     }
 
     # ---- live track (only matches where all of ours, PELE and market exist pre-kickoff)
@@ -376,12 +439,29 @@ def main():
             "pele_data": json.loads((PELE_DIR / "manifest.json").read_text()),
         },
         "protocol": {
-            "outcome": "Recorded match score (home win / draw / away win). Knockout scores include extra time where played; both models are graded on the identical label.",
-            "pele_side": "Last PELE Datawrapper version published (HTTP Last-Modified) before kickoff; exact kickoff for knockout games, 15:00 UTC on match day for group games.",
+            "outcome": "Proper 3-outcome scoring: home win / draw / away win from the recorded score. Draws are their own outcome (not dropped, not split). Knockout scores include extra time where played and a shootout counts as a draw; both models are graded on the identical label.",
+            "pele_side": "Last PELE Datawrapper version published (HTTP Last-Modified) before a deadline: the exact kickoff where our fixture feed has it (21 knockout matches); otherwise 15:00 UTC on the earlier of PELE's date label and the venue-local match date (every 2026 kickoff was >= 16:00 UTC local-date). So group-stage PELE numbers can be up to a day older than PELE's true last pre-kickoff version -- conservative, never later.",
             "replay_side": f"Layer 1 trained on {TRAIN_START} to {TOURNAMENT_START} only; Elo/form strictly before each match date; all matches scored neutral=True, as in production.",
             "live_side": "Newest version of dashboard/data/upcoming_matches.json committed to the public repo before kickoff (git commit time).",
             "tests": "Paired percentile bootstrap (10k) 95% CI of the mean per-match score difference; two-sided paired sign-flip randomization p-value.",
             "primary_metric": "rps",
+        },
+        "accounting": {
+            "pele_fixtures": len(pele_fixtures),
+            "world_cup_results": len(results),
+            "results_without_pele_fixture": sorted(
+                f"{m.date} {m.home_team} v {m.away_team}" for m in results
+                if not any(frozenset((m.home_team, m.away_team)) == pair for _, pair in pele_fixtures)
+            ),
+            "scored_replay": len(rows),
+            "scored_live": len(live_rows),
+            "knockout_excluded_from_live": sorted(
+                f"{r['date']} {r['home']} v {r['away']}: " + (
+                    "no public commit of ours before kickoff" if not r.get("live")
+                    else "no PELE 3-way before kickoff" if not r["live"]["pele"]
+                    else "no bookmaker odds in our snapshot")
+                for r in rows if r["stage"] != "group" and not (r.get("live") and r["live"]["pele"] and r["live"]["market"])
+            ),
         },
         "unmatched_fixtures": unmatched,
         "fixtures_without_pre_kickoff_pele": no_pre_kickoff,

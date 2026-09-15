@@ -316,7 +316,8 @@ export type PairedTest = {
   a_better_count: number;
   b_better_count: number;
 };
-export type ReliabilityBin = { lo: number; hi: number; n: number; mean_predicted: number; observed_frequency: number };
+export type ReliabilityBin = { lo: number; hi: number; n: number; mean_predicted: number; observed_frequency: number; low_confidence?: boolean };
+export type Ci = { point: number; ci95: [number, number] };
 
 export type PeleMatch = {
   date: string;
@@ -351,6 +352,14 @@ export type PeleComparison = {
     group: { n: number; metrics: Record<"replay" | "pele" | "combo", ScoreSet>; ours_vs_pele: Record<string, PairedTest> };
     knockout: { n: number; metrics: Record<"replay" | "pele" | "combo", ScoreSet>; ours_vs_pele: Record<string, PairedTest> };
     calibration: Record<"replay" | "pele", { bins: ReliabilityBin[]; ece: number }>;
+    diagnostics: {
+      draw_rate: { observed: number; mean_predicted_ours: number; mean_predicted_pele: number };
+      favorites: Record<"ours" | "pele", { mean_predicted: number; observed: number; gap: Ci }>;
+      ece_decile_diff_ours_minus_pele: Ci;
+      per_match_rps_correlation: number;
+      mean_abs_prob_diff_ours_vs_pele: number;
+      host_matches_ours_vs_pele: Record<string, PairedTest>;
+    };
   };
   live: {
     n: number;
@@ -373,6 +382,15 @@ export type PeleComparison = {
     largest_disagreements: { team: string; pele_rank: number; our_rank: number; pele_rating: number; our_elo: number; finish: string }[];
   };
   method_differences: { aspect: string; pele: string; ours: string }[];
+  accounting: {
+    pele_fixtures: number;
+    world_cup_results: number;
+    results_without_pele_fixture: string[];
+    scored_replay: number;
+    scored_live: number;
+    knockout_excluded_from_live: string[];
+  };
+  fixtures_without_pre_kickoff_pele: string[][];
   matches: PeleMatch[];
 };
 

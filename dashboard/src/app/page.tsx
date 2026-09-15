@@ -113,7 +113,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="Benchmarked"
           title="Us vs Nate Silver's PELE"
-          subtitle="The fairest test available: every 2026 match, scored against Silver Bulletin's published pre-kickoff forecasts, with proper scoring rules and significance tests -- including where PELE is better."
+          subtitle="Every 2026 match PELE forecast, scored against Silver Bulletin's own pre-kickoff numbers with 3-outcome proper scoring rules and paired significance tests."
         />
         <PeleBenchmark data={peleComparison} />
       </section>
