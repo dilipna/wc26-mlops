@@ -71,6 +71,8 @@ Averaged across all checkpoints in both tournaments, the model beats the FIFA-ra
 
 ## Benchmarked against Nate Silver's PELE
 
+**One-minute summary, including the test behind every p-value: [docs/pele-benchmark-summary.md](docs/pele-benchmark-summary.md).**
+
 This compares our match forecasts with those from Silver Bulletin's PELE ("Predictive Elo with Lineup Equilibria") for the 2026 World Cup. On PELE's side, every forecast is the version Silver Bulletin published before kickoff, recovered from Datawrapper's version history using each version's publish timestamp. On our side, forecasts are either git-committed before kickoff (live track) or a leakage-safe replay trained only on data up to the opening match. Scoring uses RPS, Brier and log loss, with paired bootstrap CIs and randomization tests.
 
 | Track | n | Ours (RPS ↓) | PELE | Bookmakers | Ours − PELE |

@@ -9,9 +9,12 @@ name: Daily prediction pipeline
 # (a real, demoable orchestration artifact) -- this is what actually keeps
 # the live site fresh day to day.
 on:
-  schedule:
-    - cron: "0 6 * * *" # 06:00 UTC daily, matches the Airflow DAG's schedule
-  workflow_dispatch: {} # manual trigger, for testing this workflow itself
+  # Schedule disabled 2026-09-14: the World Cup ended 2026-07-19, so a daily
+  # run only spends Odds API quota and commits no new information. Restore the
+  # two lines below to resume daily runs (e.g. for a future tournament).
+  # schedule:
+  #   - cron: "0 6 * * *" # 06:00 UTC daily, matches the Airflow DAG's schedule
+  workflow_dispatch: {} # manual trigger, still available from the Actions tab
 
 permissions:
   contents: write

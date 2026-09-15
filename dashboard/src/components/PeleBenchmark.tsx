@@ -423,6 +423,10 @@ export default function PeleBenchmark({ data }: { data: PeleComparison | null })
         <a className="text-accent hover:underline" href={data.sources.pele_methodology} target="_blank" rel="noreferrer">
           natesilver.net/p/pele-methodology
         </a>
+        . One-page summary with the test behind every p-value:{" "}
+        <a className="text-accent hover:underline" href={`${GITHUB_URL}/blob/main/docs/pele-benchmark-summary.md`} target="_blank" rel="noreferrer">
+          docs/pele-benchmark-summary.md
+        </a>
         . Code:{" "}
         <a className="text-accent hover:underline" href={`${GITHUB_URL}/blob/main/scripts/compare_vs_pele.py`} target="_blank" rel="noreferrer">
           scripts/compare_vs_pele.py
