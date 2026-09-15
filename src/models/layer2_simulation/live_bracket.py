@@ -11,9 +11,18 @@ still-unplayed R32 match.
 
 Knockout draws: a 90-minute draw goes to penalties, but the Odds API
 score feed doesn't say who won the shootout. Until the winner shows up in
-a later-round fixture (see `_infer_drawn_winner`), a drawn-but-decided
-match is treated as still pending and re-simulated -- self-correcting
-within a day, and exact for genuinely unplayed matches.
+a later-round match -- an upcoming fixture OR a later played result (see
+`_infer_drawn_winner`) -- a drawn-but-decided match is treated as still
+pending and re-simulated -- self-correcting within a day, and exact for
+genuinely unplayed matches.
+
+2026-09-14 fix: inference originally looked only at *upcoming* fixtures.
+Switzerland-Colombia (R16, 0-0, pens) was inferred correctly while the
+Argentina-Switzerland QF was upcoming, but once that QF was played it left
+the fixtures feed and the R16 slot silently reverted to pending -- freezing
+the whole Argentina half of the bracket and leaving the live tracker
+showing title odds for eliminated teams for two months after the final.
+See DECISIONS.md 2026-09-14.
 """
 
 import random
@@ -49,13 +58,15 @@ SF_CHILDREN = [(0, 1), (2, 3)]
 _DRAW = "__draw__"
 
 
+def _knockout_matches(matches: list[Match]) -> list[Match]:
+    return [m for m in matches if m.date.isoformat() >= KNOCKOUT_START]
+
+
 def _result_lookup(matches: list[Match]) -> dict[frozenset, str]:
     """Knockout-window results: pair -> winner, or _DRAW if it went to a
     shootout whose winner the score feed can't tell us."""
     lookup: dict[frozenset, str] = {}
-    for m in matches:
-        if m.date.isoformat() < KNOCKOUT_START:
-            continue
+    for m in _knockout_matches(matches):
         key = frozenset((m.home_team, m.away_team))
         if m.home_score != m.away_score:
             lookup[key] = m.home_team if m.home_score > m.away_score else m.away_team
@@ -64,10 +75,12 @@ def _result_lookup(matches: list[Match]) -> dict[frozenset, str]:
     return lookup
 
 
-def _infer_drawn_winner(a: str, b: str, fixtures: list[tuple[str, str]]) -> str | None:
+def _infer_drawn_winner(a: str, b: str, later_pairs: list[tuple[str, str]]) -> str | None:
     """After (a, b) ended in a shootout, whichever of them appears in a
-    fixture against a DIFFERENT opponent has advanced."""
-    for home, away in fixtures:
+    LATER knockout match against a DIFFERENT opponent has advanced. Callers
+    must only pass matches after the draw -- both teams played someone else
+    in the round before, which would otherwise read as "advanced"."""
+    for home, away in later_pairs:
         pair = {home, away}
         if a in pair and b not in pair:
             return a
@@ -79,15 +92,27 @@ def _infer_drawn_winner(a: str, b: str, fixtures: list[tuple[str, str]]) -> str 
 def build_2026_tree(matches: list[Match], upcoming_fixtures: list[tuple[str, str]] | None = None):
     """Current bracket state as a tree. A node is either a team name
     (winner known / slot resolved) or ("match", node_a, node_b) for a
-    match still to be decided. Returns the final's node."""
+    match still to be decided. Returns the final's node -- a plain team
+    name once the final has been played."""
     lookup = _result_lookup(matches)
+    knockout = _knockout_matches(matches)
+    draw_dates = {
+        frozenset((m.home_team, m.away_team)): m.date
+        for m in knockout
+        if m.home_score == m.away_score
+    }
     fixtures = upcoming_fixtures or []
+
+    def later_pairs(a: str, b: str) -> list[tuple[str, str]]:
+        drawn_on = draw_dates[frozenset((a, b))]
+        played_after = [(m.home_team, m.away_team) for m in knockout if m.date > drawn_on]
+        return played_after + list(fixtures)
 
     def match_node(node_a, node_b):
         if isinstance(node_a, str) and isinstance(node_b, str):
             outcome = lookup.get(frozenset((node_a, node_b)))
             if outcome == _DRAW:
-                outcome = _infer_drawn_winner(node_a, node_b, fixtures)
+                outcome = _infer_drawn_winner(node_a, node_b, later_pairs(node_a, node_b))
             if outcome:
                 return outcome
         return ("match", node_a, node_b)

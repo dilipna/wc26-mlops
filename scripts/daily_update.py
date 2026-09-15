@@ -174,6 +174,12 @@ def main():
     fixtures = [(home, away) for e in match_odds_events
                 for home, away in [(canonical(e["home_team"]), canonical(e["away_team"]))]]
     tree = live_bracket.build_2026_tree(live, fixtures)
+    if isinstance(tree, str):
+        # Final played: the tree IS the champion. Nothing left to forecast,
+        # and appending a daily "P=1.0" row forever would just pollute the
+        # time series the dashboard charts (DECISIONS.md 2026-09-14).
+        print(f"Tournament complete -- champion: {tree}. Skipping Layer 2 logging.")
+        return
     model_champ = live_bracket.simulate_champion_probabilities(
         tree, lambda a, b: ensemble.advance_probability(a, b, today)
     )

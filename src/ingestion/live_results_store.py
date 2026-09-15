@@ -101,13 +101,27 @@ def load_combined_matches() -> list[Match]:
     such match's Elo delta and training row gets counted twice. On a
     collision the historical row wins (it carries a real neutral/venue
     flag; this module always hardcodes `neutral=True`, see
-    `load_live_matches`)."""
-    seen = set()
-    combined = []
-    for m in sorted(load_results() + load_live_matches(), key=lambda m: m.date):
-        key = (m.date, m.home_team, m.away_team)
-        if key in seen:
-            continue
-        seen.add(key)
-        combined.append(m)
-    return combined
+    `load_live_matches`).
+
+    A collision is the same two teams with the same per-team score within
+    one calendar day, in EITHER home/away order. 2026-09-14: the original
+    exact (date, home, away) key let 5 real World Cup matches through twice
+    -- the Odds API lists host nations as "away" in some group games and
+    dates late-evening US kickoffs by UTC, one day after the CSV's local
+    date -- so each counted double toward Elo and form."""
+    historical = load_results()
+    by_pair: dict[frozenset, list[Match]] = {}
+    for m in historical:
+        by_pair.setdefault(frozenset((m.home_team, m.away_team)), []).append(m)
+
+    def team_scores(m: Match) -> dict[str, int]:
+        return {m.home_team: m.home_score, m.away_team: m.away_score}
+
+    def already_in_historical(live: Match) -> bool:
+        return any(
+            abs((h.date - live.date).days) <= 1 and team_scores(h) == team_scores(live)
+            for h in by_pair.get(frozenset((live.home_team, live.away_team)), [])
+        )
+
+    live_only = [m for m in load_live_matches() if not already_in_historical(m)]
+    return sorted(historical + live_only, key=lambda m: m.date)
