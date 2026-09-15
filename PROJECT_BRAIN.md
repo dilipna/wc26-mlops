@@ -1132,6 +1132,27 @@ from this session — the two items that were open going into this follow-up are
 
 ## 12. Session log
 
+**2026-09-14 (session: benchmark vs Nate Silver's PELE + post-tournament integrity fixes).**
+Why this session happened: Prof. Kenneth Regan (UB) replied to Dilip's RA email asking
+"Have you compared yours against Nate Silver's PELE model?" Dilip is meeting him on
+2026-09-15. Full reasoning is in `DECISIONS.md` 2026-09-14.
+- **PELE benchmark.** New code: `src/benchmarks/{pele,scoring}.py`,
+  `scripts/fetch_pele_forecasts.py`, `scripts/compare_vs_pele.py`. Data:
+  `data/external/pele/`, `data/benchmarks/pele_comparison.json`. The public site gets a new
+  `#pele` section (`PeleBenchmark.tsx`) and a "vs PELE" nav link.
+- **Bug fixed: live bracket frozen since July 12.** The site showed "Live · Spain 61%" in
+  September. Fixed in `live_bracket.py`; the site now shows Spain as champion. Corrupted
+  chart days are overlaid from `data/predictions/bracket_incident_corrections.csv`, while
+  the raw log is kept as-is.
+- **Bug fixed: 5 World Cup matches double-counted in Elo** (`load_combined_matches`
+  dedup).
+- `daily_update.py` now skips Layer 2 logging once the final is played.
+- **Known, not done:** the CI daily workflow still runs daily and spends Odds API quota for
+  a finished tournament. Consider disabling its schedule.
+- **Worth doing next:** fit a probability temperature on the 2018/2022 backtest, out of
+  sample, then re-score against PELE. The in-sample check suggests our model's
+  timid-on-favorites calibration is most of the gap.
+
 **2026-07-15 (session: observability — Prometheus + Grafana on the serving API).** Fresh
 session under the "MLOps portfolio first / extend, don't rewrite" priority brief. Analyzed
 the full codebase + this file first; finding was that nearly the entire recruiter-capability

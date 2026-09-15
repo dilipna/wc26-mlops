@@ -69,6 +69,21 @@ Before touching live 2026 data, the exact two-layer pipeline was replayed agains
 
 Averaged across all checkpoints in both tournaments, the model beats the FIFA-ranking baseline on **Brier (−0.0035)** and **log-loss (−0.0987)** (negative = model better). Live 2026 performance — accuracy and Brier versus the bookmaker market, per match — is graded daily in the [ledger](data/proof/prediction_ledger.json) and on the [live site](https://fifa2026mlops.vercel.app/#proof).
 
+## Benchmarked against Nate Silver's PELE
+
+This compares our match forecasts with those from Silver Bulletin's PELE ("Predictive Elo with Lineup Equilibria") for the 2026 World Cup. On PELE's side, every forecast is the version Silver Bulletin published before kickoff, recovered from Datawrapper's version history using each version's publish timestamp. On our side, forecasts are either git-committed before kickoff (live track) or a leakage-safe replay trained only on data up to the opening match. Scoring uses RPS, Brier and log loss, with paired bootstrap CIs and randomization tests.
+
+| Track | n | Ours (RPS ↓) | PELE | Bookmakers | Ours − PELE |
+|---|---|---|---|---|---|
+| Live, both pre-kickoff (knockouts) | 21 | **0.139** | 0.149 | 0.156 | −0.010, p = 0.47 |
+| Replay, full tournament | 102 | 0.155 | **0.148** | — | +0.007, p = 0.36 |
+
+- **Neither track separates the two models.** Telling them apart would take about 916 matches (roughly 9 World Cups).
+- **PELE is better calibrated** (ECE 0.031 vs 0.073). Our model is too timid on favorites.
+- **Averaging the two forecasts beats ours alone** on log loss (p = 0.03).
+
+Details and code: [`scripts/compare_vs_pele.py`](scripts/compare_vs_pele.py), [`data/benchmarks/pele_comparison.json`](data/benchmarks/pele_comparison.json), [DECISIONS.md](DECISIONS.md) (2026-09-14), and the [live site](https://fifa2026mlops.vercel.app/#pele).
+
 ## Setup from a clean clone
 
 **Dashboard only (zero credentials, zero Docker) — the fastest path:**
