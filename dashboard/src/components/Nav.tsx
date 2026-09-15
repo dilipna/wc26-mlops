@@ -19,6 +19,7 @@ export default function Nav() {
           <a href="#country" className="hover:text-foreground transition-colors">Country</a>
           <a href="#fixtures" className="hover:text-foreground transition-colors">Fixtures</a>
           <a href="#proof" className="hover:text-foreground transition-colors">Proof</a>
+          <a href="#pele" className="hover:text-foreground transition-colors">vs PELE</a>
           <a href="#stack" className="hover:text-foreground transition-colors">Stack</a>
         </div>
         <Link

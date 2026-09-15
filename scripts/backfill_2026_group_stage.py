@@ -26,33 +26,13 @@ load_dotenv()
 import requests  # noqa: E402
 
 from src.ingestion import live_results_store, supabase_store  # noqa: E402
+from src.ingestion.team_names import FIFA_CODES  # noqa: E402
 
 GROUPS = "ABCDEFGHIJKL"
 RAW_URL = "https://en.wikipedia.org/w/index.php?title=2026_FIFA_World_Cup_Group_{g}&action=raw"
 
-# FIFA trigram -> name as used in data/historical/results.csv (the naming
-# authority, see src/ingestion/team_names.py). Every code the parser meets
-# must be here AND the name must exist in the historical dataset -- the
-# script fails loudly on unknowns rather than silently dropping matches.
-FIFA_CODES = {
-    "ALG": "Algeria", "ARG": "Argentina", "AUS": "Australia", "AUT": "Austria",
-    "BEL": "Belgium", "BIH": "Bosnia and Herzegovina", "BOL": "Bolivia", "BRA": "Brazil",
-    "CAN": "Canada", "CHI": "Chile", "CIV": "Ivory Coast", "CMR": "Cameroon",
-    "COD": "DR Congo", "COL": "Colombia", "CPV": "Cape Verde", "CRC": "Costa Rica",
-    "CRO": "Croatia", "CUW": "Curaçao", "CZE": "Czech Republic", "DEN": "Denmark",
-    "ECU": "Ecuador", "EGY": "Egypt", "ENG": "England", "ESP": "Spain",
-    "FRA": "France", "GER": "Germany", "GHA": "Ghana", "GRE": "Greece",
-    "HAI": "Haiti", "HON": "Honduras", "HUN": "Hungary", "IRN": "Iran",
-    "IRQ": "Iraq", "ITA": "Italy", "JAM": "Jamaica", "JOR": "Jordan",
-    "JPN": "Japan", "KOR": "South Korea", "KSA": "Saudi Arabia", "MAR": "Morocco",
-    "MEX": "Mexico", "NED": "Netherlands", "NGA": "Nigeria", "NOR": "Norway",
-    "NZL": "New Zealand", "PAN": "Panama", "PAR": "Paraguay", "PER": "Peru",
-    "POL": "Poland", "POR": "Portugal", "QAT": "Qatar", "ROU": "Romania",
-    "RSA": "South Africa", "SCO": "Scotland", "SEN": "Senegal", "SRB": "Serbia",
-    "SUI": "Switzerland", "SVK": "Slovakia", "SVN": "Slovenia", "SWE": "Sweden",
-    "TUN": "Tunisia", "TUR": "Turkey", "UKR": "Ukraine", "URU": "Uruguay", "USA": "United States",
-    "UZB": "Uzbekistan", "VEN": "Venezuela", "WAL": "Wales",
-}
+# FIFA trigram -> canonical name now lives in src/ingestion/team_names.py
+# (shared with the PELE benchmark, which keys teams by trigram too).
 
 # One knockout match also predates the polling window (Odds API /scores
 # 3-day cap): Round-of-32 Match 73, June 28, Inglewood.

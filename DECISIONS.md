@@ -2,6 +2,84 @@
 
 One entry per non-trivial technical choice, with reasoning. Newest first.
 
+## 2026-09-14 — Benchmark vs Nate Silver's PELE, and two data-integrity bugs it surfaced
+
+Prompted by Prof. Regan asking "have you compared yours against Nate Silver's PELE model?"
+The honest answer was no. This entry covers building that comparison, plus two real bugs I
+found while building it.
+
+**Getting PELE's pre-kickoff numbers, not its hindsight numbers.** Silver Bulletin
+publishes PELE's match forecasts as a Datawrapper table (`3bTOr`) and its ratings as
+another (`pS7DN`). Datawrapper keeps every published version at
+`datawrapper.dwcdn.net/<chart>/<n>/dataset.csv`, and each one carries an HTTP
+`Last-Modified` header. That gave me 127 versions of the forecast table and 133 of the
+ratings, each with a publish time. For every match I use the last version published before
+kickoff: exact kickoff for knockout games, 15:00 UTC on match day for group games (earlier
+than any 2026 kickoff). Result: 102 of the 103 matches PELE covered. Canada–South Africa is
+excluded because PELE only posted an "advance" probability, not W/D/L. Everything is
+normalized into `data/external/pele/` so the benchmark reruns offline.
+`scripts/fetch_pele_forecasts.py` refreshes it.
+
+**Two tracks, never mixed** (`scripts/compare_vs_pele.py`):
+- *Live*: 21 knockout matches where our forecast was committed to the public repo before
+  kickoff (git history of `dashboard/data/upcoming_matches.json`) AND PELE's was published
+  before kickoff. Bookmakers from the same snapshot are a third reference.
+  `data/live/match_predictions_*.json` was deliberately NOT used: those files are
+  gitignored, so their timestamps prove nothing to anyone else.
+- *Replay*: all 102 matches. Layer 1 is trained only on matches before 2026-06-11, and its
+  Elo/form inputs are strictly as of the day before each match. As a fidelity check, on the
+  21 live matches the replay lands within 1.1 percentage points of what we actually
+  published.
+
+**Why RPS is the headline metric.** Home win / draw / away win are ordered outcomes, and
+the Ranked Probability Score rewards "nearly right". Brier and log loss are reported
+alongside it. Significance is tested with a paired bootstrap CI and a paired sign-flip
+randomization test rather than a t-test, because per-match score differences are heavily
+skewed by upsets. I also compute the matches needed for 80% power, which answers "how far
+from conclusive is this?"
+
+**Findings, as they came out:**
+- *Live* (n=21): ours RPS 0.139, PELE 0.149, bookmakers 0.156. The gap is not significant
+  (p=0.47).
+- *Replay* (n=102): PELE 0.148, ours 0.155. Again not significant (p=0.36). PELE's edge
+  sits in the group stage (0.152 vs 0.163); the two are level in the knockouts.
+- Telling these two models apart would take about 916 matches, roughly 9 World Cups.
+- PELE is better calibrated (ECE 0.031 vs 0.073). Both get the draw rate right. Ours is too
+  timid on favorites: 59% on average, and favorites won 65%. Sharpening our probabilities
+  closes about 70% of the gap, but that was tuned in-sample, so it is a hypothesis to test
+  on 2018/2022, not a result.
+- A 50/50 blend of ours and PELE beats ours alone on log loss (p=0.03). The models make
+  different mistakes.
+- Ratings agree closely (Spearman 0.95). The biggest disagreement is Norway: PELE #8, our
+  Elo #19. Norway knocked out Brazil. That is squad-value information a results-only model
+  cannot see.
+- I tested one PELE idea directly: scoring co-host matches as home games. It made no
+  difference (ΔRPS +0.0002, p=0.83).
+
+**Bug 1: the live bracket froze for two months.** Knockout draws are resolved by spotting
+the shootout winner in a later fixture. The code only looked at *upcoming* fixtures. After
+Argentina–Switzerland was played, the Switzerland–Colombia R16 slot silently reverted to
+pending. That froze half the bracket: the public site still showed "Live: Spain 61%" with
+Colombia alive in September. The fix also looks at later *played* results, restricted to
+matches dated after the draw, because both teams played someone else the round before. I
+added regression tests and a test that the real bracket resolves to Spain. `daily_update.py`
+now stops logging Layer 2 once the tree collapses to a champion.
+
+**Correcting the corrupted chart days without rewriting history.**
+`scripts/replay_bracket_incident.py` recomputes only the days whose alive-team set was
+wrong (July 12–19). It retrains as of each day, exactly as the daily run does, and writes
+`data/predictions/bracket_incident_corrections.csv`. The export overlays those rows, flagged
+`corrected: true`, and drops post-final rows. `predictions_log.csv` itself is untouched as
+the incident record. The correction made us look *worse*: the buggy log had Spain at 60% on
+final day, while the correct number was Argentina 52% / Spain 48%, consistent with our own
+published final odds. I shipped the correct, less flattering number.
+
+**Bug 2: five 2026 matches counted twice in Elo.** `load_combined_matches` deduplicated on
+exact `(date, home, away)`. The Odds API lists some host nations as "away", and dates
+late-evening US kickoffs one day later in UTC. The new key is the unordered team pair plus
+per-team score, within ±1 day. The historical CSV row still wins because it carries the real
+venue flag.
+
 ## 2026-07-15 — Observability: Prometheus + Grafana on the serving API (the one gap the site admitted)
 
 The admin dashboard's Observability section literally said "Not yet implemented" for

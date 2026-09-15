@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { teamCode } from "@/lib/teamCode";
-import type { PredictionRow } from "@/lib/data";
+import type { PredictionRow, TournamentStatus } from "@/lib/data";
 
 // The mockup (WC26 Dark Standalone.html) used a rotating-earth JPEG texture
 // of unknown provenance/license -- same copyright caution the project
@@ -44,10 +44,13 @@ function HeroGlobe() {
 export default function Hero({
   topFavorite,
   latestDate,
+  tournament,
 }: {
   topFavorite: PredictionRow | undefined;
   latestDate: string | null;
+  tournament?: TournamentStatus;
 }) {
+  const done = tournament?.complete ? tournament : null;
   return (
     <section className="relative isolate flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-36 text-center">
       {/* layered depth background */}
@@ -97,7 +100,11 @@ export default function Hero({
             style={{ animation: "wc-pulse 1.8s ease-in-out infinite" }}
           />
         </span>
-        Live &middot; updated {latestDate ?? "daily"}
+        {done ? (
+          <>Final &middot; {done.final_date} &middot; tournament complete</>
+        ) : (
+          <>Live &middot; updated {latestDate ?? "daily"}</>
+        )}
       </motion.div>
 
       <motion.h1
@@ -106,8 +113,17 @@ export default function Hero({
         transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         className="font-display relative z-10 text-[clamp(32px,7vw,110px)] font-black uppercase leading-[1.05] tracking-tight text-foreground"
       >
-        <div className="whitespace-nowrap">Who Wins</div>
-        <div className="whitespace-nowrap font-extrabold italic text-accent">The World Cup?</div>
+        {done ? (
+          <>
+            <div className="whitespace-nowrap">{done.champion}</div>
+            <div className="whitespace-nowrap font-extrabold italic text-accent">World Champions</div>
+          </>
+        ) : (
+          <>
+            <div className="whitespace-nowrap">Who Wins</div>
+            <div className="whitespace-nowrap font-extrabold italic text-accent">The World Cup?</div>
+          </>
+        )}
       </motion.h1>
 
       <motion.p
@@ -137,7 +153,7 @@ export default function Hero({
           </div>
           <div className="text-left">
             <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/40">
-              Current favorite
+              {done ? `Our favorite on final day · ${done.champion} won ${done.final_score}` : "Current favorite"}
             </div>
             <div className="font-display text-2xl font-extrabold text-foreground">
               {topFavorite.team}{" "}

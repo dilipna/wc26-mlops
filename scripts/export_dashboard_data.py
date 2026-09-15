@@ -26,22 +26,50 @@ DATA_DIR = ROOT / "data"
 OUT_DIR = ROOT / "dashboard" / "data"
 
 
+FINAL_DATE = "2026-07-19"
+CORRECTIONS = DATA_DIR / "predictions" / "bracket_incident_corrections.csv"
+
+
+def _read_prediction_rows(path):
+    if not path.exists():
+        return []
+    with open(path, encoding="utf-8") as f:
+        return [
+            {
+                "date": row["date"],
+                "team": row["team"],
+                "win_probability": float(row["win_probability"]),
+                "model_version": row["model_version"],
+            }
+            for row in csv.DictReader(f)
+        ]
+
+
 def export_predictions_timeseries():
-    path = DATA_DIR / "predictions" / "predictions_log.csv"
-    rows = []
-    if path.exists():
-        with open(path, encoding="utf-8") as f:
-            for row in csv.DictReader(f):
-                rows.append(
-                    {
-                        "date": row["date"],
-                        "team": row["team"],
-                        "win_probability": float(row["win_probability"]),
-                        "model_version": row["model_version"],
-                    }
-                )
+    """The chart's series: the raw predictions log, with two fixes applied
+    at export time only (the log itself stays untouched as the record):
+    (1) days corrupted by the 2026-07 frozen-bracket bug are replaced by
+    scripts/replay_bracket_incident.py's recomputed rows, flagged
+    `corrected: true`; (2) rows after the final are dropped -- they were
+    the bug re-printing stale odds for a finished tournament.
+    See DECISIONS.md 2026-09-14."""
+    rows = _read_prediction_rows(DATA_DIR / "predictions" / "predictions_log.csv")
+    corrections = _read_prediction_rows(CORRECTIONS)
+    replaced = {(r["date"], r["model_version"]) for r in corrections}
+    rows = [r for r in rows if (r["date"], r["model_version"]) not in replaced]
+    rows += [{**r, "corrected": True} for r in corrections]
+    rows = [r for r in rows if r["date"] <= FINAL_DATE]
+    rows.sort(key=lambda r: (r["date"], r["model_version"], -r["win_probability"]))
     (OUT_DIR / "predictions_timeseries.json").write_text(json.dumps(rows, indent=2))
     return rows
+
+
+def export_pele_comparison():
+    """Match-level benchmark vs Nate Silver's PELE (scripts/compare_vs_pele.py)."""
+    path = DATA_DIR / "benchmarks" / "pele_comparison.json"
+    data = json.loads(path.read_text()) if path.exists() else None
+    (OUT_DIR / "pele_comparison.json").write_text(json.dumps(data, indent=2))
+    return data
 
 
 def export_backtest():
@@ -77,6 +105,27 @@ MODEL_SERIES = "stacked_l2_montecarlo_v1"
 BOOKMAKER_SERIES = "bookmaker_outright_baseline_v1"
 
 
+def tournament_status() -> dict:
+    """Champion once the final is played (the bracket tree collapses to a
+    single team name), else just `complete: false`."""
+    matches = live_results_store.load_live_matches()
+    tree = live_bracket.build_2026_tree(matches)
+    if not isinstance(tree, str):
+        return {"complete": False}
+    final = max(matches, key=lambda m: m.date)
+    runner_up = final.away_team if final.home_team == tree else final.home_team
+    champ_goals, other_goals = (
+        (final.home_score, final.away_score) if final.home_team == tree else (final.away_score, final.home_score)
+    )
+    return {
+        "complete": True,
+        "champion": tree,
+        "runner_up": runner_up,
+        "final_score": f"{champ_goals}-{other_goals}",
+        "final_date": final.date.isoformat(),
+    }
+
+
 def export_summary(predictions_rows, results_rows, upcoming_matches):
     # The hero/leaderboard show the MODEL's own numbers once its series
     # exists (live Layer 2, 2026-07-04); bookmaker outright is the fallback
@@ -92,6 +141,7 @@ def export_summary(predictions_rows, results_rows, upcoming_matches):
 
     summary = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "tournament": tournament_status(),
         "latest_predictions_date": latest_date,
         "primary_series": MODEL_SERIES if primary and primary[0]["model_version"] == MODEL_SERIES else BOOKMAKER_SERIES,
         "top_favorites": top_favorites,
@@ -220,6 +270,7 @@ def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     predictions_rows = export_predictions_timeseries()
     export_backtest()
+    export_pele_comparison()
     results_rows = export_results()
     upcoming_matches = export_upcoming_matches()
     summary = export_summary(predictions_rows, results_rows, upcoming_matches)

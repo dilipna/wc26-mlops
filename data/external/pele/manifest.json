@@ -1,0 +1,17 @@
+{
+  "source": "Silver Bulletin (natesilver.net) PELE charts, via Datawrapper's public version CDN",
+  "methodology": "https://www.natesilver.net/p/pele-methodology",
+  "charts": {
+    "3bTOr": {
+      "versions": 127,
+      "world_cup_rows": 3027
+    },
+    "pS7DN": {
+      "versions": 133,
+      "rows": 6384
+    }
+  },
+  "url_pattern": "https://datawrapper.dwcdn.net/{chart}/{version}/dataset.csv",
+  "timestamp_source": "HTTP Last-Modified of each immutable version",
+  "fetched_at": "2026-09-15T00:05:58.371367+00:00"
+}
