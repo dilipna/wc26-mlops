@@ -76,11 +76,12 @@ This compares our match forecasts with those from Silver Bulletin's PELE ("Predi
 | Track | n | Ours (RPS ↓) | PELE | Bookmakers | Ours − PELE |
 |---|---|---|---|---|---|
 | Live, both pre-kickoff (knockouts) | 21 | **0.139** | 0.149 | 0.156 | −0.010, p = 0.47 |
-| Replay, full tournament | 102 | 0.155 | **0.148** | — | +0.007, p = 0.36 |
+| Replay, full tournament | 102 | 0.155 | **0.149** | — | +0.005, p = 0.48 |
 
-- **Neither track separates the two models.** Telling them apart would take about 916 matches (roughly 9 World Cups).
-- **PELE is better calibrated** (ECE 0.031 vs 0.073). Our model is too timid on favorites.
-- **Averaging the two forecasts beats ours alone** on log loss (p = 0.03).
+- **Neither track separates the two models.** Detecting the full-tournament gap at 80% power would take about 1,545 matches (roughly 15 World Cups).
+- **No reliable calibration gap.** Decile ECE is 0.055 for PELE and 0.073 for ours, but the bootstrap 95% CI of the difference is [−0.021, +0.059].
+- **A 50/50 blend beats ours alone on log loss only** (p = 0.045; RPS p = 0.19). It is not better than PELE alone (p = 0.43).
+- **Scoring:** proper 3-outcome scoring (home win / draw / away win), so draws are a real outcome. Knockout scores include extra time, and a shootout counts as a draw.
 
 Details and code: [`scripts/compare_vs_pele.py`](scripts/compare_vs_pele.py), [`data/benchmarks/pele_comparison.json`](data/benchmarks/pele_comparison.json), [DECISIONS.md](DECISIONS.md) (2026-09-14), and the [live site](https://fifa2026mlops.vercel.app/#pele).
 

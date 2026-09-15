@@ -1149,9 +1149,13 @@ Why this session happened: Prof. Kenneth Regan (UB) replied to Dilip's RA email 
 - `daily_update.py` now skips Layer 2 logging once the final is played.
 - **Known, not done:** the CI daily workflow still runs daily and spends Odds API quota for
   a finished tournament. Consider disabling its schedule.
+- **Audit fix, same session:** the PELE deadline for group games is now anchored on the
+  earlier of PELE's ET date label and the venue-local date. The label-only rule leaked 3
+  post-match PELE versions. All interpretation copy now cites numbers from
+  `pele_comparison.json`; unsupported claims were withdrawn (see DECISIONS).
 - **Worth doing next:** fit a probability temperature on the 2018/2022 backtest, out of
-  sample, then re-score against PELE. The in-sample check suggests our model's
-  timid-on-favorites calibration is most of the gap.
+  sample, then re-score against PELE. It's a hypothesis only; the favorites gap is not
+  significant.
 
 **2026-07-15 (session: observability — Prometheus + Grafana on the serving API).** Fresh
 session under the "MLOps portfolio first / extend, don't rewrite" priority brief. Analyzed
