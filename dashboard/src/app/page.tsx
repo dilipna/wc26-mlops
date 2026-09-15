@@ -8,7 +8,6 @@ import ProofLedgerShowcase from "@/components/ProofLedgerShowcase";
 import CompletedShowcase from "@/components/CompletedShowcase";
 import CountryLookup from "@/components/CountryLookup";
 import ModelValidation from "@/components/ModelValidation";
-import PeleBenchmark from "@/components/PeleBenchmark";
 import MethodologySection from "@/components/MethodologySection";
 import StatsStrip from "@/components/StatsStrip";
 import ResultsTicker from "@/components/ResultsTicker";
@@ -16,7 +15,6 @@ import TechStack from "@/components/TechStack";
 import Footer from "@/components/Footer";
 import {
   backtest,
-  peleComparison,
   proofLedger,
   results,
   seriesByTeam,
@@ -30,12 +28,9 @@ export default function Home() {
   const perTeam = seriesByTeam();
   const chartTeams = favorites.map((f) => f.team).slice(0, 6);
 
-  const done = summary.tournament?.complete ? summary.tournament : null;
   const stats = [
     { label: "Matches tracked live", value: String(summary.completed_results_count) },
-    done
-      ? { label: "Benchmarked vs Nate Silver's PELE", value: String(peleComparison?.replay.all.n ?? "—") + " matches" }
-      : { label: "Next matches predicted", value: String(summary.upcoming_matches_count) },
+    { label: "Next matches predicted", value: String(summary.upcoming_matches_count) },
     { label: "Tournament simulations a day", value: "10,000" },
     { label: "Past World Cups tested", value: "2018 & 2022" },
   ];
@@ -43,7 +38,7 @@ export default function Home() {
   return (
     <main className="relative">
       <Nav />
-      <Hero topFavorite={favorites[0]} latestDate={summary.latest_predictions_date} tournament={summary.tournament} />
+      <Hero topFavorite={favorites[0]} latestDate={summary.latest_predictions_date} />
 
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-20">
         <StatsStrip stats={stats} />
@@ -51,13 +46,9 @@ export default function Home() {
 
       <section id="leaderboard" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading
-          eyebrow={done ? "Final Forecast" : "Live Tracker"}
-          title={done ? "Our Call Before The Final" : "Who Takes The Trophy?"}
-          subtitle={
-            done
-              ? `The simulator's title odds on the morning of the final (${done.final_date}). ${done.champion} beat ${done.runner_up} ${done.final_score}.`
-              : "Every remaining team's chance of winning it all, refreshed daily from our own 10,000-run bracket simulator."
-          }
+          eyebrow="Live Tracker"
+          title="Who Takes The Trophy?"
+          subtitle="Every remaining team's chance of winning it all, refreshed daily. Right now these numbers come from the global market; our own simulator's numbers join this board once the knockout bracket is locked in -- see the note below."
         />
         <FavoritesLeaderboard favorites={favorites} />
       </section>
@@ -108,15 +99,6 @@ export default function Home() {
       </section>
 
       <CompletedShowcase />
-
-      <section id="pele" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
-        <SectionHeading
-          eyebrow="Benchmarked"
-          title="Us vs Nate Silver's PELE"
-          subtitle="Every 2026 match PELE forecast, scored against Silver Bulletin's own pre-kickoff numbers with 3-outcome proper scoring rules and paired significance tests."
-        />
-        <PeleBenchmark data={peleComparison} />
-      </section>
 
       <section id="backtest" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
         <SectionHeading

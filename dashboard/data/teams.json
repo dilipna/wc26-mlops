@@ -6,8 +6,8 @@
   },
   {
     "team": "Argentina",
-    "status": "eliminated",
-    "current_probability": 0.5238
+    "status": "alive",
+    "current_probability": 0.2105
   },
   {
     "team": "Australia",
@@ -46,8 +46,8 @@
   },
   {
     "team": "Colombia",
-    "status": "eliminated",
-    "current_probability": null
+    "status": "alive",
+    "current_probability": 0.028
   },
   {
     "team": "Croatia",
@@ -81,8 +81,8 @@
   },
   {
     "team": "England",
-    "status": "eliminated",
-    "current_probability": null
+    "status": "alive",
+    "current_probability": 0.1396
   },
   {
     "team": "France",
@@ -202,7 +202,7 @@
   {
     "team": "Spain",
     "status": "alive",
-    "current_probability": 0.4762
+    "current_probability": 0.6143
   },
   {
     "team": "Sweden",
@@ -211,8 +211,8 @@
   },
   {
     "team": "Switzerland",
-    "status": "eliminated",
-    "current_probability": null
+    "status": "alive",
+    "current_probability": 0.0076
   },
   {
     "team": "Tunisia",

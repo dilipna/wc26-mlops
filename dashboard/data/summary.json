@@ -1,30 +1,39 @@
 {
-  "generated_at": "2026-09-15T00:39:34.857018+00:00",
-  "tournament": {
-    "complete": true,
-    "champion": "Spain",
-    "runner_up": "Argentina",
-    "final_score": "1-0",
-    "final_date": "2026-07-19"
-  },
-  "latest_predictions_date": "2026-07-19",
+  "generated_at": "2026-09-14T11:52:55.658489+00:00",
+  "latest_predictions_date": "2026-09-14",
   "primary_series": "stacked_l2_montecarlo_v1",
   "top_favorites": [
     {
-      "date": "2026-07-19",
-      "team": "Argentina",
-      "win_probability": 0.5238,
-      "model_version": "stacked_l2_montecarlo_v1",
-      "corrected": true
+      "date": "2026-09-14",
+      "team": "Spain",
+      "win_probability": 0.6143,
+      "model_version": "stacked_l2_montecarlo_v1"
     },
     {
-      "date": "2026-07-19",
-      "team": "Spain",
-      "win_probability": 0.4762,
-      "model_version": "stacked_l2_montecarlo_v1",
-      "corrected": true
+      "date": "2026-09-14",
+      "team": "Argentina",
+      "win_probability": 0.2105,
+      "model_version": "stacked_l2_montecarlo_v1"
+    },
+    {
+      "date": "2026-09-14",
+      "team": "England",
+      "win_probability": 0.1396,
+      "model_version": "stacked_l2_montecarlo_v1"
+    },
+    {
+      "date": "2026-09-14",
+      "team": "Colombia",
+      "win_probability": 0.028,
+      "model_version": "stacked_l2_montecarlo_v1"
+    },
+    {
+      "date": "2026-09-14",
+      "team": "Switzerland",
+      "win_probability": 0.0076,
+      "model_version": "stacked_l2_montecarlo_v1"
     }
   ],
   "completed_results_count": 104,
-  "upcoming_matches_count": 2
+  "upcoming_matches_count": 0
 }

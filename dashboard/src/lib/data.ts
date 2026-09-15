@@ -11,14 +11,12 @@ import driftRaw from "../../data/drift.json";
 import dataQualityRaw from "../../data/data_quality.json";
 import systemHealthRaw from "../../data/system_health.json";
 import trainingHistoryRaw from "../../data/training_history.json";
-import peleComparisonRaw from "../../data/pele_comparison.json";
 
 export type PredictionRow = {
   date: string;
   team: string;
   win_probability: number;
   model_version: string;
-  corrected?: boolean; // recomputed after the 2026-07 frozen-bracket bug (DECISIONS.md 2026-09-14)
 };
 
 export type MatchResult = {
@@ -254,7 +252,6 @@ export const drift = driftRaw as unknown as DriftData;
 
 export const summary = summaryRaw as unknown as {
   generated_at: string;
-  tournament?: TournamentStatus;
   latest_predictions_date: string | null;
   primary_series?: string;
   top_favorites: PredictionRow[];
@@ -301,101 +298,3 @@ export const CHECKPOINT_LABELS: Record<string, string> = {
   post_qf: "After QF",
   post_sf: "After SF",
 };
-
-// ---- Benchmark vs Nate Silver's PELE (scripts/compare_vs_pele.py) ----
-
-export type Triple = [number, number, number]; // home win, draw, away win
-export type ScoreSet = { rps: number; brier: number; log_loss: number; accuracy: number };
-export type PairedTest = {
-  n: number;
-  mean_diff: number;
-  sd_diff: number;
-  ci95: [number, number];
-  p_value: number;
-  matches_for_80pct_power: number | null;
-  a_better_count: number;
-  b_better_count: number;
-};
-export type ReliabilityBin = { lo: number; hi: number; n: number; mean_predicted: number; observed_frequency: number; low_confidence?: boolean };
-export type Ci = { point: number; ci95: [number, number] };
-
-export type PeleMatch = {
-  date: string;
-  stage: string;
-  home: string;
-  away: string;
-  score: string;
-  outcome: 0 | 1 | 2;
-  host_match: boolean;
-  pele: Triple;
-  replay: Triple;
-  combo: Triple;
-  pele_version: number;
-  pele_published_at: string;
-  live?: {
-    ours: Triple;
-    market: Triple | null;
-    pele: Triple | null;
-    kickoff: string;
-    ours_commit: string;
-    ours_committed_at: string;
-    pele_published_at: string | null;
-  };
-};
-
-export type PeleComparison = {
-  generated_at: string;
-  sources: { pele_methodology: string; pele_data: { charts: Record<string, { versions: number }>; url_pattern: string } };
-  protocol: Record<string, string>;
-  replay: {
-    all: { n: number; metrics: Record<"replay" | "pele" | "combo", ScoreSet>; ours_vs_pele: Record<string, PairedTest>; combo_vs_ours: Record<string, PairedTest>; combo_vs_pele: Record<string, PairedTest> };
-    group: { n: number; metrics: Record<"replay" | "pele" | "combo", ScoreSet>; ours_vs_pele: Record<string, PairedTest> };
-    knockout: { n: number; metrics: Record<"replay" | "pele" | "combo", ScoreSet>; ours_vs_pele: Record<string, PairedTest> };
-    calibration: Record<"replay" | "pele", { bins: ReliabilityBin[]; ece: number }>;
-    diagnostics: {
-      draw_rate: { observed: number; mean_predicted_ours: number; mean_predicted_pele: number };
-      favorites: Record<"ours" | "pele", { mean_predicted: number; observed: number; gap: Ci }>;
-      ece_decile_diff_ours_minus_pele: Ci;
-      per_match_rps_correlation: number;
-      mean_abs_prob_diff_ours_vs_pele: number;
-      host_matches_ours_vs_pele: Record<string, PairedTest>;
-    };
-  };
-  live: {
-    n: number;
-    metrics: Record<"ours" | "pele" | "market", ScoreSet>;
-    ours_vs_pele: Record<string, PairedTest>;
-    pele_vs_market: Record<string, PairedTest>;
-    ours_vs_market: Record<string, PairedTest>;
-    replay_fidelity_mean_abs_diff: number;
-  };
-  ablation_host_advantage: {
-    idea: string;
-    n_host_matches: number;
-    metrics: Record<"replay" | "replay_host_hfa" | "pele", ScoreSet>;
-    hfa_vs_neutral: Record<string, PairedTest>;
-  };
-  ratings: {
-    pele_version: number;
-    n_teams: number;
-    spearman_rank_correlation: number;
-    largest_disagreements: { team: string; pele_rank: number; our_rank: number; pele_rating: number; our_elo: number; finish: string }[];
-  };
-  method_differences: { aspect: string; pele: string; ours: string }[];
-  accounting: {
-    pele_fixtures: number;
-    world_cup_results: number;
-    results_without_pele_fixture: string[];
-    scored_replay: number;
-    scored_live: number;
-    knockout_excluded_from_live: string[];
-  };
-  fixtures_without_pre_kickoff_pele: string[][];
-  matches: PeleMatch[];
-};
-
-export const peleComparison = peleComparisonRaw as unknown as PeleComparison | null;
-
-export type TournamentStatus =
-  | { complete: false }
-  | { complete: true; champion: string; runner_up: string; final_score: string; final_date: string };

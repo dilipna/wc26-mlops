@@ -85,7 +85,7 @@ This compares our match forecasts with those from Silver Bulletin's PELE ("Predi
 - **A 50/50 blend beats ours alone on log loss only** (p = 0.045; RPS p = 0.19). It is not better than PELE alone (p = 0.43).
 - **Scoring:** proper 3-outcome scoring (home win / draw / away win), so draws are a real outcome. Knockout scores include extra time, and a shootout counts as a draw.
 
-Details and code: [`scripts/compare_vs_pele.py`](scripts/compare_vs_pele.py), [`data/benchmarks/pele_comparison.json`](data/benchmarks/pele_comparison.json), [DECISIONS.md](DECISIONS.md) (2026-09-14), and the [live site](https://fifa2026mlops.vercel.app/#pele).
+Details and code: [`scripts/compare_vs_pele.py`](scripts/compare_vs_pele.py), [`data/benchmarks/pele_comparison.json`](data/benchmarks/pele_comparison.json), [DECISIONS.md](DECISIONS.md) (2026-09-14), and the [live site](https://fifa2026mlops.vercel.app/pele).
 
 ## Setup from a clean clone
 

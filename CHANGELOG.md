@@ -2,6 +2,13 @@
 
 Dated record of changes. Newest first. Timestamps come from `git log` (committer date, US Eastern / UTC).
 
+## 2026-09-15: website restored to pre-session state; Pelé page added
+
+- All website files changed on 2026-09-14 (hero, home page, nav, data layer, `summary.json`, `teams.json`, `predictions_timeseries.json`) and `scripts/export_dashboard_data.py` restored byte-for-byte to `f51f1f2`, at the owner's request. The home page again shows the original live tracker (Spain as favorite). Backend bug fixes from 2026-09-14 are kept but no longer feed the site.
+- Added a **Pelé** tab next to the NASCAR LIVE tab and a standalone `/pele` page: benchmark scoreboard, in-browser statistics lab (bootstrap + sign-flip tests), model lab (blend and temperature scaling with leave-one-out CV), match explorer with PELE version history and provenance links, ratings comparison, power calculator, audit, and How It Works. Data: `scripts/export_pele_page.py` → `dashboard/data/pele_page.json`.
+- Correction to the 2026-09-14 entry: three matches carried a next-day PELE label, but only Australia–Turkey actually received a post-match forecast under the old rule.
+- Verified: pre-existing routes (`/`, `/nfl`, `/nascar`) render identical text apart from the new tab, and nav controls keep identical positions and nav height at 25 widths from 320 to 1920 px. The in-browser engine matched the Python benchmark (means, ECE and LOO fits exactly; p-values within Monte Carlo error).
+
 ## 2026-09-14: PELE benchmark, post-tournament integrity fixes, audit
 
 **Commits** (`git log --format='%h %cI %s'`):
@@ -45,7 +52,7 @@ The four commits span 23 minutes 32 seconds. That span covers *committing* only:
 
 4. **Audit: leakage bug found and fixed** (`9930bc7`)
    - For matches without a known kickoff, the PELE deadline was 15:00 UTC on PELE's date label. PELE labels by US Eastern date, so late Pacific kickoffs carry the next day's label.
-   - This admitted a PELE forecast published about 10 hours *after* Australia–Turkey; three group matches were affected.
+   - This admitted a PELE forecast published about 10 hours *after* Australia–Turkey; three matches carried a next-day label, but only Australia–Turkey actually received a post-match version.
    - **Fix:** the deadline uses the earlier of PELE's label and the venue-local match date. Regression test added. The minimum lead of any PELE forecast before kickoff is now 0.4 h.
    - **Effect:** PELE's full-tournament RPS went from 0.1479 to **0.1492**, so the fix made PELE's score *worse*. The bug had favored the benchmark, not our model.
    - Also added in this commit: decile calibration with per-bin n and a low-confidence flag (n < 10), match/drop accounting, and bootstrap CIs for the diagnostic statistics.
