@@ -39,6 +39,7 @@ from src.ingestion import live_results_store, odds_api, supabase_store  # noqa: 
 from src.ingestion.team_names import canonical  # noqa: E402
 from src.models.layer1_ensemble.ensemble import Layer1Ensemble, load_tuned_xgb_params  # noqa: E402
 from src.models.layer1_ensemble.tracking import log_run  # noqa: E402
+from src.models.layer1_ensemble.lifecycle import ModelStore, governance_history  # noqa: E402
 from src.models.layer2_simulation import live_bracket  # noqa: E402
 
 LIVE_DIR = Path(__file__).resolve().parent.parent / "data" / "live"
@@ -109,7 +110,7 @@ def main():
     added = live_results_store.append_new_results(score_events)
     print(f"Live results log: {added} new completed match(es) appended")
 
-    all_matches = live_results_store.load_combined_matches()
+    all_matches = governance_history(live_results_store.load_combined_matches())
     live = live_results_store.load_live_matches()
     rankings = load_fifa_rankings()
     timelines = build_timelines(all_matches)
@@ -119,6 +120,15 @@ def main():
     )
 
     train_probs = ensemble.stack.predict_proba(ensemble.X_train_)
+    # Candidate registration is not serving approval. Keep daily results usable
+    # without a tracking server; approval requires the separate local gate.
+    import subprocess
+    source_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+    candidate_id = ModelStore().register(
+        ensemble, train_start=TRAIN_START, train_end=today,
+        matches=all_matches, source_sha=source_sha,
+    )
+    print(f"Stored unapproved candidate {candidate_id}; serving approval unchanged")
     log_run(
         ensemble,
         run_name=f"daily_{today.isoformat()}",
@@ -134,6 +144,10 @@ def main():
         register=True,
     )
 
+    ensemble, approval = ModelStore().load_approved()
+    ensemble.timelines, ensemble.rankings = timelines, rankings
+    print(f"Predictions use approved artifact {approval['model_id']}")
+
     match_odds_events = odds_api.fetch_match_odds()
     match_predictions = []
     for event in match_odds_events:
@@ -146,6 +160,7 @@ def main():
                 "home_team": home,
                 "away_team": away,
                 "model": {"home_win": p_win, "draw": p_draw, "away_win": p_loss},
+                "model_artifact_id": approval['model_id'],
                 "bookmaker": bookmaker_probs,
             }
         )

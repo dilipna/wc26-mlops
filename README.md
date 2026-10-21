@@ -1,3 +1,7 @@
+## Local governed-model lifecycle review
+
+The isolated local review adds explicit candidate evaluation, pinned artifact loading and rollback. Production deployments and the disabled cloud schedule are unchanged. See [design, acceptance, reproduction and limitations](docs/governed-promotion.md). MLflow registration is not serving approval; local serving now requires an explicitly approved local artifact.
+
 # WC26-MLOps — Verifiable Sports Prediction Platform
 
 A fully autonomous ML pipeline that predicts World Cup 2026 outcomes daily, publishes every prediction to a **tamper-evident public ledger before kickoff**, and grades itself against the bookmaker market — it called Spain over France in the semifinal when the market said France, and you can [verify that claim yourself](#verifiable-prediction-history) without trusting a word of this README. It demonstrates end-to-end MLOps: scheduled cloud pipelines, experiment tracking and a model registry, drift monitoring, containerized serving with tracing, CI/CD, and a public dashboard that redeploys itself every day with zero human intervention.

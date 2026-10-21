@@ -11,3 +11,4 @@ data/live/*
 data/monitoring/*.html
 .vercel
 reports/preview/
+data/model_lifecycle/
