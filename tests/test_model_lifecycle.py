@@ -261,6 +261,7 @@ def test_prediction_before_training_cutoff_is_rejected():
 class DailyFixture:
     def __init__(self, **kwargs):
         self.stack = DummyClassifier(strategy='prior').fit(np.zeros((3,6)), [0,1,2])
+        self.stack.cv = 5
         self.X_train_ = np.zeros((3,6))
         self.y_train_ = np.asarray([0,1,2])
 
