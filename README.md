@@ -1,3 +1,7 @@
+## Temporal-stack experiment — replacement rejected
+
+A forward-only alternative was implemented and evaluated under a frozen protocol. It failed the replacement criteria, so the default remains unchanged. See [results, retained negative findings and reproduction](docs/temporal-stack-results.md).
+
 ## Local governed-model lifecycle review
 
 The isolated local review adds explicit candidate evaluation, pinned artifact loading and rollback. Production deployments and the disabled cloud schedule are unchanged. See [design, acceptance, reproduction and limitations](docs/governed-promotion.md). MLflow registration is not serving approval; local serving now requires an explicitly approved local artifact.
