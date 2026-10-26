@@ -25,3 +25,7 @@ Existing approval/rollback is a local trusted-operator workflow, not distributed
 Workbenches need no paid API, remote model or storage service. Downloads are bounded and parsed; archive content is never executed or extracted as filesystem paths. Hosting uses the existing project after approval. Build/replay fingerprints identify the actual release. Frozen npm installs and project-scoped build tracing remain enforced. Old schedules and hosting settings are unchanged.
 
 Coverage remains historical: NBA/NFL 2015, IPL 2023. No injuries/lineups, calibrated modern-season model, cross-sport ranking or champion probabilities are claimed. Further coverage requires a reviewed source and evaluation protocol.
+
+## Historical ledger threat model
+
+A stored hash chain detects changes relative to a trusted head. A repository operator can recompute the chain, and git author/committer timestamps do not independently prove when content first became public. Old archive wording asserting proof against backdating has been withdrawn. Source links and recorded grading remain inspectable; external timestamp anchoring was not added or claimed.

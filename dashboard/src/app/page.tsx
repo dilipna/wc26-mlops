@@ -118,9 +118,9 @@ export default function Home() {
         className="relative z-10 mx-auto max-w-6xl px-6 py-12"
       >
         <SectionHeading
-          eyebrow="Verified Track Record"
+          eyebrow="Recorded Track Record"
           title="Don't Trust Us. Check."
-          subtitle="Every prediction is committed to a public, SHA-timestamped git history BEFORE kickoff, hash-chained so it can't be quietly edited, and graded against the market once the match ends. The receipts are one click away."
+          subtitle="Inspect stored prediction snapshots, linked git history and recorded grading. Hashes help compare the archive with a trusted saved head; git timestamps alone do not independently prove pre-kickoff public availability."
         />
         <ProofLedgerShowcase ledger={proofLedger} />
       </section>

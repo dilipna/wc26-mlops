@@ -1,28 +1,16 @@
-"""Tamper-evident prediction ledger (the "proof system").
+"""Hash-chained archive of stored prediction snapshots and grading.
 
-Turns the project's existing evidence trail -- pre-kickoff prediction
-snapshots (Supabase append-only table + the daily-committed
-dashboard/data/upcoming_matches.json), graded results
-(proof_tracker.json), and the public GitHub commit history -- into one
-canonical, hash-chained ledger covering every WC26 match prediction.
+This combines repository provenance fields, stored prediction timestamps
+and outcome records into a canonical ledger. A hash chain detects edits
+relative to a trusted saved head; an operator can recompute the chain.
+Git author/committer dates can be chosen by the author and do not establish
+when a prediction first became publicly available. This module is not an
+independent timestamp witness or a proof against backdating.
 
-Three independent layers make an entry hard to quietly fake or backdate:
-
-1. **Git provenance**: for every fixture, the earliest public commit
-   whose committed upcoming_matches.json already contained the
-   prediction, with its commit timestamp. GitHub's SHA history cannot be
-   rewritten without breaking every fork/clone and the Actions run log.
-2. **Hash chain**: every ledger entry embeds the previous entry's
-   SHA-256, so editing any historical entry invalidates every hash after
-   it. `verify_chain()` recomputes the whole chain from scratch.
-3. **Append-only external mirror**: the Supabase `match_predictions`
-   table (insert-only by design, see supabase/schema.sql) holds the raw
-   timestamped snapshots the graded numbers come from.
-
-Pure logic only -- no file/network I/O here (that lives in
-scripts/build_proof_ledger.py), matching this repo's src/ = logic,
-scripts/ = entry-point convention so the chain/grading rules are unit
-testable.
+The historical provenance field names and scoring logic are retained for
+compatibility. Supabase insert-only schema configuration is an additional
+storage control, not verification that a current cloud mirror is healthy.
+Pure logic only: file/network I/O lives in scripts/build_proof_ledger.py.
 """
 
 import hashlib
