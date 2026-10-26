@@ -1021,3 +1021,10 @@ went to penalties, consider weighting the split by rating instead of a flat 50/5
 User explicitly requested more sports as the next focused redevelopment. Added attributed NBA, NFL and IPL score snapshots and binary sport plugins without coercing football's three-outcome model. Parameters/dates frozen at 1fcaa39 before scores. Entire dates are scored before updates; baseline uses training data only. Cricket's inferior Elo result is retained. Public controls are as-of historical scenarios, never current fixture/champion probabilities. Removed unbacked NASCAR tables and live badges. No paid feeds, LLM calls, schedule reactivation or extra hosted backend. Prepared browser receipt/retry/integrity/mobile contracts for GitHub-only execution.
 
 Security audit found vulnerable original Next.js/transitives. Upgraded to patched 16.4.3 and compatible lint tooling; audit now zero. Bounded tracing/Turbopack root to dashboard to avoid traversing the user's broader home directory. Self-hosted existing OFL fonts with license notices. Build identity, frozen npm install and replay hashes guard source/deployment consistency. Release remains local pending exact-source public approval.
+
+
+### October 26 acceptance follow-up
+
+Local production prerender is blocked by managed Windows output-directory EPERM despite successful compilation/types; supported webpack and fresh scoped caches reproduce it. Keep original Next output configuration rather than weakening build checks. A development preview works and passes HTTP/data checks. Production acceptance moves to the existing Linux CI and actual staged-browser gates, with explicit public-release approval first. No desktop browser is used locally.
+
+Preserve the original Next guide instructions outside generated markers with agentRules disabled; keep repository instructions stable. Qualify old ledger timestamp wording without rewriting stored records. Cross-platform numeric reconstruction permits only absolute 1e-10 rounding, while IDs/outcomes/bytes and recorded state hashes remain exact.
