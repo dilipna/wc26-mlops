@@ -92,6 +92,10 @@ and true, but almost none of it is visible anywhere a hiring manager would actua
 
 ## 3. Current status
 
+**October 26, 2026 redevelopment override:** User authorized this chat to focus on WC26 next, and explicitly requested more sports. Active isolated branch: improve/multisport-release. Existing governance and rejected temporal-stack experiments remain preserved. Current goal: real historical basketball, NFL and cricket replay adapters; honest date/status labels; useful matchup/replay/export UX; portable local demo; then CI and approved public release. No new paid APIs, live-data schedule, cloud service, account changes or desktop control. Historical July/September status below is archival and does not certify current deployment health.
+
+
+
 Legend: ✅ done and verified · 🚧 built but incomplete/unverified/needs work · ⬜ not started
 
 **Core prediction system (Tier 1, CLAUDE.md scope)**
@@ -1567,3 +1571,21 @@ current state, rather than assuming it was.
   wait for 06:00 UTC or trigger it manually via `workflow_dispatch` from the Actions tab.
   **Next session should check the Actions tab for a real green run before trusting this is
   actually keeping the site fresh.**
+
+
+## October 26 redevelopment — active work and acceptance
+
+This is the current extension of section 8, superseding its historical “finished” states for new requirements.
+
+- [x] Inspect preserved branches and all project instructions; install dashboard dependencies without changing the lock.
+- [x] Freeze new-sport replay parameters and chronology before evaluation (docs/multisport-replay-protocol.json).
+- [ ] Ingest attributed, bounded public basketball/NFL/cricket data snapshots; retain source/normalized hashes and exclusion counts.
+- [ ] Implement date-batched replay with a training-only constant baseline, negative-result retention and prediction receipts.
+- [ ] Add a usable multi-sport matchup/replay/export journey with clear historical coverage, no fabricated live badges and mobile/keyboard support.
+- [ ] Integrate governed lifecycle evidence without changing prior model adoption decisions.
+- [ ] Run regression, security, CI and GitHub-only browser checks; inspect existing hosting mapping read-only.
+- [ ] Prepare source/recovery evidence, exact release approval and verified production deployment. No public release is approved yet.
+
+Known fragility: default sandbox temp storage caused baseline model-artifact write failures; all 27 lifecycle tests pass with an explicit workspace basetemp. Full baseline rerun pending. No local browser execution or desktop control. Current NASCAR placeholder is marked live despite absent model backing; correct before publication.
+
+Session log: October 26, 2026 — started isolated multi-sport redevelopment at user request. Completed prior model-governance and temporal experiments retained. No data metrics inspected before new protocol freeze.
