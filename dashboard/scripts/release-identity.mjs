@@ -13,19 +13,19 @@ const hosted =
 const hash = (b) => createHash("sha256").update(b).digest("hex");
 let sha = null,
   dirty = null;
+let changedPaths = "";
 try {
   sha = execFileSync("git", ["rev-parse", "HEAD"], {
     cwd: repo,
     encoding: "utf8",
     stdio: ["ignore", "pipe", "ignore"],
   }).trim();
-  dirty = Boolean(
-    execFileSync("git", ["status", "--porcelain", "--untracked-files=normal"], {
+  changedPaths = execFileSync("git", ["status", "--porcelain", "--untracked-files=normal"], {
       cwd: repo,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
-    }).trim(),
-  );
+    }).trim();
+  dirty = Boolean(changedPaths);
   const locked = execFileSync(
     "git",
     ["show", "HEAD:dashboard/package-lock.json"],
@@ -54,7 +54,7 @@ if (process.env.VERCEL_GIT_COMMIT_SHA) {
 if (!sha || !/^([a-f0-9]{40})$/.test(sha))
   throw Error("A real source commit is required");
 if (hosted && dirty === true)
-  throw Error("Hosted build contains uncommitted source changes");
+  throw Error("Hosted build contains uncommitted source changes: " + changedPaths);
 const files = {};
 function visit(rel) {
   const full = path.join(repo, rel);

@@ -219,6 +219,7 @@ export default function ReplayWorkbench({ card }: { card: ReplayCard }) {
                 <label>
                   Side A
                   <select
+                    aria-label="Side A"
                     value={a}
                     onChange={(e) => {
                       setA(e.target.value);
@@ -234,6 +235,7 @@ export default function ReplayWorkbench({ card }: { card: ReplayCard }) {
                 <label>
                   Side B
                   <select
+                    aria-label="Side B"
                     value={b}
                     onChange={(e) => {
                       setB(e.target.value);

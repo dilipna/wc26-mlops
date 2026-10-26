@@ -34,7 +34,7 @@ for (const sport of ["basketball", "nfl", "cricket"])
       await page
         .getByLabel("Side B", { exact: true })
         .selectOption({ index: 0 });
-      await expect(page.getByRole("alert")).toContainText(
+      await expect(page.locator("main").getByRole("alert")).toContainText(
         "Choose two different sides",
       );
       await page
@@ -93,7 +93,7 @@ test("tampered replay fails closed", async ({ page }) => {
     await route.fulfill({ response: r, body: (await r.text()) + " " });
   });
   await page.goto("/basketball");
-  await expect(page.getByRole("alert")).toContainText("integrity check failed");
+  await expect(page.locator("main").getByRole("alert")).toContainText("integrity check failed");
   await expect(
     page.getByRole("button", {
       name: "Download prediction receipt",
@@ -111,7 +111,7 @@ test("snapshot retries and keyboard date selection changes exported provenance",
       : route.continue(),
   );
   await page.goto("/nfl");
-  await expect(page.getByRole("alert")).toContainText("could not be loaded");
+  await expect(page.locator("main").getByRole("alert")).toContainText("could not be loaded");
   await page.getByRole("button", { name: "Retry snapshot" }).click();
   await expect(
     page.getByRole("button", {

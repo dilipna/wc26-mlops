@@ -555,3 +555,10 @@ body {
   color: #52665c;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Let archived panels shrink within mobile grids; keep wide tables in their
+   existing scroll containers and long artifact identifiers readable. */
+.archive-workspace { overflow-wrap: anywhere; }
+.archive-workspace .grid > *,
+.archive-workspace .flex > * { min-width: 0; }
+.archive-workspace select { max-width: 100%; }

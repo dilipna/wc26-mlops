@@ -89,7 +89,7 @@ function CalibrationChart({ calibration }: { calibration: ProofTrackerData["cali
       <div className="font-mono mb-4 text-[11px] uppercase tracking-widest text-foreground/40">
         Calibration -- when our AI says X%, does it happen X% of the time?
       </div>
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {calibration.map((bucket, i) => (
           <div key={bucket.bucket_label} className="text-center">
             <div className="flex h-24 items-end justify-center gap-1">

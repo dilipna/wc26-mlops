@@ -27,7 +27,7 @@ const SECTIONS = [
 export default function PelePage() {
   const h = pelePage.headline;
   return (
-    <main className="relative">
+    <main className="archive-workspace relative">
       <Nav />
 
       {/* Hero: same structure and scale as the site's sport pages */}

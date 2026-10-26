@@ -38,7 +38,7 @@ export default function AdminPage() {
     : null;
 
   return (
-    <main className="relative mx-auto max-w-6xl px-6 py-16">
+    <main className="archive-workspace relative mx-auto max-w-6xl px-6 py-16">
       <div className="mb-10 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-6">
         <div>
           <div className="font-mono text-xs uppercase tracking-[0.14em] text-series-1">Internal &middot; read-only</div>
