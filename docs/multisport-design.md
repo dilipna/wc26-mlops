@@ -29,3 +29,5 @@ Coverage remains historical: NBA/NFL 2015, IPL 2023. No injuries/lineups, calibr
 ## Historical ledger threat model
 
 A stored hash chain detects changes relative to a trusted head. A repository operator can recompute the chain, and git author/committer timestamps do not independently prove when content first became public. Old archive wording asserting proof against backdating has been withdrawn. Source links and recorded grading remain inspectable; external timestamp anchoring was not added or claimed.
+
+Reconstruction compares all numeric predictions/states/losses within absolute 1e-10 for platform math-library rounding. Dates, IDs, outcomes, artifact bytes and stored pre-date-state fingerprints are exact. This numerical tolerance is unrelated to adoption or score-improvement thresholds.

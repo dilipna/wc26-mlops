@@ -64,7 +64,9 @@ function visit(rel) {
     for (const child of fs.readdirSync(full).sort())
       if (!["node_modules", ".next", "__pycache__"].includes(child))
         visit(rel + "/" + child);
-  } else if (/\.(?:ts|tsx|js|mjs|css|json|py|md|csv|txt|woff2)$/.test(rel)) {
+  } else if (
+    /\.(?:ts|tsx|js|mjs|css|json|py|md|csv|txt|woff2|yml|yaml)$/.test(rel)
+  ) {
     const bytes = fs.readFileSync(full);
     files[rel] = hash(
       rel.endsWith(".woff2")
@@ -80,6 +82,9 @@ for (const rel of [
   "dashboard/public/proof",
   "dashboard/public/fonts",
   "dashboard/scripts",
+  "dashboard/e2e",
+  "tests",
+  ".github/workflows",
   "src",
   "scripts",
   "data/multisport",

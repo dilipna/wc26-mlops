@@ -9,6 +9,24 @@ from src.core.match_replay import load_games, replay
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def assert_reconstruction(saved, actual):
+    # Windows/libm and Linux/libm can differ below the reported precision.
+    # Structural fields remain exact; this tolerance is not a model-score gate.
+    if isinstance(saved, dict):
+        assert set(saved) == set(actual)
+        for key in saved:
+            if key != "pre_date_state_sha256":
+                assert_reconstruction(saved[key], actual[key])
+    elif isinstance(saved, list):
+        assert len(saved) == len(actual)
+        for a, b in zip(saved, actual):
+            assert_reconstruction(a, b)
+    elif isinstance(saved, float) or isinstance(actual, float):
+        assert saved == pytest.approx(actual, rel=0, abs=1e-10)
+    else:
+        assert saved == actual
+
+
 @pytest.mark.parametrize("sport", ["basketball", "nfl", "cricket"])
 def test_committed_replay_recomputes_from_source_scores(sport):
     protocol = json.loads((ROOT / "docs/multisport-replay-protocol.json").read_text())
@@ -45,18 +63,30 @@ def test_committed_replay_recomputes_from_source_scores(sport):
         "parameters",
         "as_of",
     ):
-        assert saved[key] == actual[key], key
+        assert_reconstruction(saved[key], actual[key])
     assert (
         saved["identity"]["implementation_sha256"]
         == hashlib.sha256(
             (ROOT / "src/core/match_replay.py").read_text().encode()
         ).hexdigest()
     )
-    assert card["model_metrics"] == actual["model_metrics"]
-    assert card["baseline_metrics"] == actual["baseline_metrics"]
+    assert_reconstruction(card["model_metrics"], actual["model_metrics"])
+    assert_reconstruction(card["baseline_metrics"], actual["baseline_metrics"])
     assert (
         saved["identity"]["protocol_sha256"]
         == hashlib.sha256(
             json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
         ).hexdigest()
     )
+
+    previous = {}
+    expected_states = {}
+    for frame in saved["history"]:
+        expected_states[frame["date"]] = hashlib.sha256(
+            json.dumps(previous, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        previous = frame["ratings"]
+    for prediction in saved["predictions"]:
+        assert (
+            prediction["pre_date_state_sha256"] == expected_states[prediction["date"]]
+        )
