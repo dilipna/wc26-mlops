@@ -21,6 +21,7 @@ jobs:
           cache: "pip"
           cache-dependency-path: requirements-lock.txt
       - run: pip install -r requirements-lock.txt
+      - run: mkdir -p validation
       - run: python -m pytest tests/ -q --basetemp validation/ci-tests
       - run: pip install ruff==0.14.0
       - run: ruff check src/core/match_replay.py src/sports/replays.py scripts/fetch_multisport_snapshots.py scripts/build_multisport_replays.py tests/test_match_replay.py tests/test_multisport_artifacts.py
