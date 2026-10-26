@@ -160,7 +160,7 @@
     },
     "as_of": "2015-06-16",
     "scope": "Historical decisive-match replay. Every date scored before that date updates. Final ratings are as-of scenarios, not current or tournament-champion forecasts.",
-    "artifact_sha256": "13c7bc238e6690eb3a2e8bfbeb67ea1a98b7175b628bfdc217314f86906e18b9"
+    "artifact_sha256": "2d52c64cdc7249f7b2cccbd4bde49941f3ab171fdda5bbb3d44063f9ebdad6f5"
   },
   {
     "sport": "nfl",
@@ -323,7 +323,7 @@
     },
     "as_of": "2015-12-28",
     "scope": "Historical decisive-match replay. Every date scored before that date updates. Final ratings are as-of scenarios, not current or tournament-champion forecasts.",
-    "artifact_sha256": "ca0f7f8d9cbbbbcfd509536a7f92bf122f7931981873704ab0581072cb3e903a"
+    "artifact_sha256": "6e96076a98d17f1d6bdfd0dd39c42dfcaa8dd223c79d7abd2990e9ac76d0eae4"
   },
   {
     "sport": "cricket",
@@ -486,6 +486,6 @@
     },
     "as_of": "2023-05-29",
     "scope": "Historical decisive-match replay. Every date scored before that date updates. Final ratings are as-of scenarios, not current or tournament-champion forecasts.",
-    "artifact_sha256": "2a85f2dcb9547534bf61e3e9bbbc5c0e49caa09d87691275e8fd47cbeffb5f93"
+    "artifact_sha256": "f4424e4fc5505743b6c03c5f00b4c0ab294a4268637a94a3272e53020764ec97"
   }
 ]
