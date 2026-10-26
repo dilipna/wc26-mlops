@@ -3,6 +3,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
+import { reconcileHostingChanges } from "./hosting-policy.mjs";
 const project = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
@@ -46,6 +47,24 @@ try {
 } catch (error) {
   if (hosted && error.message?.includes("committed lock")) throw error;
 }
+const hostingPolicy = reconcileHostingChanges({
+  status: changedPaths,
+  isVercel: process.env.VERCEL === "1",
+  readGeneratedConfig: () => {
+    const file = path.join(repo, "vercel.json");
+    const stat = fs.lstatSync(file);
+    if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 65536)
+      throw Error("Invalid generated root Vercel configuration file");
+    return fs.readFileSync(file);
+  },
+  readCommittedConfig: () =>
+    execFileSync("git", ["show", "HEAD:dashboard/vercel.json"], {
+      cwd: repo,
+      stdio: ["ignore", "pipe", "ignore"],
+    }),
+});
+if (dirty !== null) dirty = hostingPolicy.remaining.length > 0;
+changedPaths = hostingPolicy.remaining.join("\n");
 if (process.env.VERCEL_GIT_COMMIT_SHA) {
   if (sha && sha !== process.env.VERCEL_GIT_COMMIT_SHA)
     throw Error("Hosting source commit mismatch");
@@ -129,6 +148,9 @@ const result = {
   schema: 1,
   source_commit: sha,
   dirty_source: dirty,
+  hosting_generated_files: hostingPolicy.generatedConfigSha256
+    ? { "vercel.json": hostingPolicy.generatedConfigSha256 }
+    : {},
   source_files: ordered,
   source_files_sha256: hash(JSON.stringify(ordered)),
   scope:

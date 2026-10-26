@@ -44,6 +44,7 @@ jobs:
           cache-dependency-path: dashboard/package-lock.json
       - run: npm ci --no-audit --no-fund
       - run: npm audit --omit=dev --audit-level=moderate
+      - run: node --test scripts/hosting-policy.test.mjs
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
