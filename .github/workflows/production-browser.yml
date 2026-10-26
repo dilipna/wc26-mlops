@@ -1,0 +1,35 @@
+name: Production website verification
+on:
+  pull_request:
+    types: [labeled]
+permissions:
+  contents: read
+jobs:
+  production-browser:
+    if: github.event.label.name == 'verify-production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser:ci
+        env:
+          SPOPS_E2E_ORIGIN: https://fifa2026mlops.vercel.app
+          SPOPS_EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-browser-evidence
+          path: dashboard/e2e-results/

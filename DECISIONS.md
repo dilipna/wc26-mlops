@@ -1014,3 +1014,10 @@ realistic but is more precision than Phase 0's validation goal requires.
 
 **Revisit:** if Phase 0 backtest results look off specifically in matches that historically
 went to penalties, consider weighting the split by rating instead of a flat 50/50.
+
+
+## 2026-10-26 — evaluated multi-sport replay rather than unlabeled live placeholders
+
+User explicitly requested more sports as the next focused redevelopment. Added attributed NBA, NFL and IPL score snapshots and binary sport plugins without coercing football's three-outcome model. Parameters/dates frozen at 1fcaa39 before scores. Entire dates are scored before updates; baseline uses training data only. Cricket's inferior Elo result is retained. Public controls are as-of historical scenarios, never current fixture/champion probabilities. Removed unbacked NASCAR tables and live badges. No paid feeds, LLM calls, schedule reactivation or extra hosted backend. Prepared browser receipt/retry/integrity/mobile contracts for GitHub-only execution.
+
+Security audit found vulnerable original Next.js/transitives. Upgraded to patched 16.4.3 and compatible lint tooling; audit now zero. Bounded tracing/Turbopack root to dashboard to avoid traversing the user's broader home directory. Self-hosted existing OFL fonts with license notices. Build identity, frozen npm install and replay hashes guard source/deployment consistency. Release remains local pending exact-source public approval.

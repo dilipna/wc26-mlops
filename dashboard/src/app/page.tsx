@@ -1,3 +1,4 @@
+import PlatformIntro from "@/components/PlatformIntro";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import SectionHeading from "@/components/SectionHeading";
@@ -29,31 +30,51 @@ export default function Home() {
   const chartTeams = favorites.map((f) => f.team).slice(0, 6);
 
   const stats = [
-    { label: "Matches tracked live", value: String(summary.completed_results_count) },
-    { label: "Next matches predicted", value: String(summary.upcoming_matches_count) },
-    { label: "Tournament simulations a day", value: "10,000" },
+    {
+      label: "Archived completed matches",
+      value: String(summary.completed_results_count),
+    },
+    {
+      label: "Stored fixture predictions",
+      value: String(summary.upcoming_matches_count),
+    },
+    { label: "Simulations per recorded run", value: "10,000" },
     { label: "Past World Cups tested", value: "2018 & 2022" },
   ];
 
   return (
     <main className="relative">
       <Nav />
-      <Hero topFavorite={favorites[0]} latestDate={summary.latest_predictions_date} />
+      <PlatformIntro />
+      <div id="football-archive" className="football-archive-label">
+        FOOTBALL / ARCHIVED WC26 PROJECT · Last stored prediction:{" "}
+        {summary.latest_predictions_date} · Daily cloud schedule disabled
+      </div>
+      <Hero
+        topFavorite={favorites[0]}
+        latestDate={summary.latest_predictions_date}
+      />
 
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-20">
         <StatsStrip stats={stats} />
       </section>
 
-      <section id="leaderboard" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section
+        id="leaderboard"
+        className="relative z-10 mx-auto max-w-6xl px-6 py-12"
+      >
         <SectionHeading
-          eyebrow="Live Tracker"
+          eyebrow="Archived Tracker"
           title="Who Takes The Trophy?"
-          subtitle="Every remaining team's chance of winning it all, refreshed daily. Right now these numbers come from the global market; our own simulator's numbers join this board once the knockout bracket is locked in -- see the note below."
+          subtitle="Stored tournament probability snapshot. This archive is not refreshed live; the dated source and series determine whether a value is a model output or market baseline."
         />
         <FavoritesLeaderboard favorites={favorites} />
       </section>
 
-      <section id="country" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section
+        id="country"
+        className="relative z-10 mx-auto max-w-6xl px-6 py-12"
+      >
         <SectionHeading
           eyebrow="Find Your Team"
           title="Check Your Country"
@@ -71,7 +92,10 @@ export default function Home() {
         <ProbabilityChart seriesByTeam={perTeam} teams={chartTeams} />
       </section>
 
-      <section id="fixtures" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section
+        id="fixtures"
+        className="relative z-10 mx-auto max-w-6xl px-6 py-12"
+      >
         <SectionHeading
           eyebrow="Up Next"
           title="Our AI vs The World"
@@ -84,12 +108,15 @@ export default function Home() {
         <SectionHeading
           eyebrow="Just Finished"
           title="Latest Results"
-          subtitle="Every final score below feeds straight into tomorrow's ratings."
+          subtitle="Completed results retained in the project archive; no live update is implied."
         />
         <ResultsTicker results={results} />
       </section>
 
-      <section id="proof" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section
+        id="proof"
+        className="relative z-10 mx-auto max-w-6xl px-6 py-12"
+      >
         <SectionHeading
           eyebrow="Verified Track Record"
           title="Don't Trust Us. Check."
@@ -100,7 +127,10 @@ export default function Home() {
 
       <CompletedShowcase />
 
-      <section id="backtest" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section
+        id="backtest"
+        className="relative z-10 mx-auto max-w-6xl px-6 py-12"
+      >
         <SectionHeading
           eyebrow="Backtested"
           title="Tested On Real History"
@@ -114,7 +144,10 @@ export default function Home() {
         <MethodologySection />
       </section>
 
-      <section id="stack" className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+      <section
+        id="stack"
+        className="relative z-10 mx-auto max-w-6xl px-6 py-12"
+      >
         <SectionHeading
           eyebrow="Behind The Scenes"
           title="What Powers This Site"

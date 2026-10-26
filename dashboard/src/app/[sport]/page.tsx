@@ -1,4 +1,6 @@
 import fs from "node:fs";
+import ReplayWorkbench, { type ReplayCard } from "@/components/ReplayWorkbench";
+import replayCards from "../../../data/sport_replays.json";
 import path from "node:path";
 import { notFound } from "next/navigation";
 import SportPage, { type SportPageData } from "@/components/SportPage";
@@ -16,10 +18,19 @@ export function generateStaticParams() {
 
 export const dynamicParams = false;
 
-export default async function Page({ params }: { params: Promise<{ sport: string }> }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ sport: string }>;
+}) {
   const { sport: slug } = await params;
   const sport = SPORTS.find((s) => s.path === `/${slug}`);
   if (!sport) notFound();
+  if (sport.replay_id) {
+    const card = replayCards.find((c) => c.sport === sport.replay_id);
+    if (!card) notFound();
+    return <ReplayWorkbench card={card as ReplayCard} />;
+  }
 
   const dataPath = path.join(process.cwd(), "data", `${sport.id}.json`);
   if (!fs.existsSync(dataPath)) notFound();

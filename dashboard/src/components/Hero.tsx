@@ -61,11 +61,28 @@ export default function Hero({
       <HeroGlobe />
       <div
         className="absolute inset-0 z-[1]"
-        style={{ background: "radial-gradient(50% 44% at 50% 46%, rgba(10,10,12,0.42), transparent 72%)" }}
+        style={{
+          background:
+            "radial-gradient(50% 44% at 50% 46%, rgba(10,10,12,0.42), transparent 72%)",
+        }}
       />
       <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center opacity-50">
-        <svg width="900" height="900" viewBox="0 0 900 900" className="max-w-none" style={{ animation: "wc-drift 14s ease-in-out infinite" }}>
-          <circle cx="450" cy="450" r="330" fill="none" stroke="var(--foreground)" strokeOpacity="0.1" strokeWidth="1" />
+        <svg
+          width="900"
+          height="900"
+          viewBox="0 0 900 900"
+          className="max-w-none"
+          style={{ animation: "wc-drift 14s ease-in-out infinite" }}
+        >
+          <circle
+            cx="450"
+            cy="450"
+            r="330"
+            fill="none"
+            stroke="var(--foreground)"
+            strokeOpacity="0.1"
+            strokeWidth="1"
+          />
           <circle
             cx="450"
             cy="450"
@@ -81,7 +98,10 @@ export default function Hero({
       </div>
       <div
         className="absolute inset-x-0 bottom-0 z-[1] h-[40%]"
-        style={{ background: "linear-gradient(180deg, transparent, var(--background) 85%)" }}
+        style={{
+          background:
+            "linear-gradient(180deg, transparent, var(--background) 85%)",
+        }}
       />
 
       <motion.div
@@ -89,7 +109,10 @@ export default function Hero({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 mb-7 inline-flex items-center gap-2 overflow-hidden rounded-full border border-foreground/20 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground"
-        style={{ background: "linear-gradient(180deg, var(--accent-warm), var(--card-alt))" }}
+        style={{
+          background:
+            "linear-gradient(180deg, var(--accent-warm), var(--card-alt))",
+        }}
       >
         <span className="relative flex h-1.5 w-1.5">
           <span
@@ -97,18 +120,20 @@ export default function Hero({
             style={{ animation: "wc-pulse 1.8s ease-in-out infinite" }}
           />
         </span>
-        Live &middot; updated {latestDate ?? "daily"}
+        Archive &middot; snapshot {latestDate ?? "date unavailable"}
       </motion.div>
 
-      <motion.h1
+      <motion.h2
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         className="font-display relative z-10 text-[clamp(32px,7vw,110px)] font-black uppercase leading-[1.05] tracking-tight text-foreground"
       >
         <div className="whitespace-nowrap">Who Wins</div>
-        <div className="whitespace-nowrap font-extrabold italic text-accent">The World Cup?</div>
-      </motion.h1>
+        <div className="whitespace-nowrap font-extrabold italic text-accent">
+          The World Cup?
+        </div>
+      </motion.h2>
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -116,9 +141,10 @@ export default function Hero({
         transition={{ duration: 0.8, delay: 0.3 }}
         className="font-serif relative z-10 mt-9 max-w-xl text-[17px] leading-relaxed text-foreground/65"
       >
-        A stacked ensemble model rates every team, scores every match, then plays out the
-        rest of the tournament 10,000 times a day &mdash; tested first on the 2018 &amp;
-        2022 World Cups before being trusted with 2026.
+        A stacked ensemble model rates every team, scores every match, then
+        plays out the remaining bracket 10,000 times per recorded run &mdash;
+        tested first on the 2018 &amp; 2022 World Cups as historical validation
+        alongside the 2026 project archive.
       </motion.p>
 
       {topFavorite && (
@@ -137,7 +163,7 @@ export default function Hero({
           </div>
           <div className="text-left">
             <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-foreground/40">
-              Current favorite
+              Archived favorite
             </div>
             <div className="font-display text-2xl font-extrabold text-foreground">
               {topFavorite.team}{" "}

@@ -1579,9 +1579,9 @@ This is the current extension of section 8, superseding its historical “finish
 
 - [x] Inspect preserved branches and all project instructions; install dashboard dependencies without changing the lock.
 - [x] Freeze new-sport replay parameters and chronology before evaluation (docs/multisport-replay-protocol.json).
-- [ ] Ingest attributed, bounded public basketball/NFL/cricket data snapshots; retain source/normalized hashes and exclusion counts.
-- [ ] Implement date-batched replay with a training-only constant baseline, negative-result retention and prediction receipts.
-- [ ] Add a usable multi-sport matchup/replay/export journey with clear historical coverage, no fabricated live badges and mobile/keyboard support.
+- [x] Ingest attributed, bounded public basketball/NFL/cricket snapshots; retain hashes, notices and exclusions.
+- [x] Implement date-batched replay, training-only constant baseline, retained cricket negative result and receipts.
+- [x] Implement matchup/replay/export journey and historical labels. Mobile/keyboard browser acceptance is prepared, not executed yet.
 - [ ] Integrate governed lifecycle evidence without changing prior model adoption decisions.
 - [ ] Run regression, security, CI and GitHub-only browser checks; inspect existing hosting mapping read-only.
 - [ ] Prepare source/recovery evidence, exact release approval and verified production deployment. No public release is approved yet.
@@ -1589,3 +1589,6 @@ This is the current extension of section 8, superseding its historical “finish
 Known fragility: default sandbox temp storage caused baseline model-artifact write failures; all 27 lifecycle tests pass with an explicit workspace basetemp. Full baseline rerun pending. No local browser execution or desktop control. Current NASCAR placeholder is marked live despite absent model backing; correct before publication.
 
 Session log: October 26, 2026 — started isolated multi-sport redevelopment at user request. Completed prior model-governance and temporal experiments retained. No data metrics inspected before new protocol freeze.
+
+
+Current redevelopment checkpoint: basketball 6,329 normalized games / 1,311 evaluation games; NFL 1,599 / 251; IPL 1,005 / 73. Frozen Elo point losses beat the constant comparator in basketball/NFL but not cricket; no tuning or superiority assertion follows. 134 Python tests pass, including 18 new replay/artifact/plugin checks. Updated scorebook workbenches, integrity-checked static data, model receipts, as-of controls, result reveal, calibration tables and reports. All fifteen ideas reviewed in docs/extension-decisions.md with partial/non-applicable scopes. Next.js 16.4.3 and compatible tooling replace vulnerable dashboard dependencies; npm audit reports zero findings. Font fetch dependency removed; tracing root explicitly bounded to dashboard. Existing domain mapping read-only confirmed: asmq333/dashboard, project prj_cHo5yalpFWMaHkKiAXsIGZvy0h0C, repository dilipna/wc26-mlops (ID 1286605636), alias fifa2026mlops.vercel.app currently dpl_GgsKcVXkiJCHzvnageT1JV3N8xsh. No deployment/settings/schedule changes. Remaining: final preview/recovery, public approval, actual CI/browser screenshots, then staged and production checks. No local browser installation/control.

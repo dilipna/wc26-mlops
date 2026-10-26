@@ -1,0 +1,120 @@
+{
+  "source_sha": "8afced74365712662399cd59e6e0ecbe2a277c03",
+  "protocol_commit": "5c4d586dbd1bd2e2d658bb5b3e54bb39967d16bf",
+  "training_matches": 5865,
+  "training_rows": 11730,
+  "meta_rows": 7766,
+  "burn_in_rows": 3964,
+  "fit_seconds_observed_not_benchmarked": {
+    "legacy_stratified_stack": 5.929794800002128,
+    "equal_weight_blend": 0.5818075999995926,
+    "temporal_stack": 1.798147199999221
+  },
+  "selection": {
+    "start": "2016-01-01",
+    "end_exclusive": "2017-01-01",
+    "n_matches": 920,
+    "metrics": {
+      "legacy_stratified_stack": {
+        "log_loss": 0.9082573024228247,
+        "brier": 0.5352220528243838,
+        "predictions_sha256_float64_le": "042da33d3b72d692aaf1602b7b5d9d13c7e05f31b730d826daf44b894a8f3eb9"
+      },
+      "equal_weight_blend": {
+        "log_loss": 0.918301607824175,
+        "brier": 0.5426625806299866,
+        "predictions_sha256_float64_le": "492d2ade938f0005516db147980849c00355b366a697fe09de7de14e6ab9625e"
+      },
+      "temporal_stack": {
+        "log_loss": 0.9088855848414632,
+        "brier": 0.5353961341399429,
+        "predictions_sha256_float64_le": "020cf0a91b5cde2c4cc789829f19371204f4e780e72c368460aede2083374eca"
+      }
+    },
+    "temporal_minus_fixed": {
+      "unit": "paired ISO calendar week",
+      "clusters": 44,
+      "resamples": 2000,
+      "seed": 20261021,
+      "log_loss_delta": -0.009416022982711806,
+      "brier_delta": -0.007266446490043726,
+      "log_loss_ci95": [
+        -0.02302862660096384,
+        0.0018260728148049637
+      ],
+      "brier_ci95": [
+        -0.016311482645667497,
+        0.0008232593808958345
+      ]
+    },
+    "review_eligible": false
+  },
+  "confirmation": {
+    "start": "2017-01-01",
+    "end_exclusive": "2018-01-01",
+    "n_matches": 924,
+    "metrics": {
+      "legacy_stratified_stack": {
+        "log_loss": 0.941466345839119,
+        "brier": 0.556692598952641,
+        "predictions_sha256_float64_le": "ea10e9435777ffbfb6ce6a046b403674aae29cb957bb32abd11c6c9d99743952"
+      },
+      "equal_weight_blend": {
+        "log_loss": 0.9593184509172349,
+        "brier": 0.5674033801071212,
+        "predictions_sha256_float64_le": "671e076231ce9f99ace2024f77673c951d34f1698808416fdb78036701fab5f2"
+      },
+      "temporal_stack": {
+        "log_loss": 0.9435414926119657,
+        "brier": 0.5578686249562385,
+        "predictions_sha256_float64_le": "a2fca8ce7ee65744bb274399be72cd35b71a0da529abae78f22884a299ac0f0c"
+      }
+    },
+    "temporal_minus_fixed": {
+      "unit": "paired ISO calendar week",
+      "clusters": 43,
+      "resamples": 2000,
+      "seed": 20261021,
+      "log_loss_delta": -0.015776958305269123,
+      "brier_delta": -0.009534755150882817,
+      "log_loss_ci95": [
+        -0.03024048755069093,
+        -0.0013879795493009397
+      ],
+      "brier_ci95": [
+        -0.019076436549230004,
+        -0.0005326137127620291
+      ]
+    },
+    "review_eligible": false
+  },
+  "eligible_for_human_review": false,
+  "serving_changed": false,
+  "separate_process_prediction_hashes": {
+    "legacy_stratified_stack": "042da33d3b72d692aaf1602b7b5d9d13c7e05f31b730d826daf44b894a8f3eb9",
+    "equal_weight_blend": "492d2ade938f0005516db147980849c00355b366a697fe09de7de14e6ab9625e",
+    "temporal_stack": "020cf0a91b5cde2c4cc789829f19371204f4e780e72c368460aede2083374eca"
+  },
+  "limits": [
+    "Historical retrospective comparison; confirmation is reserved within this experiment, not guaranteed uncontaminated by earlier project development",
+    "2016 selection outcomes were observed during the earlier lifecycle rehearsal",
+    "Known-prior match outcomes may update causal rolling features during each later interval; not all forecasts issued at training cutoff",
+    "Weekly bootstrap approximates dependence; repeated teams and cross-week dependence remain",
+    "One preset CPU configuration, one historical train/selection/confirmation sequence; no broad predictive superiority claim",
+    "No change to serving default, approval state, cloud schedule or public deployment"
+  ],
+  "artifact_sha256": {
+    "confirmation-predictions.json": "57f9d1692861ee5a4bb42d1edf6269faea4e88f8011c64adbeeb8b17243885b6",
+    "confirmation.json": "74da5f3e032b0d16faf6693fc6d164d36fb5e1deff7731c707a4c855ea6fbfe6",
+    "evaluation_features.npz": "5935349710f90496d64adb70dd268f88f0e0c9bc64d216bd16f6587b0055925f",
+    "folds.json": "b6c8a3fff4b86e63dc4dac3f3312874200c0f481c85e819425fa5caca75b0549",
+    "manifest.json": "7d9583eba33c4d1c89423fd03d32fc0ec4adf8889ba67823cfcd0cd0d4bc359d",
+    "models.pkl": "c0a2d14a0b1e26d3d92e9cfe7e76286a896ac5e3a1728a92dc037970ece184d6",
+    "out_of_fold.npz": "662309cb79ae2a3d15d78d933931c135ca5b65868d888d3de469984125202c2a",
+    "protocol.json": "503c68d81334d5b5d7d10693f18e89454b53d27f2683622cb4b5556cd1f79764",
+    "selection-decision.json": "e12a03bfd432dfbb78b1e41d7508fdbcf0c7370e9d58f7135fea84b2af6a9101",
+    "selection-predictions.json": "12076ca17b99da22e9498b45d5fb7492823697646e388be8f9ed53499bfecb7d",
+    "selection.json": "35bb5da3c77facc08e23950da3dcb80e32207188d966bbadad864141361b30ad",
+    "training.npz": "d2b7703185186d186440efedf93687035cf08a7a4f9303c1de668a711d2a4747"
+  }
+}
