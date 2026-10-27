@@ -20,8 +20,8 @@ function RpsBars({ entries }: { entries: { key: Key; rps: number }[] }) {
           <span className="truncate text-[13px] text-foreground/75">{FORECASTER[e.key].name}</span>
           <div className="h-[10px] overflow-hidden rounded-full bg-foreground/10">
             <motion.div
-              initial={{ width: 0 }}
-              whileInView={{ width: `${(e.rps / max) * 100}%` }}
+              initial={false}
+              animate={{ width: `${(e.rps / max) * 100}%` }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="h-full rounded-full"

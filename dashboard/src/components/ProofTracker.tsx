@@ -94,16 +94,16 @@ function CalibrationChart({ calibration }: { calibration: ProofTrackerData["cali
           <div key={bucket.bucket_label} className="text-center">
             <div className="flex h-24 items-end justify-center gap-1">
               <motion.div
-                initial={{ height: 0 }}
-                whileInView={{ height: `${bucket.predicted_mid * 100}%` }}
+                initial={false}
+                animate={{ height: `${bucket.predicted_mid * 100}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: i * 0.08 }}
                 className="w-3.5 rounded-t-sm bg-foreground/25"
                 title={`Predicted ~${(bucket.predicted_mid * 100).toFixed(0)}%`}
               />
               <motion.div
-                initial={{ height: 0 }}
-                whileInView={{ height: bucket.actual_rate !== null ? `${bucket.actual_rate * 100}%` : "0%" }}
+                initial={false}
+                animate={{ height: bucket.actual_rate !== null ? `${bucket.actual_rate * 100}%` : "0%" }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: i * 0.08 + 0.1 }}
                 className="w-3.5 rounded-t-sm"

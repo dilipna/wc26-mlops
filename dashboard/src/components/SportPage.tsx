@@ -52,8 +52,8 @@ function Board({ board }: { board: SportPageData["boards"][number] }) {
             </div>
             <div className="mt-1.5 h-[5px] overflow-hidden rounded-full bg-foreground/10">
               <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: `${(row.probability / max) * 100}%` }}
+                initial={false}
+                animate={{ width: `${(row.probability / max) * 100}%` }}
                 viewport={{ once: true }}
                 transition={{
                   duration: 1,
@@ -119,8 +119,8 @@ function Comparison({
                 </div>
                 <div className="h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
                   <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${bar.value * 100}%` }}
+                    initial={false}
+                    animate={{ width: `${bar.value * 100}%` }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                     className="h-full"

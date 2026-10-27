@@ -17,8 +17,8 @@ function CheckpointBars({ year }: { year: BacktestYear }) {
           <div key={cp} className="text-center">
             <div className="flex h-28 items-end justify-center gap-1.5">
               <motion.div
-                initial={{ height: 0 }}
-                whileInView={{ height: `${(modelPct / max) * 100}%` }}
+                initial={false}
+                animate={{ height: `${(modelPct / max) * 100}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="w-4 rounded-t-sm"
@@ -26,8 +26,8 @@ function CheckpointBars({ year }: { year: BacktestYear }) {
                 title={`Model: ${modelPct.toFixed(1)}%`}
               />
               <motion.div
-                initial={{ height: 0 }}
-                whileInView={{ height: `${(baselinePct / max) * 100}%` }}
+                initial={false}
+                animate={{ height: `${(baselinePct / max) * 100}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: i * 0.1 + 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="w-4 rounded-t-sm bg-foreground/25"

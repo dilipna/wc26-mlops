@@ -47,23 +47,23 @@ function ProbabilityBar({
       </div>
       <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
         <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${homePct * 100}%` }}
+          initial={false}
+          animate={{ width: `${homePct * 100}%` }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
           className="h-full"
           style={{ background: fillColor }}
         />
         <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${drawPct * 100}%` }}
+          initial={false}
+          animate={{ width: `${drawPct * 100}%` }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: delay + 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="h-full bg-foreground/15"
         />
         <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${awayPct * 100}%` }}
+          initial={false}
+          animate={{ width: `${awayPct * 100}%` }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: delay + 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="h-full"

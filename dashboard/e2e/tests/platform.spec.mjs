@@ -47,6 +47,12 @@ for (const width of [1440, 768, 360])
           })).toBe(true);
         }
       }
+      if (route === "/football") {
+        const bars = page.locator('#backtest [title^="Model:"]');
+        expect(await bars.count()).toBeGreaterThan(0);
+        for (const bar of await bars.all())
+          expect(await bar.evaluate(el => el.getBoundingClientRect().height)).toBeGreaterThan(0);
+      }
       await page.evaluate(() => document.fonts.ready);
       await page.screenshot({
         path: info.outputPath(`${route.slice(1) || "home"}-${width}.png`),
