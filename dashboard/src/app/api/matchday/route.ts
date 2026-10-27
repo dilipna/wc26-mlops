@@ -26,7 +26,12 @@ export async function GET(request: NextRequest) {
     return Response.json(feed, {
       status: feed.state === "unavailable" ? 503 : 200,
       headers: {
-        "Cache-Control": "public, max-age=30, s-maxage=60",
+        "Cache-Control":
+          feed.state === "unavailable"
+            ? "no-store"
+            : feed.state === "snapshot"
+              ? "public, max-age=0, s-maxage=30"
+              : "public, max-age=30, s-maxage=300, stale-while-revalidate=60",
         "X-Content-Type-Options": "nosniff",
       },
     });

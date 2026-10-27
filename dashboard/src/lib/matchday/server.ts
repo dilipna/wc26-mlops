@@ -28,11 +28,11 @@ export function createFeedService({
     }
     if (++requests > 20)
       throw Error("Provider request budget reached; try again later.");
-    const options: RequestInit & { next?: { revalidate: number } } = {
+    const options: RequestInit = {
       signal: AbortSignal.timeout(8000),
       redirect: "error",
       headers: { Accept: "application/json" },
-      next: { revalidate: 300 },
+      cache: "no-store",
     };
     const response = await fetcher(url, options);
     if (!response.ok)
