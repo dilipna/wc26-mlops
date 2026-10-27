@@ -1061,3 +1061,16 @@
     scroll-behavior: auto !important;
   }
 }
+
+.matchday-notice:not(:empty) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.matchday-notice button {
+  min-width: 28px;
+  min-height: 28px;
+  flex-shrink: 0;
+  font-size: 20px;
+}

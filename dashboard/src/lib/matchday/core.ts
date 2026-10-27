@@ -378,7 +378,11 @@ export function answerQuestion(
       [],
       "empty",
     );
-  if (/predict|bet|odds|will.*win|guarantee/.test(q))
+  if (
+    /\b(?:predict\w*|bet(?:ting|s)?|odds|guarantee\w*)\b|\bwill\b.*\bwin\b/.test(
+      q,
+    )
+  )
     return response(
       "This assistant reports source records; it does not predict winners or recommend bets. The historical Model Lab is separate.",
       [],
@@ -441,6 +445,15 @@ export function answerQuestion(
             "against",
             "versus",
             "time",
+            "was",
+            "were",
+            "final",
+            "between",
+            "and",
+            "from",
+            "with",
+            "selected",
+            "are",
           ].includes(t),
       ) || [];
   const ranked = events
@@ -460,7 +473,7 @@ export function answerQuestion(
         ? [selected]
         : [];
   if (
-    /what.*(today|games)|schedule|upcoming|fixtures/.test(q) &&
+    /(?:what|which).*(today|games)|schedule|upcoming|fixtures/.test(q) &&
     !ranked.length
   ) {
     const upcoming = events.filter((e) => e.state === "scheduled").slice(0, 3);

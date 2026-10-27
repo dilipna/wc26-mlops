@@ -435,3 +435,15 @@ test("a nonempty payload of invalid records is an error, not an empty schedule",
     /validation/,
   );
 });
+
+test("between is ordinary match wording, not a betting request", () => {
+  const answer = ask("Who won between North and South?");
+  assert.equal(answer.intent, "result");
+  assert.match(answer.text, /South won 101–95/);
+});
+test("ordinary final-score phrasing uses the selected record", () => {
+  assert.equal(ask("What was the final score?").intent, "result");
+});
+test("which-games wording uses the bounded schedule intent", () => {
+  assert.equal(ask("Which games are today?").intent, "schedule");
+});

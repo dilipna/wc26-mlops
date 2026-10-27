@@ -1614,3 +1614,15 @@ Current status: eight current-competition adapters and matchday UI, structured s
 Known fragility points: free feeds are sampled/delayed, date coverage can be empty, provider availability and regional video playback can change, process caches/quotas are not globally durable, browser storage is not cloud retention. Server and export boundaries documented in docs/matchday-platform.md. No new scheduler, paid model/feed, secret or desktop control.
 
 Session log: verified real public source records and official video publisher metadata; 36 data/chat/cache/export tests plus eight hosting-policy tests and 134 Python regressions passed. TypeScript, scoped ESLint and production build passed; actual local production HTTP passed nine pages, all eight current feed adapters (including genuine empty responses), historical fingerprints and rejected API inputs. 34 GitHub-only browser cases are prepared, not yet run. Public publication requires the user's final exact-release approval.
+
+
+### Approved matchday publication and query correction — October 26, 2026
+
+User approved 1ddd134 publication to existing PR1, full CI with corrections confined to the release, and gated existing-project website release. Initial source was pushed; CI40439392550 passed Node/types/lint/Linux builds and Python while browser acceptance was pending. Vercel preview built successfully. Production remains prior verified0dd9387 until all current gates pass; main untouched.
+
+Current status: correcting reproduced query wording failures: bounded betting-intent terms no longer reject "between", filler words no longer prevent "What was the final score?", and "Which games" routes to loaded schedule evidence. Three red/green regressions retained; 47 Node tests now pass locally. Existing browser phrasing case expanded. Known fragility remains sampled/delayed free coverage, external publisher playback and per-instance cache limits; user-query text remains local. Final exact-source CI/stage/production checks and evidence are still mandatory. No additional approval is needed for these corrections under the approved release scope.
+
+
+Acceptance review follow-up: initial CI40439392550 passed all34 browser cases, zero skips/failures/flakes. Desktop/mobile screenshot review exposed selected-detail context persisting after filters and persistent notification overlap. Corrected detail selection to follow visible filtered games, clear stale discussion on search/filter changes, and provide dismissible notices with a ten-second expiry (copy-link fallback remains until dismissed). Existing responsive browser journeys now assert these behaviors. Natural-language regressions now47 Node tests. Corrections remain confined to the approved release; production unchanged pending current-source gates.
+
+Answer provenance follow-up: each stored answer now keeps its own league/date/fetch timestamp instead of borrowing a later refreshed feed's timestamp. Added a browser regression for this temporal context boundary. Final browser suite is35 cases; Node47. Initial passed34-case evidence remains separately retained.

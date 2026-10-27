@@ -86,10 +86,19 @@ for (const width of [1440, 768, 360])
     expect(ics).toContain("SUMMARY:Fixture East vs Fixture West");
     await calendar.saveAs(info.outputPath("scheduled-match.ics"));
     await brief.saveAs(info.outputPath("spoiler-protected-brief.md"));
+    await page
+      .getByRole("button", { name: "Dismiss notification", exact: true })
+      .click();
     await page.getByRole("button", { name: "Final", exact: true }).click();
     await expect(page.locator(".matchday-match")).toHaveCount(1);
+    await expect(page.locator("#match-detail-title")).toHaveText(
+      "Fixture North vs Fixture South",
+    );
     await page.getByLabel("Find a team or game").fill("not-a-team");
     await expect(page.getByText("No games match that filter.")).toBeVisible();
+    await expect(page.locator("#match-detail-title")).toHaveText(
+      "Select a game.",
+    );
     await page.getByLabel("Find a team or game").clear();
     await page.locator(".matchday-hero").scrollIntoViewIfNeeded();
     await page.evaluate(() => document.fonts.ready);
@@ -142,6 +151,11 @@ test("unknown and mismatched-date questions abstain and the discussion can be cl
   const q = page.getByLabel("Your sports question"),
     chat = page.locator(".matchday-assistant");
   for (const [question, answer] of [
+    [
+      "Who won between Fixture North and Fixture South?",
+      "Fixture South won 101–95",
+    ],
+    ["What was the final score?", "Fixture South won 101–95"],
     ["Who won the Lakers game?", "could not match"],
     ["Who won North in 2024?", "date is outside"],
     ["Give me betting odds", "does not predict winners"],
@@ -230,4 +244,32 @@ test("API rejects arbitrary league URLs, invalid dates, duplicate parameters and
   ])
     expect((await request.get("/api/matchday?" + query)).status()).toBe(400);
   expect((await request.post("/api/matchday")).status()).toBe(405);
+});
+
+test("answer provenance keeps the original snapshot timestamp after refresh", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("button", { name: /Inspect Fixture North/ }),
+  ).toBeVisible();
+  const chat = page.locator(".matchday-assistant");
+  await chat
+    .getByRole("button", { name: "Who won this game?", exact: true })
+    .click();
+  await stubMatchday(page, { fetchedAt: today() + "T11:00:00Z" });
+  await page
+    .getByRole("button", { name: "↻ Refresh feed", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "↻ Refresh feed", exact: true }),
+  ).toBeEnabled();
+  const answer = chat.locator(".matchday-answer").last();
+  await answer
+    .getByText("How this answer was checked", { exact: true })
+    .click();
+  await expect(answer.locator("details")).toContainText(today() + "T10:00:00Z");
+  await expect(answer.locator("details")).not.toContainText(
+    today() + "T11:00:00Z",
+  );
 });

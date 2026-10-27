@@ -58,7 +58,14 @@ function Arena({ sport }: { sport: string }) {
           <stop offset="1" stopColor="#d7ef91" stopOpacity="0" />
         </radialGradient>
       </defs>
-      <ellipse className="arena-glow" cx="320" cy="130" rx="270" ry="150" fill="url(#arena-glow)" />
+      <ellipse
+        className="arena-glow"
+        cx="320"
+        cy="130"
+        rx="270"
+        ry="150"
+        fill="url(#arena-glow)"
+      />
       {sport === "Motorsport" ? (
         <>
           <path
@@ -190,7 +197,16 @@ export default function MatchdayHub({
   const [notice, setNotice] = useState("");
   const [question, setQuestion] = useState("");
   const [answers, setAnswers] = useState<
-    { question: string; answer: Answer }[]
+    {
+      question: string;
+      answer: Answer;
+      context: {
+        league: string;
+        date: string;
+        fetchedAt: string | null;
+        state: string;
+      };
+    }[]
   >([]);
   const [media, setMedia] = useState<string | null>(null);
   const [localTime, setLocalTime] = useState(false);
@@ -339,7 +355,6 @@ export default function MatchdayHub({
   const currentFeed =
     feed?.league === league && feed?.date === day ? feed : null;
   const events = currentFeed?.events || [];
-  const selected = events.find((e) => e.id === selectedId) || null;
   const filtered = events.filter(
     (e) =>
       (filter === "all" ||
@@ -348,6 +363,13 @@ export default function MatchdayHub({
           : e.state === filter)) &&
       e.title.toLowerCase().includes(search.toLowerCase()),
   );
+  const selected =
+    filtered.find((e) => e.id === selectedId) || filtered[0] || null;
+  useEffect(() => {
+    if (!notice || notice.startsWith("Copy this match link:")) return;
+    const timer = setTimeout(() => setNotice(""), 10000);
+    return () => clearTimeout(timer);
+  }, [notice]);
   function change(nextLeague: LeagueKey, nextDay = day, id = "") {
     setLeague(nextLeague);
     setDay(nextDay);
@@ -389,6 +411,12 @@ export default function MatchdayHub({
       {
         question: q.slice(0, 400),
         answer: answerQuestion(q, events, selected, spoilers),
+        context: {
+          league: config.name,
+          date: day,
+          fetchedAt: currentFeed?.fetchedAt || null,
+          state: currentFeed?.state || "unavailable",
+        },
       },
     ]);
   }
@@ -575,7 +603,11 @@ export default function MatchdayHub({
               type="search"
               placeholder="Search these games…"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setSelectedId("");
+                setAnswers([]);
+              }}
             />
           </label>
           <div role="group" aria-label="Filter games">
@@ -588,7 +620,11 @@ export default function MatchdayHub({
               <button
                 key={value}
                 aria-pressed={filter === value}
-                onClick={() => setFilter(value)}
+                onClick={() => {
+                  setFilter(value);
+                  setSelectedId("");
+                  setAnswers([]);
+                }}
               >
                 {name}
               </button>
@@ -624,7 +660,7 @@ export default function MatchdayHub({
             )}
             {filtered.map((e) => (
               <article
-                className={`matchday-match ${selectedId === e.id ? "is-selected" : ""}`}
+                className={`matchday-match ${selected?.id === e.id ? "is-selected" : ""}`}
                 key={e.id}
               >
                 <div className="matchday-match-meta">
@@ -633,7 +669,7 @@ export default function MatchdayHub({
                 </div>
                 <button
                   className="matchday-select-match"
-                  aria-pressed={selectedId === e.id}
+                  aria-pressed={selected?.id === e.id}
                   onClick={() => {
                     setSelectedId(e.id);
                     setAnswers([]);
@@ -878,8 +914,9 @@ export default function MatchdayHub({
                     ))}
                   </ol>
                   <p>
-                    Scope: {config.name}, {day}. Fetched:{" "}
-                    {currentFeed?.fetchedAt || "not available"}. No model call.
+                    Scope: {a.context.league}, {a.context.date}. Fetched:{" "}
+                    {a.context.fetchedAt || "not available"} ({a.context.state}
+                    ). No model call.
                   </p>
                 </details>
               </div>
@@ -1092,7 +1129,17 @@ export default function MatchdayHub({
         </p>
       </section>
       <div className="matchday-notice" role="status">
-        {notice}
+        {notice && (
+          <>
+            <span>{notice}</span>
+            <button
+              aria-label="Dismiss notification"
+              onClick={() => setNotice("")}
+            >
+              ×
+            </button>
+          </>
+        )}
       </div>
       <div className="matchday-to-lab">
         <span>THE SCORE IS ONLY THE BEGINNING.</span>
