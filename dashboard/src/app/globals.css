@@ -433,7 +433,7 @@ body {
 .platform-heading {
   max-width: 830px;
 }
-.platform-heading h1 {
+.platform-heading h2 {
   font:
     700 clamp(46px, 7.5vw, 96px) / 1.03 Georgia,
     serif;

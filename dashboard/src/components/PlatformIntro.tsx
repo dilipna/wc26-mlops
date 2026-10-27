@@ -10,16 +10,16 @@ export default function PlatformIntro() {
     <section className="platform-intro" aria-labelledby="platform-title">
       <div className="platform-heading">
         <p className="replay-kicker">SPOPS / SPORTS MODEL LAB</p>
-        <h1 id="platform-title">
+        <h2 id="platform-title">
           Pick a sport.
           <br />
           Question the forecast.
-        </h1>
+        </h2>
         <p>
           Matchups you can explore. Predictions you can replay. Evidence you can
           download.
         </p>
-        <a href="#football-archive">Explore the football archive ↓</a>
+        <Link href="/football">Explore the football archive →</Link>
         <Link href="/engineering">How model decisions are checked →</Link>
       </div>
       <div className="platform-cards">

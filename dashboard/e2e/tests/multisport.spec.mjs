@@ -1,3 +1,4 @@
+import { stubMatchday } from "../matchday-fixture.mjs";
 import { test, expect } from "@playwright/test";
 import fs from "node:fs/promises";
 test.beforeEach(async ({ page, baseURL }) => {
@@ -6,6 +7,7 @@ test.beforeEach(async ({ page, baseURL }) => {
       ? route.continue()
       : route.abort(),
   );
+  await stubMatchday(page);
 });
 for (const sport of ["basketball", "nfl", "cricket"])
   for (const width of [1440, 768, 360])
@@ -130,7 +132,7 @@ test("snapshot retries and keyboard date selection changes exported provenance",
   const receipt = JSON.parse(await fs.readFile(await file.path(), "utf8"));
   expect(receipt.as_of).toBe("2010-01-03");
 });
-for (const route of ["/", "/admin", "/pele", "/nascar", "/engineering"])
+for (const route of ["/", "/football", "/admin", "/pele", "/nascar", "/engineering"])
   for (const width of [1440, 360])
     test(`${route} archive at ${width}px`, async ({ page }, info) => {
       await page.setViewportSize({ width, height: 1000 });

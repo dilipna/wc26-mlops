@@ -92,6 +92,8 @@ and true, but almost none of it is visible anywhere a hiring manager would actua
 
 ## 3. Current status
 
+**October 26 matchday expansion:** Prior release 0dd9387 is deployed and verified (CI40391625163, staged40395409703, production40395958829). User now requests current sports, grounded game Q&A, dynamic presentation and athlete videos. Develop locally first on improve/multisport-release; preserve all historical models and evidence. Free on-demand public feeds only, no paid calls, schedules, accounts or desktop control. New feature publication/deployment requires the established final exact-release approval.
+
 **October 26, 2026 redevelopment override:** User authorized this chat to focus on WC26 next, and explicitly requested more sports. Active isolated branch: improve/multisport-release. Existing governance and rejected temporal-stack experiments remain preserved. Current goal: real historical basketball, NFL and cricket replay adapters; honest date/status labels; useful matchup/replay/export UX; portable local demo; then CI and approved public release. No new paid APIs, live-data schedule, cloud service, account changes or desktop control. Historical July/September status below is archival and does not certify current deployment health.
 
 
@@ -1603,3 +1605,12 @@ Known fragility / release blocker: clean production prerender writes receive Win
 Next 16.4 dev rewrote its managed AGENTS block. Original guide instructions were retained unchanged outside its managed markers, and agentRules:false prevents future auto-rewrites/removal. No guide requirement was relaxed. Old ledger backdating claims were qualified: git dates are not independent publication witnesses and a hash chain is relative to a trusted head. Original records and scoring remain unchanged.
 
 Recovery/source/evidence packages and exact approval candidate are under the task's outputs/wc26-release-* directories. Public repository main remains e55b1be; no source push, PR, CI dispatch, Vercel staging/promotion, backend deployment, account setting, paid feed or schedule reactivation has occurred. Approval request must name the final source SHA and condition website promotion on all Linux/staging gates. Latest source SHA belongs in the external release report to avoid a self-referential committed identity.
+
+
+### October 26 matchday expansion — local implementation checkpoint
+
+Current status: eight current-competition adapters and matchday UI, structured source-grounded question assistant, browser watchlist/spoilers, note/calendar/deep-link tools, consent-based official videos and original sport-specific vector animation implemented locally. Historical models/evidence unchanged; football archive moved to explicit /football route. Production remains verified 0dd9387 until a new approved release.
+
+Known fragility points: free feeds are sampled/delayed, date coverage can be empty, provider availability and regional video playback can change, process caches/quotas are not globally durable, browser storage is not cloud retention. Server and export boundaries documented in docs/matchday-platform.md. No new scheduler, paid model/feed, secret or desktop control.
+
+Session log: verified real public source records and official video publisher metadata; 36 data/chat/cache/export tests plus eight hosting-policy tests and 134 Python regressions passed. TypeScript, scoped ESLint and production build passed; local HTTP and 34 prepared GitHub-only browser cases remain acceptance steps. Public publication requires the user's final exact-release approval.

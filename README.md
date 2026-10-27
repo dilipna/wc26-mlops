@@ -1,12 +1,14 @@
-# SpOps — Sports Model Lab
+# SpOps — Matchday & Sports Model Lab
 
-**Explore a matchup. Replay a prediction. Inspect the evidence.**
+**Follow a game. Ask a question. Keep the source. Then inspect the model.**
 
 Personal MLOps project by Dilip Nallamasa. Repository/hosting identifiers remain wc26-mlops.
 
 > Redevelopment branch: improve/multisport-release. Public site: https://fifa2026mlops.vercel.app/. Verify the hosted commit at /release.json and its corresponding CI/browser records; source in a branch does not by itself certify a public deployment. Publication and deployment follow explicit release approval.
 
 ## Use the product
+
+The locally prepared Matchday expansion adds eight competition adapters (NBA, Premier League, NFL, MLB, NHL, ATP Tour, Sheffield Shield and Formula 1), bounded current score snapshots, source-grounded game Q&A, browser watchlists, spoiler controls, match briefs/calendar downloads, dynamic sport graphics and official click-to-load signature-play videos. The dated historical model lab remains separate. See [the matchday architecture and coverage contract](docs/matchday-platform.md). This expansion is not certified as deployed until its exact-source release gates pass.
 
 Basketball/NBA, NFL and cricket/IPL have real historical outcome snapshots, date-batched Elo replays, matchup scenarios with a selected as-of date, constant baselines, calibration tables and downloadable receipts. No paid API, LLM call or remote serving backend is required for these workbenches.
 
@@ -21,7 +23,7 @@ npm run build
 npm start -- --hostname 127.0.0.1 --port 3260
 ```
 
-Open http://127.0.0.1:3260/. Fonts and replay snapshots are served locally. First-time dependency installation needs network; the installed demo and replay computation need no API credentials. Do not run the old daily pipeline to view the website.
+Open http://127.0.0.1:3260/. Fonts and replay snapshots are served locally. First-time dependency installation needs network; the historical demo and replay computation need no API credentials. Matchday tries documented free public providers on demand; offline results use dated captured snapshots where available, otherwise show an unavailable state. Do not run the old daily pipeline to view the website.
 
 ## Architecture
 

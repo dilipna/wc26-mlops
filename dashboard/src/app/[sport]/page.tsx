@@ -7,11 +7,13 @@ import SportPage, { type SportPageData } from "@/components/SportPage";
 import { SPORTS } from "@/lib/sports";
 
 // Config-driven sport routes: every active sport in sports_config.json
-// whose path isn't "/" gets a statically generated page here, rendered
+// whose path has no dedicated page gets a statically generated page here, rendered
 // from dashboard/data/<sport id>.json. Adding a sport = one config entry
 // + one data file; no component or route code changes.
 export function generateStaticParams() {
-  return SPORTS.filter((s) => s.is_active && s.path !== "/").map((s) => ({
+  return SPORTS.filter(
+    (s) => s.is_active && !["/", "/football"].includes(s.path),
+  ).map((s) => ({
     sport: s.path.replace(/^\//, ""),
   }));
 }

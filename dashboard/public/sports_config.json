@@ -4,7 +4,7 @@
       "id": "fifa_wc26",
       "name": "FIFA World Cup 2026",
       "short": "FIFA",
-      "path": "/",
+      "path": "/football",
       "is_active": true,
       "is_live": false,
       "end_date": "2026-07-19",

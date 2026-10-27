@@ -20,7 +20,7 @@ export default function Nav() {
         <SportTabs />
       </div>
       <div className="flex shrink-0 items-center gap-4 sm:gap-7">
-        {pathname === "/" && (
+        {pathname === "/football" && (
           <div className="hidden gap-7 text-xs uppercase tracking-[0.12em] text-foreground/55 xl:flex">
             <a
               href="#leaderboard"

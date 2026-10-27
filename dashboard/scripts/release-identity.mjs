@@ -102,6 +102,7 @@ for (const rel of [
   "dashboard/public/fonts",
   "dashboard/scripts",
   "dashboard/e2e",
+  "dashboard/tests",
   "tests",
   ".github/workflows",
   "src",
@@ -115,6 +116,8 @@ for (const rel of [
   "dashboard/package-lock.json",
   "dashboard/next.config.ts",
   "dashboard/vercel.json",
+  "dashboard/tsconfig.json",
+  "dashboard/public/sports_config.json",
 ])
   visit(rel);
 const cards = JSON.parse(
