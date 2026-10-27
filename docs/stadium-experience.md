@@ -9,3 +9,5 @@ Match source JSON downloads retain provider/capture time/coverage and the select
 The requested spops.vercel.app hostname returned DEPLOYMENT_NOT_FOUND and is not assigned in the authenticated team at inspection. That does not reserve or prove availability. Assign only to the existing approved project after exact-source release gates; verify anonymous HTTP and hosted browser checks on the new hostname. Preserve the old URL and rollback deployment.
 
 No backend, dataset, training or paid-provider changes are part of this visual release. Browser QA runs only on GitHub. Local types/lint/build/unit/HTTP checks precede the user's exact-release publication approval.
+
+The production browser gate accepts only the existing public hostname or spops.vercel.app, selected through an explicit Production origin line on PR1. Arbitrary URLs remain rejected. This lets the approved domain addition receive the same exact-source browser checks as the existing website.
