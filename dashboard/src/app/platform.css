@@ -1668,7 +1668,7 @@ summary:focus-visible,
 .matchday-hero h1 { font-size: clamp(36px, 4.5vw, 66px); font-weight: 800; text-transform: uppercase; letter-spacing: -2.8px; line-height: 1.02; max-width: 620px; }
 .matchday-hero > div > p:not(.matchday-eyebrow) { font-size: 14px; color: #b8b8b8; max-width: 500px; }
 .matchday-eyebrow { color: #aaa; }
-.matchday-visual { padding: 23px; position: relative; border: 1px solid #f0c00038; border-radius: 14px; background: radial-gradient(ellipse, #f0c00014, transparent 70%), #0b0b0c; overflow: hidden; min-width: 0; }
+.matchday-visual { display: flex; flex-direction: column; padding: 23px; position: relative; border: 1px solid #f0c00038; border-radius: 14px; background: radial-gradient(ellipse, #f0c00014, transparent 70%), #0b0b0c; overflow: hidden; min-width: 0; }
 .matchday-visual-label { color: #f0c000; font-size: 10px; }
 .matchday-arena { height: 190px; margin: 8px 0; opacity: 1; stroke: #b89b43; filter: drop-shadow(0 0 10px #f0c00024); }
 .matchday-arena [stroke="#c6de9e"] { stroke: #b89b43; }
@@ -1723,3 +1723,6 @@ summary:focus-visible,
 @media(prefers-reduced-motion:reduce) { .matchday-arena *, .matchday-visual * {animation:none !important;transition:none !important;} }
 
 .replay-verdict.caution { background: #23190c; border-left-color: #d6a146; }
+
+.platform-card { background: var(--card); color: var(--foreground); }
+.platform-card > span.platform-card-cta { color: var(--accent); }

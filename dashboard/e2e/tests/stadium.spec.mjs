@@ -19,6 +19,10 @@ for (const width of [1440,768,360]) test(`original charcoal and gold theme acros
     expect(palette.accent).toBe('#f0c000');
     expect(palette.surface.match(/\d+/g).slice(0,3).every(n=>Number(n)<30)).toBe(true);
     expect(palette.overflow).toBe(false);
+    for (const card of await page.locator('.platform-card, .replay-panel, .replay-workspace, .matchday-detail').all()) {
+      const rgb = await card.evaluate(el=>getComputedStyle(el).backgroundColor.match(/\d+/g).slice(0,3).map(Number));
+      expect(rgb.every(n=>n<40)).toBe(true);
+    }
   }
   await page.goto('/');
   await expect(page.getByRole('heading',{name:'Every claim has a way back.'})).toBeVisible();
