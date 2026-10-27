@@ -35,6 +35,18 @@ for (const width of [1440, 768, 360])
       await expect(
         page.getByRole("link", { name: "SpOps home", exact: true }),
       ).toBeVisible();
+      // Archived sections must be visible before scrolling or animation observers.
+      if (route === "/football") {
+        for (const title of ["Who Takes The Trophy?", "Check Your Country", "Tested On Real History", "How It Works"]) {
+          const heading = page.getByRole("heading", { name: title, exact: true });
+          await expect(heading).toBeVisible();
+          expect(await heading.evaluate((el) => {
+            for (let node = el; node; node = node.parentElement)
+              if (Number(getComputedStyle(node).opacity) < 0.99) return false;
+            return true;
+          })).toBe(true);
+        }
+      }
       await page.evaluate(() => document.fonts.ready);
       await page.screenshot({
         path: info.outputPath(`${route.slice(1) || "home"}-${width}.png`),

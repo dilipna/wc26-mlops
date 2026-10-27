@@ -30,7 +30,7 @@ function Board({ board }: { board: SportPageData["boards"][number] }) {
       {board.rows.map((row, i) => (
         <motion.div
           key={row.label}
-          initial={{ opacity: 0, x: -30 }}
+          initial={false}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{
@@ -88,7 +88,7 @@ function Comparison({
       {comparison.rows.map((row, i) => (
         <motion.div
           key={row.label}
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{

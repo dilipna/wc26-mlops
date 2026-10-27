@@ -87,7 +87,7 @@ export default function UpcomingMatches({ matches }: { matches: UpcomingMatch[] 
         return (
           <motion.div
             key={`${m.home_team}-${m.away_team}-${m.commence_time}`}
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: (i % 4) * 0.08, ease: [0.16, 1, 0.3, 1] }}

@@ -11,7 +11,7 @@ import type { PredictionRow } from "@/lib/data";
 function HeroGlobe() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 flex items-center justify-center"
+      className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-20"
       style={{ zIndex: 0 }}
     >
       <div
@@ -105,7 +105,7 @@ export default function Hero({
       />
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={false}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 mb-7 inline-flex items-center gap-2 overflow-hidden rounded-full border border-foreground/20 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground"
@@ -124,7 +124,7 @@ export default function Hero({
       </motion.div>
 
       <motion.h2
-        initial={{ opacity: 0, y: 40 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         className="font-display relative z-10 text-[clamp(32px,7vw,110px)] font-black uppercase leading-[1.05] tracking-tight text-foreground"
@@ -136,7 +136,7 @@ export default function Hero({
       </motion.h2>
 
       <motion.p
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
         className="font-serif relative z-10 mt-9 max-w-xl text-[17px] leading-relaxed text-foreground/65"
@@ -149,7 +149,7 @@ export default function Hero({
 
       {topFavorite && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
           className="relative z-10 mt-10 flex items-center gap-4 rounded-2xl border border-foreground/15 px-6 py-4"
