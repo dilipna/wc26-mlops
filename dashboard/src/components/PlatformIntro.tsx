@@ -5,32 +5,47 @@ const names: Record<string, string> = {
   nfl: "American football",
   cricket: "Cricket",
 };
-export default function PlatformIntro() {
+const marks: Record<string, string> = {
+  basketball: "◉",
+  nfl: "◈",
+  cricket: "◒",
+};
+export default function PlatformIntro({ page = false }: { page?: boolean }) {
+  const Heading = page ? "h1" : "h2";
+  const CardHeading = page ? "h2" : "h3";
   return (
-    <section className="platform-intro" aria-labelledby="platform-title">
+    <section
+      className={`platform-intro ${page ? "platform-models-hub" : "platform-intro-compact"}`}
+      aria-labelledby="platform-title"
+    >
       <div className="platform-heading">
-        <p className="replay-kicker">SPOPS / SPORTS MODEL LAB</p>
-        <h2 id="platform-title">
-          Pick a sport.
-          <br />
-          Question the forecast.
-        </h2>
-        <p>
-          Matchups you can explore. Predictions you can replay. Evidence you can
-          download.
-        </p>
-        <Link href="/football">Explore the football archive →</Link>
-        <Link href="/engineering">How model decisions are checked →</Link>
+        <div>
+          <p className="replay-kicker">HISTORICAL MODEL LABS</p>
+          <Heading id="platform-title">Go beyond the score.</Heading>
+          <p>
+            Explore a matchup, replay a forecast and see how the model was
+            tested.
+          </p>
+        </div>
+        <Link href={page ? "/engineering" : "/models"}>
+          {page
+            ? "How model decisions are checked ↗"
+            : "Explore all model labs ↗"}
+        </Link>
       </div>
       <div className="platform-cards">
-        {cards.map((c, i) => (
-          <Link
-            key={c.sport}
-            href={`/${c.sport === "nfl" ? "nfl" : c.sport}`}
-            className="platform-card"
-          >
-            <span className="replay-kicker">0{i + 1} / HISTORICAL REPLAY</span>
-            <h2>{names[c.sport]}</h2>
+        {cards.map((c) => (
+          <Link key={c.sport} href={`/${c.sport}`} className="platform-card">
+            <div className="platform-card-top">
+              <span
+                className={`platform-sport-mark platform-mark-${c.sport}`}
+                aria-hidden="true"
+              >
+                {marks[c.sport]}
+              </span>
+              <span className="platform-history-tag">Historical research</span>
+            </div>
+            <CardHeading>{names[c.sport]}</CardHeading>
             <p>
               {c.sport === "basketball"
                 ? "NBA"
@@ -39,17 +54,36 @@ export default function PlatformIntro() {
                   : "NFL"}{" "}
               · Data through {c.as_of}
             </p>
-            <strong>
-              {c.model_metrics.n.toLocaleString("en-US")} evaluated matches
-            </strong>
-            <span>Try a matchup & inspect the model ↗</span>
+            <div className="platform-card-evidence">
+              <strong>{c.model_metrics.n.toLocaleString("en-US")}</strong>
+              <span>evaluated matches</span>
+            </div>
+            <span className="platform-card-cta">
+              Open matchup workbench <b aria-hidden="true">↗</b>
+            </span>
           </Link>
         ))}
       </div>
+      {page && (
+        <div className="platform-more-labs">
+          <Link href="/football">
+            <strong>Football / WC26 archive ↗</strong>
+            <span>Stored forecasts, calibration and lifecycle evidence.</span>
+          </Link>
+          <Link href="/pele">
+            <strong>Football ratings study ↗</strong>
+            <span>Explore the historical Pelé ratings and research tools.</span>
+          </Link>
+          <Link href="/engineering">
+            <strong>Model release decisions ↗</strong>
+            <span>See rejected candidates and retained negative results.</span>
+          </Link>
+        </div>
+      )}
       <p className="platform-boundary">
-        Historical research tools, not current live feeds. Each page shows its
-        data date, method, baseline and limitations. The cricket baseline
-        outperformed Elo; that result stays visible.
+        Historical tools are separate from current score snapshots. Each lab
+        shows its data date, method and limitations. The cricket baseline
+        outperformed Elo; that result remains visible.
       </p>
     </section>
   );

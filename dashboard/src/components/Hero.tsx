@@ -24,7 +24,7 @@ function HeroGlobe() {
             background:
               "conic-gradient(from 0deg, var(--globe-a), var(--globe-b), var(--globe-a) 35%, var(--globe-c) 60%, var(--globe-a) 100%)",
             animation: "wc-spin 60s linear infinite",
-            filter: "brightness(0.85) saturate(0.95)",
+            filter: "brightness(1) saturate(0.85)",
           }}
         />
         <div
@@ -33,7 +33,7 @@ function HeroGlobe() {
             background:
               "radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 46%), radial-gradient(circle at 50% 50%, transparent 50%, color-mix(in srgb, var(--background-deep) 50%, transparent) 76%, color-mix(in srgb, var(--background-deep) 92%, transparent) 100%)",
             boxShadow:
-              "inset -34px -28px 80px rgba(0,0,0,0.8), inset 10px 10px 44px color-mix(in srgb, var(--accent) 12%, transparent), 0 0 100px color-mix(in srgb, var(--accent) 22%, transparent), 0 0 28px color-mix(in srgb, var(--accent) 20%, transparent)",
+              "inset -34px -28px 80px rgba(35,69,57,0.18), inset 10px 10px 44px color-mix(in srgb, var(--accent) 12%, transparent), 0 0 100px color-mix(in srgb, var(--accent) 22%, transparent), 0 0 28px color-mix(in srgb, var(--accent) 20%, transparent)",
           }}
         />
       </div>
@@ -49,7 +49,7 @@ export default function Hero({
   latestDate: string | null;
 }) {
   return (
-    <section className="relative isolate flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-36 text-center">
+    <section className="football-hero relative isolate flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-36 text-center">
       {/* layered depth background */}
       <div
         className="absolute inset-0"

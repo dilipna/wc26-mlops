@@ -3,6 +3,9 @@ import localFont from "next/font/local";
 import "flag-icons/css/flag-icons.min.css";
 import "./globals.css";
 import "./matchday.css";
+import "./platform.css";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 
 // Space Grotesk is the site's typeface -- sans, display, and serif all
 // resolve to it (see globals.css). IBM Plex Mono is kept for the
@@ -34,7 +37,16 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <a href="#page-content" className="platform-skip">
+          Skip to content
+        </a>
+        <Nav />
+        <div id="page-content" tabIndex={-1}>
+          {children}
+        </div>
+        <Footer />
+      </body>
     </html>
   );
 }

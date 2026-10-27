@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Nav from "./Nav";
-import Footer from "./Footer";
 
 export type ReplayCard = {
   sport: string;
@@ -144,7 +142,7 @@ export default function ReplayWorkbench({ card }: { card: ReplayCard }) {
   const snapshot = data?.history[day];
   const ra = snapshot?.ratings[a] ?? data?.parameters.initial ?? 1500;
   const rb = snapshot?.ratings[b] ?? data?.parameters.initial ?? 1500;
-  const advantage = neutral ? 0 : data?.parameters.home_advantage ?? 0;
+  const advantage = neutral ? 0 : (data?.parameters.home_advantage ?? 0);
   const probability =
     1 /
     (1 + Math.pow(10, (rb - ra - advantage) / (data?.parameters.scale ?? 400)));
@@ -171,9 +169,8 @@ export default function ReplayWorkbench({ card }: { card: ReplayCard }) {
   };
   return (
     <main className="replay-page">
-      <Nav />
       <header className="replay-header">
-        <Link href="/">← All sports</Link>
+        <Link href="/models">← Model labs</Link>
         <p className="replay-kicker">
           HISTORICAL MODEL LAB / {card.sport.toUpperCase()}
         </p>
@@ -568,7 +565,6 @@ export default function ReplayWorkbench({ card }: { card: ReplayCard }) {
           </div>
         </section>
       </div>
-      <Footer />
     </main>
   );
 }

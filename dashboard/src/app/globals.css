@@ -1,10 +1,9 @@
 @import "tailwindcss";
 
-/* Design tokens — the single source of truth for the site's palette.
-   Components must reference these (via Tailwind utilities or var(--…)),
-   never hardcode hex values. Chart series colors were validated with the
-   dataviz skill's validate_palette.js against the #111111 card surface
-   (lightness band, chroma floor, CVD separation, contrast: all PASS). */
+/* Legacy module primitives. The shared product palette and responsive shell
+   are defined in platform.css, loaded last by the root layout. Historic
+   chart semantics remain; earlier dark-surface palette checks do not certify
+   the redesigned light surfaces. */
 :root {
   --background: #090909;
   --background-raised: #0f0f0f;

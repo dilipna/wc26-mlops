@@ -1,8 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import Link from "next/link";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
 import proofSources from "../../../data/historical_evidence.json";
 export const metadata = {
   title: "Model decisions and reproducibility — SpOps",
@@ -23,7 +21,6 @@ export default function Engineering() {
   const c = review.comparison;
   return (
     <main className="replay-page">
-      <Nav />
       <header className="replay-header">
         <Link href="/">← All sports</Link>
         <p className="replay-kicker">ENGINEERING / DECISIONS WITH RECEIPTS</p>
@@ -220,7 +217,6 @@ export default function Engineering() {
           </div>
         </section>
       </div>
-      <Footer />
     </main>
   );
 }

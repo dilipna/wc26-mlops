@@ -1,4 +1,3 @@
-import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import SectionHeading from "@/components/SectionHeading";
 import FavoritesLeaderboard from "@/components/FavoritesLeaderboard";
@@ -12,7 +11,6 @@ import MethodologySection from "@/components/MethodologySection";
 import StatsStrip from "@/components/StatsStrip";
 import ResultsTicker from "@/components/ResultsTicker";
 import TechStack from "@/components/TechStack";
-import Footer from "@/components/Footer";
 import {
   backtest,
   proofLedger,
@@ -44,7 +42,6 @@ export default function FootballArchive() {
   return (
     <main className="relative">
       <h1 className="sr-only">World Cup 2026 engineering archive</h1>
-      <Nav />
       <div id="football-archive" className="football-archive-label">
         FOOTBALL / ARCHIVED WC26 PROJECT · Last stored prediction:{" "}
         {summary.latest_predictions_date} · Daily cloud schedule disabled
@@ -154,8 +151,6 @@ export default function FootballArchive() {
         />
         <TechStack />
       </section>
-
-      <Footer />
     </main>
   );
 }

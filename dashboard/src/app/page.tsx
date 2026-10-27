@@ -1,6 +1,5 @@
 import MatchdayHub from "@/components/MatchdayHub";
 import PlatformIntro from "@/components/PlatformIntro";
-import Footer from "@/components/Footer";
 import seed from "../../data/matchday-seed.json";
 import type { Feed } from "@/lib/matchday/core";
 export default function Home() {
@@ -13,7 +12,6 @@ export default function Home() {
       <div id="model-lab">
         <PlatformIntro />
       </div>
-      <Footer />
     </main>
   );
 }

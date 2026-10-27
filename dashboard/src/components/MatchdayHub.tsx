@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import {
   LEAGUES,
   getLeague,
@@ -190,6 +189,7 @@ export default function MatchdayHub({
   const [selectedId, setSelectedId] = useState("");
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("source");
   const [spoilers, setSpoilers] = useState(false);
   const [auto, setAuto] = useState(false);
   const [saved, setSaved] = useState<Saved[]>([]);
@@ -255,6 +255,9 @@ export default function MatchdayHub({
         date = params.get("date"),
         id = params.get("match");
       if (chosen && getLeague(chosen)) setLeague(chosen as LeagueKey);
+      const query = params.get("q");
+      if (query) setSearch(query.slice(0, 160));
+      if (params.get("view") === "saved") setFilter("saved");
       setDay(date && validWindow(date) ? date : utcDay());
       if (id && /^(tsdb-\d+|jolpica-\d{4}-\d{1,2})$/.test(id))
         pendingId.current = id;
@@ -355,7 +358,7 @@ export default function MatchdayHub({
   const currentFeed =
     feed?.league === league && feed?.date === day ? feed : null;
   const events = currentFeed?.events || [];
-  const filtered = events.filter(
+  const matching = events.filter(
     (e) =>
       (filter === "all" ||
         (filter === "saved"
@@ -363,6 +366,15 @@ export default function MatchdayHub({
           : e.state === filter)) &&
       e.title.toLowerCase().includes(search.toLowerCase()),
   );
+  const filtered = [...matching].sort((a, b) => {
+    if (sort === "name") return a.title.localeCompare(b.title);
+    if (sort === "time")
+      return (
+        (a.startsAt || "9999").localeCompare(b.startsAt || "9999") ||
+        a.title.localeCompare(b.title)
+      );
+    return 0;
+  });
   const selected =
     filtered.find((e) => e.id === selectedId) || filtered[0] || null;
   useEffect(() => {
@@ -433,47 +445,35 @@ export default function MatchdayHub({
       : `${e.date} · time not supplied`;
   return (
     <section className="matchday" aria-labelledby="matchday-title">
-      <header className="matchday-header site-nav">
-        <Link href="/" className="matchday-brand">
-          sp<span>o</span>ps<span className="matchday-brand-dot">.</span>
-        </Link>
-        <nav aria-label="Platform">
-          <a href="#match-center">Matchday</a>
-          <a href="#spotlights">Signature plays</a>
-          <a href="#model-lab">Model lab</a>
-          <Link href="/engineering">The engineering ↗</Link>
-        </nav>
-        <span className="matchday-edition">INDEPENDENT SPORTS DESK</span>
-      </header>
       <div className="matchday-hero">
         <div>
-          <p className="matchday-eyebrow">FOR THE LOVE OF THE GAME</p>
-          <h1 id="matchday-title">
-            Every game.
-            <br />
-            <em>More context.</em>
-          </h1>
+          <p className="matchday-eyebrow">YOUR SPORTS, IN ONE PLACE</p>
+          <h1 id="matchday-title">Every sport. One clear view.</h1>
           <p>
-            Find the match. Ask the score. Keep the moment.
-            <br />
-            Your sports desk, with the sources attached.
+            Follow the scores, save your games and ask better questions. Explore
+            the model labs when you want the numbers behind a forecast.
           </p>
-          <a className="matchday-hero-link" href="#match-center">
-            Find your game <span>↘</span>
-          </a>
+          <div className="matchday-overview">
+            <span>
+              <strong>{LEAGUES.length}</strong> competitions
+            </span>
+            <span>
+              <strong>{currentFeed ? events.length : "—"}</strong> games in this
+              feed
+            </span>
+            <a href="#watchlist">
+              <strong>{saved.length}</strong> saved games ↗
+            </a>
+          </div>
         </div>
         <div className="matchday-visual">
           <span className="matchday-visual-label">
-            IN FOCUS / {config.sport.toUpperCase()}
+            {config.name.toUpperCase()} / {config.sport.toUpperCase()}
           </span>
           <Arena sport={config.sport} />
           <div className="matchday-visual-caption">
             <strong>{config.name}</strong>
-            <span>
-              Real source records.
-              <br />
-              No invented scorelines.
-            </span>
+            <span>Source-backed scores</span>
           </div>
           <span className="matchday-visual-number">
             0{LEAGUES.findIndex((l) => l.key === league) + 1}
@@ -501,8 +501,8 @@ export default function MatchdayHub({
       >
         <div className="matchday-section-heading">
           <div>
-            <p className="matchday-eyebrow">01 / THE MATCHDAY DESK</p>
-            <h2 id="match-center-title">The game, at a glance.</h2>
+            <p className="matchday-eyebrow">MATCHDAY</p>
+            <h2 id="match-center-title">{config.name} games</h2>
           </div>
           <span>
             {config.name} / {config.sport}
@@ -602,6 +602,7 @@ export default function MatchdayHub({
             <input
               type="search"
               placeholder="Search these games…"
+              maxLength={160}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -630,6 +631,38 @@ export default function MatchdayHub({
               </button>
             ))}
           </div>
+        </div>
+        <div className="matchday-browse-tools">
+          <span>
+            {loading
+              ? "Checking games…"
+              : `${filtered.length} ${filtered.length === 1 ? "game" : "games"} shown`}
+          </span>
+          <label>
+            Sort{" "}
+            <select
+              aria-label="Sort games"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+            >
+              <option value="source">Source order</option>
+              <option value="time">Start time</option>
+              <option value="name">Team / event name</option>
+            </select>
+          </label>
+          {(search || filter !== "all" || sort !== "source") && (
+            <button
+              onClick={() => {
+                setSearch("");
+                setFilter("all");
+                setSort("source");
+                setSelectedId("");
+                setAnswers([]);
+              }}
+            >
+              Reset filters
+            </button>
+          )}
         </div>
         <div className="matchday-workspace">
           <div
@@ -866,7 +899,7 @@ export default function MatchdayHub({
           className="matchday-assistant"
           aria-labelledby="matchday-chat-title"
         >
-          <p className="matchday-eyebrow">02 / ASK THE DESK</p>
+          <p className="matchday-eyebrow">MATCH INSIGHTS</p>
           <h2 id="matchday-chat-title">
             A question. A source.
             <br />A straight answer.
@@ -950,11 +983,12 @@ export default function MatchdayHub({
           )}
         </section>
         <section
+          id="watchlist"
           className="matchday-watchlist"
           aria-labelledby="watchlist-title"
         >
           <p className="matchday-eyebrow">YOUR SIDE OF THE GAME</p>
-          <h2 id="watchlist-title">Keep an eye on it.</h2>
+          <h2 id="watchlist-title">Your watchlist.</h2>
           <p>
             Saved on this browser only. Keep up to 30 games without creating an
             account.
@@ -1020,8 +1054,8 @@ export default function MatchdayHub({
       >
         <div className="matchday-section-heading">
           <div>
-            <p className="matchday-eyebrow">03 / SIGNATURE PLAYS</p>
-            <h2 id="spotlights-title">Some things are worth a replay.</h2>
+            <p className="matchday-eyebrow">OFFICIAL HIGHLIGHTS</p>
+            <h2 id="spotlights-title">The moments worth watching.</h2>
           </div>
           <span>Official publishers. Timeless moments.</span>
         </div>

@@ -18,7 +18,7 @@ for (const width of [1440, 768, 360])
     await page.setViewportSize({ width, height: 1000 });
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: "Every game. More context." }),
+      page.getByRole("heading", { name: "Every sport. One clear view." }),
     ).toBeVisible();
     await expect(
       page.getByRole("button", {
