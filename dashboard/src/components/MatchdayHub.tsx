@@ -50,11 +50,11 @@ function initials(name: string) {
 }
 function Arena({ sport }: { sport: string }) {
   return (
-    <svg className="matchday-arena" viewBox="0 0 600 260" aria-hidden="true">
+    <svg className="matchday-arena" data-sport={sport} viewBox="0 0 600 260" aria-hidden="true">
       <defs>
         <radialGradient id="arena-glow">
-          <stop stopColor="#d7ef91" stopOpacity=".3" />
-          <stop offset="1" stopColor="#d7ef91" stopOpacity="0" />
+          <stop stopColor="#f0c000" stopOpacity=".3" />
+          <stop offset="1" stopColor="#f0c000" stopOpacity="0" />
         </radialGradient>
       </defs>
       <ellipse
@@ -210,6 +210,15 @@ export default function MatchdayHub({
   >([]);
   const [media, setMedia] = useState<string | null>(null);
   const [localTime, setLocalTime] = useState(false);
+  const [motionPaused, setMotionPaused] = useState(false);
+  const [motionKey, setMotionKey] = useState(0);
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setMotionPaused(preference.matches);
+    update();
+    preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
   const pendingId = useRef("");
   const requestRef = useRef<HTMLInputElement>(null);
   const [today, setToday] = useState(initialDay);
@@ -453,6 +462,10 @@ export default function MatchdayHub({
             Follow the scores, save your games and ask better questions. Explore
             the model labs when you want the numbers behind a forecast.
           </p>
+          <div className="stadium-actions">
+            <a href="#match-center">Explore the games <span aria-hidden="true">↗</span></a>
+            <a href="#platform-proof">See the evidence <span aria-hidden="true">↗</span></a>
+          </div>
           <div className="matchday-overview">
             <span>
               <strong>{LEAGUES.length}</strong> competitions
@@ -466,14 +479,20 @@ export default function MatchdayHub({
             </a>
           </div>
         </div>
-        <div className="matchday-visual">
+        <div className="matchday-visual" data-paused={motionPaused}>
           <span className="matchday-visual-label">
             {config.name.toUpperCase()} / {config.sport.toUpperCase()}
           </span>
-          <Arena sport={config.sport} />
+          <Arena key={`${league}-${motionKey}`} sport={config.sport} />
+          <div className="stadium-motion-controls" role="group" aria-label="Sports illustration controls">
+            <button onClick={() => setMotionPaused(!motionPaused)} aria-pressed={motionPaused}>
+              {motionPaused ? "Play motion" : "Pause motion"}
+            </button>
+            <button onClick={() => { setMotionKey(motionKey + 1); setMotionPaused(false); }}>Replay motion ↻</button>
+          </div>
           <div className="matchday-visual-caption">
             <strong>{config.name}</strong>
-            <span>Source-backed scores</span>
+            <span>Sport illustration · not live tracking</span>
           </div>
           <span className="matchday-visual-number">
             0{LEAGUES.findIndex((l) => l.key === league) + 1}
@@ -859,6 +878,18 @@ export default function MatchdayHub({
                     Ask about this game →
                   </button>
                 </div>
+                {currentFeed && <details className="matchday-evidence">
+                  <summary>Check this match record</summary>
+                  <p>Provider: {currentFeed.provider}. Captured: {currentFeed.fetchedAt || "Not supplied"}. Feed: {currentFeed.state}.</p>
+                  <p>{currentFeed.coverage}</p>
+                  <button onClick={() => saveFile(`spops-${selected.id}-source.json`, JSON.stringify({
+                    schema: 1, exportedAt: new Date().toISOString(), provider: currentFeed.provider,
+                    fetchedAt: currentFeed.fetchedAt, coverage: currentFeed.coverage, state: currentFeed.state,
+                    match: spoilers ? { id: selected.id, title: selected.title, date: selected.date,
+                      sourceUrl: selected.sourceUrl, result: "Hidden by spoiler protection" } : selected,
+                    scope: "Provider record captured for this view; not independent verification or guaranteed live coverage."
+                  }, null, 2), "application/json")}>Download source receipt ↓</button>
+                </details>}
                 <a
                   className="matchday-source-link"
                   href={selected.sourceUrl}

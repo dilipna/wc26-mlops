@@ -1,3 +1,4 @@
+import ProofDeck from "@/components/ProofDeck";
 import MatchdayHub from "@/components/MatchdayHub";
 import PlatformIntro from "@/components/PlatformIntro";
 import seed from "../../data/matchday-seed.json";
@@ -9,6 +10,7 @@ export default function Home() {
         initialFeeds={seed.feeds as Feed[]}
         initialDay={seed.capturedAt?.slice(0, 10) || "2026-10-26"}
       />
+      <ProofDeck />
       <div id="model-lab">
         <PlatformIntro />
       </div>

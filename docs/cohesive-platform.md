@@ -1,3 +1,5 @@
+> Current visual direction: the original charcoal/white/gold WC26 identity is restored across the shared shell. See stadium-experience.md for motion, proof center and receipt details. Earlier white/slate/green references below describe the superseded design.
+
 # Cohesive SpOps product redesign
 
 User request: replace the visually disconnected opening page with a polished sports platform whose pages belong together, using Kalshi's browsing clarity as a product reference. No exchange, account, trading feature, invented market volume or fabricated live odds is added.

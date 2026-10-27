@@ -1,27 +1,27 @@
-/* Shared product shell and sports desk. Loaded after legacy module styles. */
+/* Original WC26 charcoal/gold identity, shared by every product route. */
 :root {
-  --background: #f7f9fc;
-  --background-raised: #f0f4f9;
-  --background-deep: #e8eef5;
-  --card: #fff;
-  --card-alt: #f1f5f9;
-  --card-border: #dce4ed;
-  --foreground: #17283e;
-  --secondary: #5d6e84;
-  --muted: #6b7b8e;
-  --accent: #087b56;
-  --accent-hover: #076445;
-  --accent-warm: #e8f5ee;
-  --accent-deep: #9c3e3e;
-  --globe-a: #e2ebe8;
-  --globe-b: #b9d7cb;
-  --globe-c: #eaf1f4;
-  --chart-1: #087b56;
-  --chart-2: #276eb7;
-  --chart-3: #b7513b;
-  --chart-4: #668525;
-  --chart-5: #8257b4;
-  --chart-6: #a66a21;
+  --background: #090909;
+  --background-raised: #0f0f0f;
+  --background-deep: #050505;
+  --card: #111111;
+  --card-alt: #141414;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --foreground: #ffffff;
+  --secondary: #888888;
+  --muted: #444444;
+  --accent: #f0c000;
+  --accent-hover: #d4a900;
+  --accent-warm: #8a6d00;
+  --accent-deep: #922020;
+  --globe-a: #1c1708;
+  --globe-b: #33290a;
+  --globe-c: #120e05;
+  --chart-1: #b58d00;
+  --chart-2: #4e97dc;
+  --chart-3: #d9634e;
+  --chart-4: #2fa97d;
+  --chart-5: #a379e8;
+  --chart-6: #7e8b3e;
 }
 body {
   font-size: 15px;
@@ -63,7 +63,7 @@ summary:focus-visible,
   top: -80px;
   left: 12px;
   z-index: 100;
-  background: #fff;
+  background: var(--card);
   padding: 12px 20px;
   border: 2px solid var(--accent);
 }
@@ -74,7 +74,7 @@ summary:focus-visible,
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(9, 9, 9, 0.96);
   border-bottom: 1px solid var(--card-border);
   box-shadow: 0 2px 8px #1c36530a;
   padding: 0 max(22px, calc((100vw - 1320px) / 2));
@@ -102,7 +102,7 @@ summary:focus-visible,
   display: grid;
   place-items: center;
   background: var(--accent);
-  color: white;
+  color: var(--foreground);
   border-radius: 9px;
   font-size: 23px;
   font-weight: 800;
@@ -124,8 +124,8 @@ summary:focus-visible,
   gap: 4px;
   flex: 1;
   max-width: 590px;
-  background: #f2f5f8;
-  border: 1px solid #e1e7ef;
+  background: var(--card);
+  border: 1px solid var(--card-border);
   border-radius: 9px;
   padding: 5px;
 }
@@ -134,7 +134,7 @@ summary:focus-visible,
   background: transparent;
   color: var(--foreground);
   border: 0;
-  border-right: 1px solid #d9e1eb;
+  border-right: 1px solid var(--card-border);
   padding: 8px 7px;
   width: 122px;
 }
@@ -149,11 +149,11 @@ summary:focus-visible,
   color: var(--foreground);
 }
 .platform-search input::placeholder {
-  color: #64758b;
+  color: var(--foreground);
 }
 .platform-search button {
   border: 0;
-  background: #fff;
+  background: var(--card);
   color: var(--foreground);
   font-size: 11px;
   padding: 8px 12px;
@@ -162,7 +162,7 @@ summary:focus-visible,
   box-shadow: 0 1px 3px #1c365310;
 }
 .platform-search button:hover {
-  background: #e8f5ee;
+  background: var(--card);
 }
 .platform-saved-link {
   margin-left: auto;
@@ -289,8 +289,8 @@ summary:focus-visible,
   gap: 25px;
   padding: 26px 30px;
   margin-bottom: 28px;
-  background: linear-gradient(110deg, #edf7f2, #edf3fa);
-  border: 1px solid #dfe9e6;
+  background: radial-gradient(ellipse at 85% 20%, #f0c00018, transparent 65%), linear-gradient(120deg, #141410, #0b0b0c);
+  border: 1px solid var(--card-border);
   border-radius: 13px;
   align-items: center;
 }
@@ -370,17 +370,17 @@ summary:focus-visible,
   width: 100%;
   margin: 0;
   transform: perspective(650px) rotateX(12deg) rotateZ(-6deg);
-  stroke: #368775;
+  stroke: #b39738;
   opacity: 0.8;
 }
 .arena-ball {
-  fill: #13825d;
+  fill: #f0c000;
 }
 .arena-track {
-  stroke: #a3cfc0;
+  stroke: #5a5030;
 }
 .arena-route {
-  stroke: #1b825f;
+  stroke: #f0c000;
 }
 .matchday-leagues {
   grid-column: 1;
@@ -420,7 +420,7 @@ summary:focus-visible,
   grid-row: 1/3;
   font-size: 20px;
   margin: 0;
-  color: #6c8098;
+  color: var(--foreground);
 }
 .matchday-leagues button small {
   grid-column: 2;
@@ -429,10 +429,10 @@ summary:focus-visible,
   margin-top: 1px;
 }
 .matchday-leagues button:hover {
-  background: #edf1f6;
+  background: var(--card);
 }
 .matchday-leagues button[aria-pressed="true"] {
-  background: #e4f2eb;
+  background: var(--card);
   color: var(--accent);
   box-shadow: none;
 }
@@ -466,21 +466,21 @@ summary:focus-visible,
 .matchday-controls {
   border: 0;
   border-radius: 10px;
-  background: #fff;
+  background: var(--card);
   padding: 12px 14px;
   gap: 12px;
 }
 .matchday-controls button,
 .matchday-filter-row button {
   border-radius: 6px;
-  background: #fff;
+  background: var(--card);
   border-color: var(--card-border);
   padding: 8px 12px;
   font-size: 10px;
 }
 .matchday-controls button:hover,
 .matchday-filter-row button:hover {
-  background: #edf5f0;
+  background: var(--card);
 }
 .matchday-controls label,
 .matchday-filter-row label {
@@ -503,7 +503,7 @@ summary:focus-visible,
 }
 .matchday-feed-state {
   border-top: 0;
-  background: #edf2f8;
+  background: var(--card);
   border-radius: 7px;
   padding: 10px 12px;
   font-size: 9px;
@@ -513,7 +513,7 @@ summary:focus-visible,
   font-size: 8px;
 }
 .matchday-status-dot {
-  background: #3b8c6c;
+  background: var(--card);
 }
 .matchday-filter-row {
   margin: 18px 0;
@@ -524,7 +524,7 @@ summary:focus-visible,
 }
 .matchday-filter-row button[aria-pressed="true"] {
   background: var(--accent);
-  color: white;
+  color: var(--foreground);
   border-color: var(--accent);
 }
 .matchday-workspace {
@@ -539,17 +539,17 @@ summary:focus-visible,
 .matchday-match {
   border: 1px solid var(--card-border);
   border-radius: 11px;
-  background: #fff;
+  background: var(--card);
   transition:
     box-shadow 0.15s,
     border-color 0.15s;
 }
 .matchday-match:hover {
   box-shadow: 0 5px 18px #2039580d;
-  border-color: #9cb7aa;
+  border-color: var(--card-border);
 }
 .matchday-match.is-selected {
-  border-color: #7ab699;
+  border-color: var(--card-border);
   box-shadow: 0 0 0 1px #7ab699;
 }
 .matchday-match-meta {
@@ -571,9 +571,9 @@ summary:focus-visible,
   width: 29px;
   height: 29px;
   font-size: 8px;
-  background: #eef3f9;
-  color: #46627f;
-  border-color: #e1e8f0;
+  background: var(--card);
+  color: var(--foreground);
+  border-color: var(--card-border);
   border-radius: 8px;
 }
 .matchday-team-row > strong {
@@ -591,14 +591,14 @@ summary:focus-visible,
   padding: 9px 13px;
   font-size: 8px;
   color: var(--secondary);
-  border-color: #e9eef4;
+  border-color: var(--card-border);
 }
 .matchday-match-footer button {
   font-size: 9px;
   color: var(--accent);
 }
 .matchday-detail {
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--card-border);
   border-top: 3px solid var(--accent);
   padding: 20px;
@@ -614,7 +614,7 @@ summary:focus-visible,
   line-height: 1.7;
   margin: 12px 0;
   padding: 10px 12px;
-  background: #edf7f1;
+  background: var(--card);
   border-radius: 6px;
 }
 .matchday-detail dl {
@@ -630,14 +630,14 @@ summary:focus-visible,
 }
 .matchday-file-actions button {
   font-size: 10px;
-  background: #f7f9fc;
+  background: var(--card);
   border-color: var(--card-border);
   border-radius: 6px;
 }
 .matchday-file-actions button:first-child {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--foreground);
 }
 .matchday-source-link {
   font-size: 10px;
@@ -664,7 +664,7 @@ summary:focus-visible,
   border: 1px solid var(--card-border);
   border-radius: 11px;
   padding: 22px;
-  background: #fff;
+  background: var(--card);
 }
 .matchday-assistant {
   border-top: 1px solid var(--card-border);
@@ -679,24 +679,24 @@ summary:focus-visible,
 }
 .matchday-chat-suggestions button {
   font-size: 9px;
-  background: #f0f5fa;
-  border-color: #e0e7ef;
+  background: var(--card);
+  border-color: var(--card-border);
   border-radius: 6px;
-  color: #355573;
+  color: var(--foreground);
 }
 .matchday-assistant form input {
-  background: #f8fafc;
+  background: var(--card);
   border-color: var(--card-border);
   border-radius: 6px;
   font-size: 11px;
 }
 .matchday-assistant form button {
   background: var(--accent);
-  color: #fff;
+  color: var(--foreground);
   border-radius: 6px;
 }
 .matchday-answer {
-  background: #f2f6fa;
+  background: var(--card);
   border-radius: 7px;
   font-size: 11px;
 }
@@ -718,7 +718,7 @@ summary:focus-visible,
 }
 .matchday-watchlist-empty {
   padding: 15px;
-  background: #f7f9fc;
+  background: var(--card);
   border-radius: 7px;
 }
 .matchday-spotlights {
@@ -732,13 +732,13 @@ summary:focus-visible,
   gap: 16px;
 }
 .matchday-media-card {
-  background: #fff;
+  background: var(--card);
   border-color: var(--card-border);
   border-radius: 11px;
   overflow: hidden;
 }
 .matchday-media-art {
-  background: #e8f0f3;
+  background: var(--card);
 }
 .matchday-media-card h3 {
   font-size: 18px;
@@ -757,18 +757,18 @@ summary:focus-visible,
 .matchday-empty {
   grid-column: 1/-1;
   border-color: var(--card-border);
-  background: #fff;
+  background: var(--card);
   border-radius: 10px;
   color: var(--secondary);
 }
 /* Every research module inherits the product's type, spacing and card system. */
 .replay-page {
-  --background: #f7f9fc;
-  --foreground: #17283e;
-  --secondary: #5d6e84;
-  --accent: #087b56;
-  --card: #fff;
-  --card-alt: #f0f4f9;
+  --background: #090909;
+  --foreground: #ffffff;
+  --secondary: #aaaaaa;
+  --accent: #f0c000;
+  --card: #111111;
+  --card-alt: #141414;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-space-grotesk), Arial, sans-serif;
@@ -809,8 +809,8 @@ summary:focus-visible,
   margin-top: 19px;
 }
 .replay-badges span {
-  border: 1px solid #dce6ef;
-  background: #fff;
+  border: 1px solid var(--card-border);
+  background: var(--card);
   border-radius: 6px;
   color: var(--secondary);
   font-size: 10px;
@@ -825,7 +825,7 @@ summary:focus-visible,
   border-color: var(--card-border);
   border-radius: 12px;
   padding: 26px;
-  background: #fff;
+  background: var(--card);
 }
 .replay-workspace {
   border-top: 3px solid var(--accent);
@@ -865,20 +865,20 @@ summary:focus-visible,
 }
 .replay-content button.secondary {
   color: var(--accent);
-  background: #fff;
-  border-color: #b7cdc1;
+  background: var(--card);
+  border-color: var(--card-border);
 }
 .replay-inputs select {
-  background: #f7f9fc;
+  background: var(--card);
   color: var(--foreground);
-  border-color: #cdd8e5;
+  border-color: var(--card-border);
   font-size: 14px;
 }
 .replay-match {
-  background: #f2f6fa;
+  background: var(--card);
 }
 .replay-probability-bar {
-  background: #e4ebf2;
+  background: var(--card);
 }
 .replay-probability-bar span {
   background: var(--accent);
@@ -900,7 +900,7 @@ summary:focus-visible,
   border-color: var(--card-border);
 }
 .replay-verdict {
-  background: #eaf5ee;
+  background: var(--card);
   border-left-color: var(--accent);
 }
 .platform-intro {
@@ -959,7 +959,7 @@ summary:focus-visible,
 .platform-card:hover {
   transform: none;
   box-shadow: 0 6px 22px #1c365310;
-  border-color: #9bbca9;
+  border-color: var(--card-border);
 }
 .platform-card-top {
   display: flex;
@@ -974,21 +974,21 @@ summary:focus-visible,
   height: 39px;
   font-size: 24px;
   border-radius: 10px;
-  background: #eaf2fa;
-  color: #3f6d9c;
+  background: var(--card);
+  color: var(--foreground);
 }
 .platform-mark-nfl {
-  background: #f8eee7;
-  color: #a36535;
+  background: var(--card);
+  color: var(--foreground);
 }
 .platform-mark-cricket {
-  background: #e9f3e8;
-  color: #4b7b42;
+  background: var(--card);
+  color: var(--foreground);
 }
 .platform-history-tag {
   font-size: 8px;
   color: var(--secondary);
-  background: #f0f4f8;
+  background: var(--card);
   border-radius: 4px;
   padding: 4px 6px;
 }
@@ -1058,7 +1058,7 @@ summary:focus-visible,
   border: 1px solid var(--card-border);
   border-radius: 10px;
   padding: 20px;
-  background: #fff;
+  background: var(--card);
   text-decoration: none;
   display: grid;
   gap: 10px;
@@ -1072,7 +1072,7 @@ summary:focus-visible,
   color: var(--secondary);
 }
 .football-archive-label {
-  background: #edf3f9;
+  background: var(--card);
   color: var(--secondary);
   font-size: 10px;
   border-color: var(--card-border);
@@ -1211,7 +1211,7 @@ summary:focus-visible,
     padding: 10px 8px;
     min-height: 61px;
     border: 1px solid var(--card-border);
-    background: #fff;
+    background: var(--card);
     font-size: 10px;
   }
   .matchday-leagues button > span {
@@ -1596,7 +1596,7 @@ summary:focus-visible,
   gap: 7px;
 }
 .matchday-browse-tools select {
-  background: #fff;
+  background: var(--card);
   color: var(--foreground);
   border: 1px solid var(--card-border);
   border-radius: 6px;
@@ -1623,10 +1623,10 @@ summary:focus-visible,
 }
 
 .matchday-media-art > span {
-  color: #425e78;
+  color: var(--foreground);
 }
 .matchday-media-art > strong {
-  color: #283e56;
+  color: var(--foreground);
   opacity: 0.12;
 }
 .platform-module-header {
@@ -1650,3 +1650,76 @@ summary:focus-visible,
     font-size: 33px;
   }
 }
+
+/* Stadium identity: real data stays legible; motion is decorative and controllable. */
+:root { color-scheme: dark; --secondary: #aaa; --muted: #888; --card-border: #ffffff26; }
+.platform-brand-icon, .matchday-filter-row button[aria-pressed="true"],
+.matchday-file-actions button:first-child, .matchday-assistant form button,
+.replay-content button:not(.secondary) { color: #090909; }
+.platform-nav { backdrop-filter: blur(18px); }
+.platform-nav-note { color: #aaa; }
+.platform-search, .platform-search button, .platform-search select, .platform-search input,
+.matchday input, .matchday select { color-scheme: dark; }
+.platform-search input::placeholder, .matchday input::placeholder { color: #aaa; }
+.platform-search button:hover, .matchday-controls button:hover, .matchday-filter-row button:hover,
+.matchday-leagues button:hover { background: #262313; }
+.matchday-leagues button[aria-pressed="true"] { background: #f0c00018; color: var(--accent); }
+.matchday-hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); padding: 40px; gap: 35px; border-color: #f0c00035; border-radius: 18px; }
+.matchday-hero h1 { font-size: clamp(36px, 4.5vw, 66px); font-weight: 800; text-transform: uppercase; letter-spacing: -2.8px; line-height: 1.02; max-width: 620px; }
+.matchday-hero > div > p:not(.matchday-eyebrow) { font-size: 14px; color: #b8b8b8; max-width: 500px; }
+.matchday-eyebrow { color: #aaa; }
+.matchday-visual { padding: 23px; position: relative; border: 1px solid #f0c00038; border-radius: 14px; background: radial-gradient(ellipse, #f0c00014, transparent 70%), #0b0b0c; overflow: hidden; min-width: 0; }
+.matchday-visual-label { color: #f0c000; font-size: 10px; }
+.matchday-arena { height: 190px; margin: 8px 0; opacity: 1; stroke: #b89b43; filter: drop-shadow(0 0 10px #f0c00024); }
+.matchday-arena [stroke="#c6de9e"] { stroke: #b89b43; }
+.arena-ball { fill: #f0c000; animation: stadium-pass 6s ease-in-out infinite; }
+.arena-route { stroke: #f0c000; }
+.matchday-arena[data-sport="Basketball"] .arena-ball { animation-name: stadium-shot; }
+.matchday-arena[data-sport="Tennis"] .arena-ball { animation-name: stadium-rally; animation-duration: 3s; }
+.matchday-arena[data-sport="Cricket"] .arena-ball { animation-name: stadium-delivery; animation-duration: 4s; }
+.matchday-arena[data-sport="Baseball"] .arena-ball { animation-name: stadium-hit; animation-duration: 5s; }
+.matchday-arena[data-sport="Ice hockey"] .arena-ball { animation-name: stadium-rally; animation-duration: 4s; }
+.matchday-arena[data-sport="American football"] .arena-ball { animation-name: stadium-shot; animation-duration: 7s; }
+.matchday-visual[data-paused="true"] * { animation-play-state: paused !important; }
+.stadium-motion-controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 15px; }
+.stadium-motion-controls button { font-size: 10px; min-height: 33px; border: 1px solid #ffffff30; border-radius: 5px; background: #181818; color: #eee; padding: 6px 10px; }
+.matchday-visual-caption { align-items: center; gap: 10px; }
+.matchday-visual-caption span { color: #aaa; font-size: 9px; max-width: 160px; text-align: right; }
+.stadium-actions { display: flex; gap: 12px; margin: 23px 0; flex-wrap: wrap; }
+.stadium-actions a { text-decoration: none; border: 1px solid #f0c000; border-radius: 6px; padding: 12px 18px; font-size: 12px; color: #f0c000; font-weight: 650; }
+.stadium-actions a:first-child { background: #f0c000; color: #090909; }
+.stadium-actions a span { margin-left: 14px; }
+.matchday-detail, .replay-workspace { box-shadow: 0 12px 50px #0003; }
+.matchday-match.is-selected { border-color: #f0c000; box-shadow: 0 0 0 1px #f0c000; }
+.matchday-media-art { background: radial-gradient(ellipse at 70% 10%, #f0c00014, transparent), #151515; }
+.matchday-media-art > span { color: #ddd; }
+.matchday-media-art > strong { color: #f0c000; opacity: .18; }
+.matchday-result, .matchday-answer, .replay-verdict { background: #f0c0000c; }
+.matchday-evidence { border-top: 1px solid var(--card-border); margin: 16px 0; padding-top: 14px; font-size: 11px; color: #ccc; }
+.matchday-evidence summary { color: #f0c000; cursor: pointer; font-weight: 600; }
+.matchday-evidence p { margin: 12px 0; }
+.matchday-evidence button { border: 1px solid #f0c00055; padding: 9px 11px; border-radius: 6px; color: #f0c000; }
+.proof-deck { width: min(1320px, calc(100% - 44px)); margin: 48px auto 0; padding: 35px 0; border-top: 1px solid var(--card-border); scroll-margin-top: 140px; }
+.proof-heading { display: flex; justify-content: space-between; align-items: center; gap: 25px; margin-bottom: 24px; }
+.proof-heading h2 { font-size: clamp(25px, 3vw, 38px); font-weight: 750; letter-spacing: -1.1px; margin: 9px 0; }
+.proof-heading p:not(.replay-kicker), .proof-grid p { font-size: 13px; color: #aaa; line-height: 1.75; }
+.proof-heading > a, .proof-deck details a { color: #f0c000; font-size: 12px; }
+.proof-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+.proof-grid > a { padding: 26px; background: linear-gradient(135deg,#18170f,#111); border: 1px solid var(--card-border); border-radius: 12px; text-decoration: none; display: flex; flex-direction: column; gap: 15px; }
+.proof-grid > a:hover { border-color: #f0c00088; }
+.proof-number { color: #f0c000; font-size: 25px; font-weight: 700; letter-spacing: -.7px; }
+.proof-grid h3 { font-size: 19px; font-weight: 650; line-height: 1.35; }
+.proof-grid b { font-size: 11px; font-weight: 600; color: #f0c000; margin-top: auto; }
+.proof-deck details { margin-top: 20px; font-size: 12px; color: #aaa; }
+.proof-deck summary { cursor: pointer; color: #ddd; padding: 10px 0; }
+.proof-deck details p { max-width: 850px; margin: 12px 0; line-height: 1.8; }
+@keyframes stadium-pass { 0%,100% {transform:translate(-190px,55px)} 45% {transform:translate(10px,-55px)} 75% {transform:translate(180px,0)} }
+@keyframes stadium-shot { 0%,100% {transform:translate(-170px,50px) scale(1)} 50% {transform:translate(0,-95px) scale(1.2)} 75% {transform:translate(195px,0) scale(.8)} }
+@keyframes stadium-rally { 0%,100% {transform:translate(-170px,-55px)} 50% {transform:translate(170px,55px)} }
+@keyframes stadium-delivery { 0%,100% {transform:translate(0,-70px)} 40% {transform:translate(0,55px)} 70% {transform:translate(190px,-45px)} }
+@keyframes stadium-hit { 0%,100% {transform:translate(0,0)} 25% {transform:translate(0,90px)} 65% {transform:translate(-160px,-90px)} }
+@media(max-width:900px) { .matchday-hero {padding:28px;gap:20px;} .matchday-arena {height:150px;} .proof-grid {grid-template-columns:1fr;} .proof-grid > a {gap:10px;} }
+@media(max-width:570px) { .matchday-hero {grid-template-columns:1fr;padding:25px 20px;gap:22px;} .matchday-hero h1 {font-size:43px;letter-spacing:-2px;} .matchday-visual {padding:17px;} .matchday-arena {height:155px;} .proof-deck {width:calc(100% - 32px);margin-top:25px;} .proof-heading {display:block;} .proof-heading > a {display:inline-block;margin-top:15px;} .stadium-actions a {padding:11px 12px;} }
+@media(prefers-reduced-motion:reduce) { .matchday-arena *, .matchday-visual * {animation:none !important;transition:none !important;} }
+
+.replay-verdict.caution { background: #23190c; border-left-color: #d6a146; }

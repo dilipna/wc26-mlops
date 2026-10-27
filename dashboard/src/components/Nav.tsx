@@ -70,7 +70,7 @@ export default function Nav() {
             href="/engineering"
             aria-current={path === "/engineering" ? "page" : undefined}
           >
-            How it works
+            Proof & method
           </Link>
         </nav>
         <div className="platform-nav-note">

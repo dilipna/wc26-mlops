@@ -4,7 +4,7 @@ if (process.env.GITHUB_ACTIONS !== "true")
   throw Error("Browser execution is restricted to GitHub runners.");
 const origin = process.env.SPOPS_E2E_ORIGIN || "http://127.0.0.1:3261";
 if (
-  !["http://127.0.0.1:3261", "https://fifa2026mlops.vercel.app"].includes(
+  !["http://127.0.0.1:3261", "https://fifa2026mlops.vercel.app", "https://spops.vercel.app"].includes(
     origin,
   ) &&
   !/^https:\/\/dashboard-[a-z0-9]+-asmq333\.vercel\.app$/.test(origin)

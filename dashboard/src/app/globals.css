@@ -1,9 +1,8 @@
 @import "tailwindcss";
 
-/* Legacy module primitives. The shared product palette and responsive shell
-   are defined in platform.css, loaded last by the root layout. Historic
-   chart semantics remain; earlier dark-surface palette checks do not certify
-   the redesigned light surfaces. */
+/* Original WC26 module primitives. platform.css restores the charcoal/gold
+   palette across the shared shell, score snapshots and research modules.
+   Contrast and responsive checks are verified for each release. */
 :root {
   --background: #090909;
   --background-raised: #0f0f0f;
