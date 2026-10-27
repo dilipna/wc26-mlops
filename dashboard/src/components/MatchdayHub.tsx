@@ -58,7 +58,7 @@ function Arena({ sport }: { sport: string }) {
           <stop offset="1" stopColor="#d7ef91" stopOpacity="0" />
         </radialGradient>
       </defs>
-      <ellipse cx="320" cy="130" rx="270" ry="150" fill="url(#arena-glow)" />
+      <ellipse className="arena-glow" cx="320" cy="130" rx="270" ry="150" fill="url(#arena-glow)" />
       {sport === "Motorsport" ? (
         <>
           <path

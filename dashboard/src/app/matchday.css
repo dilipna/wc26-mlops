@@ -156,7 +156,7 @@
   opacity: 0.9;
   transform: perspective(650px) rotateX(20deg) rotateZ(-10deg);
 }
-.matchday-arena ellipse {
+.matchday-arena .arena-glow {
   stroke: none;
 }
 .arena-ball {
