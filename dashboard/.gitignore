@@ -40,3 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Generated build identity and ephemeral browser evidence
+/public/release.json
+/e2e-results/

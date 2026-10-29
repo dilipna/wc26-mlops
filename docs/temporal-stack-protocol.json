@@ -1,0 +1,35 @@
+{
+  "protocol": "temporal-stack-comparison-v1",
+  "frozen_date": "2026-10-21",
+  "base_revision": "65657002b05c5ba4394c4f9dd1fe57c349d65c69",
+  "history_start": "1992-01-01",
+  "train_start": "2010-01-01",
+  "train_end_exclusive": "2016-01-01",
+  "meta_validation_blocks": [
+    ["2012-01-01", "2013-01-01"],
+    ["2013-01-01", "2014-01-01"],
+    ["2014-01-01", "2015-01-01"],
+    ["2015-01-01", "2016-01-01"]
+  ],
+  "selection_start": "2016-01-01",
+  "selection_end_exclusive": "2017-01-01",
+  "confirmation_start": "2017-01-01",
+  "confirmation_end_exclusive": "2018-01-01",
+  "arms": ["legacy_stratified_stack", "equal_weight_blend", "temporal_stack"],
+  "xgb_params": {"n_estimators": 50, "max_depth": 3, "learning_rate": 0.1, "n_jobs": 1, "random_state": 20261021},
+  "meta_learner": "LogisticRegression(max_iter=1000); no tuning",
+  "minimum_classes_per_base_training_fold": [0, 1, 2],
+  "bootstrap": {"resamples": 2000, "seed": 20261021, "unit": "paired ISO calendar week", "interval_percentiles": [2.5, 97.5]},
+  "primary_comparator": "equal_weight_blend",
+  "review_eligibility": "Temporal stack must beat fixed blend on point log loss and summed-class Brier, with paired weekly log-loss difference upper 95% percentile bound below zero, in selection AND confirmation. It must also beat legacy point log loss and Brier in both intervals. Otherwise retain defaults and record inferior/inconclusive result. No automatic promotion in any case.",
+  "selection_order": "Write selection metrics and decision before evaluating confirmation; no refit or tuning after selection",
+  "structural_acceptance": "Every validation row predicted by models fit only on earlier dates; no source match across boundary; burn-in excluded from meta fitting; all final base members refit on training only; invalid metadata/probabilities fail closed",
+  "limits": [
+    "Historical retrospective comparison; confirmation is reserved within this experiment, not guaranteed uncontaminated by earlier project development",
+    "2016 selection outcomes were observed during the earlier lifecycle rehearsal",
+    "Known-prior match outcomes may update causal rolling features during each later interval; not all forecasts issued at training cutoff",
+    "Weekly bootstrap approximates dependence; repeated teams and cross-week dependence remain",
+    "One preset CPU configuration, one historical train/selection/confirmation sequence; no broad predictive superiority claim",
+    "No change to serving default, approval state, cloud schedule or public deployment"
+  ]
+}

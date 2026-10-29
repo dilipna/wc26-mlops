@@ -13,7 +13,7 @@ export default function FavoritesLeaderboard({ favorites }: { favorites: Predict
       {favorites.map((row, i) => (
         <motion.div
           key={row.team}
-          initial={{ opacity: 0, x: -30 }}
+          initial={false}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
@@ -32,8 +32,8 @@ export default function FavoritesLeaderboard({ favorites }: { favorites: Predict
             </div>
             <div className="h-[5px] overflow-hidden rounded-full bg-foreground/10">
               <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: `${(row.win_probability / max) * 100}%` }}
+                initial={false}
+                animate={{ width: `${(row.win_probability / max) * 100}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.1, delay: i * 0.09, ease: [0.16, 1, 0.3, 1] }}
                 className="h-full rounded-full"

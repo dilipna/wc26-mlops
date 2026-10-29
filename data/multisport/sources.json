@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "acquired_at": "2026-10-26T05:04:30.678496+00:00",
+  "transform": "Retain dated decisive match outcomes only. Remove source Elo/forecasts, player-level information and ball-by-ball records. Two outcomes conditional on a decisive winner.",
+  "sources": {
+    "basketball": {
+      "url": "https://raw.githubusercontent.com/fivethirtyeight/data/6d880e939ad3d11d94c137c911681b3cf718fd74/nba-elo/nbaallelo.csv",
+      "license": "CC-BY-4.0",
+      "license_url": "https://github.com/fivethirtyeight/data/blob/master/LICENSE",
+      "credit": "FiveThirtyEight, Historical NBA Elo; game information from Basketball-Reference.com",
+      "start": "2010-07-01",
+      "end": "2015-07-01",
+      "raw_bytes": 18173265,
+      "raw_sha256": "d46ed3540ee8d9eca31b3e94cc8c777e0be5156173d814ebf65b8195e8d616bc",
+      "normalized_sha256": "fd5677523fbca38eb051963cc3f2c2e3ae07ed149c0dde15d91781c2aeca3114",
+      "matches": 6329,
+      "first_date": "2010-10-26",
+      "last_date": "2015-06-16",
+      "excluded": {
+        "outside_frozen_interval": 52679,
+        "opposite_orientation_or_other_league": 67306
+      }
+    },
+    "nfl": {
+      "url": "https://raw.githubusercontent.com/fivethirtyeight/nfl-elo-game/fbec1afa38ece5befe24fb21be8ddba8eb160fe6/data/nfl_games.csv",
+      "license": "MIT (source repository)",
+      "license_url": "https://github.com/fivethirtyeight/nfl-elo-game/blob/fbec1afa38ece5befe24fb21be8ddba8eb160fe6/LICENSE",
+      "credit": "FiveThirtyEight, nfl-elo-game",
+      "start": "2010-01-01",
+      "end": "2016-01-01",
+      "raw_bytes": 1238252,
+      "raw_sha256": "af16cf3c5848393057fad07feea278f0a85ab7b57ddbfe42ed96b5c80e7d519d",
+      "normalized_sha256": "c0aef820e4c376af491a9644f8fa3c82508ebb5c10ff0b4ea7c404ef70f4f4f7",
+      "matches": 1599,
+      "first_date": "2010-01-03",
+      "last_date": "2015-12-28",
+      "excluded": {
+        "outside_frozen_interval": 15208,
+        "non_decisive_or_missing_result": 3
+      }
+    },
+    "cricket": {
+      "url": "https://cricsheet.org/downloads/ipl_male_json.zip",
+      "license": "ODC-By-1.0",
+      "license_url": "https://cricsheet.org/licensing/",
+      "credit": "Cricsheet, Indian Premier League JSON match data",
+      "start": "2008-01-01",
+      "end": "2024-01-01",
+      "raw_bytes": 5187774,
+      "raw_sha256": "6fe9142db9e139e4f77a5634ddc61c1c72a26a56bee2fe5affe5921867de04b3",
+      "normalized_sha256": "36fafc51cd78f06fff181a93b3937a47b675ba0abbacd8a7cab8a5edaa0146aa",
+      "matches": 1005,
+      "first_date": "2008-04-18",
+      "last_date": "2023-05-29",
+      "excluded": {
+        "non_decisive_or_missing_result": 19,
+        "outside_frozen_interval": 219
+      }
+    }
+  }
+}

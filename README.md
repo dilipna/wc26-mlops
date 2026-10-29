@@ -1,134 +1,81 @@
-# WC26-MLOps — Verifiable Sports Prediction Platform
+# SpOps — Matchday & Sports Model Lab
 
-A fully autonomous ML pipeline that predicts World Cup 2026 outcomes daily, publishes every prediction to a **tamper-evident public ledger before kickoff**, and grades itself against the bookmaker market — it called Spain over France in the semifinal when the market said France, and you can [verify that claim yourself](#verifiable-prediction-history) without trusting a word of this README. It demonstrates end-to-end MLOps: scheduled cloud pipelines, experiment tracking and a model registry, drift monitoring, containerized serving with tracing, CI/CD, and a public dashboard that redeploys itself every day with zero human intervention.
+**Follow a game. Ask a question. Keep the source. Then inspect the model.**
 
-[![Daily pipeline](https://github.com/dilipna/wc26-mlops/actions/workflows/daily_pipeline.yml/badge.svg)](https://github.com/dilipna/wc26-mlops/actions/workflows/daily_pipeline.yml)
-[![CI](https://github.com/dilipna/wc26-mlops/actions/workflows/ci.yml/badge.svg)](https://github.com/dilipna/wc26-mlops/actions/workflows/ci.yml)
-![Python 3.10](https://img.shields.io/badge/python-3.10-blue)
-![MLflow](https://img.shields.io/badge/MLflow-tracking%20%2B%20registry-0194E2)
-[![Live site](https://img.shields.io/badge/live-fifa2026mlops.vercel.app-F0C000)](https://fifa2026mlops.vercel.app)
+Personal MLOps project by Dilip Nallamasa. Repository/hosting identifiers remain wc26-mlops.
 
-**Live dashboard: https://fifa2026mlops.vercel.app** · Serving API: https://wc26-serving.onrender.com/docs
+> Redevelopment branch: improve/multisport-release. Public site: https://fifa2026mlops.vercel.app/. Verify the hosted commit at /release.json and its corresponding CI/browser records; source in a branch does not by itself certify a public deployment. Publication and deployment follow explicit release approval.
+
+## Use the product
+
+The locally prepared Matchday expansion adds eight competition adapters (NBA, Premier League, NFL, MLB, NHL, ATP Tour, Sheffield Shield and Formula 1), bounded current score snapshots, source-grounded game Q&A, browser watchlists, spoiler controls, match briefs/calendar downloads, dynamic sport graphics and official click-to-load signature-play videos. The dated historical model lab remains separate. See [the matchday architecture and coverage contract](docs/matchday-platform.md). This expansion is not certified as deployed until its exact-source release gates pass.
+
+Basketball/NBA, NFL and cricket/IPL have real historical outcome snapshots, date-batched Elo replays, matchup scenarios with a selected as-of date, constant baselines, calibration tables and downloadable receipts. No paid API, LLM call or remote serving backend is required for these workbenches.
+
+The football/WC26 archive retains its ensemble, bracket simulation, prediction history and PELE comparison with their existing limitations. The daily cloud schedule is disabled after the tournament. NASCAR is not implemented; unbacked probability tables are removed from its preserved route.
+
+## Run locally
+
+```powershell
+cd dashboard
+npm ci
+npm run build
+npm start -- --hostname 127.0.0.1 --port 3260
+```
+
+Open http://127.0.0.1:3260/. Fonts and replay snapshots are served locally. First-time dependency installation needs network; the historical demo and replay computation need no API credentials. Matchday tries documented free public providers on demand; offline results use dated captured snapshots where available, otherwise show an unavailable state. Do not run the old daily pipeline to view the website.
 
 ## Architecture
 
 ```mermaid
-flowchart TD
-    A[Data ingestion<br/>Odds API live scores + odds<br/>historical results 1872+] --> B[Feature engineering<br/>leakage-safe Elo + rolling form<br/>FIFA rank trajectories]
-    B --> C[Layer 1 — stacked ensemble<br/>XGBoost + Elo/logreg + FIFA heuristic<br/>meta-learned blend, tracked in MLflow]
-    C --> D[Layer 2 — Monte Carlo<br/>10,000 simulations of the real<br/>remaining bracket, daily]
-    D --> E[Predictions ledger<br/>hash-chained, git-committed<br/>+ Supabase append-only mirror]
-    E --> F[Next.js dashboard<br/>statically rebuilt + redeployed daily<br/>Vercel]
-    A --> G[Evidently drift check<br/>daily HTML report to reports/drift/]
-    G --> H[GitHub Actions commit<br/>SHA-timestamped public trail<br/>+ Vercel & Render deploy hooks]
-    E --> H
-    C --> I[FastAPI serving<br/>OpenTelemetry traced<br/>Docker, Render + kind]
+flowchart LR
+ A[Attributed score snapshots] --> B[Validated dated decisive matches]
+ B --> C[Same-date-batched Elo replay]
+ C --> D[Predictions and state receipts]
+ C --> E[As-of rating history]
+ B --> F[Training-only constant baseline]
+ D --> G[Losses / calibration / reconstruction gate]
+ F --> G
+ E --> H[Browser matchup / replay / export]
+ G --> H
+ I[Football local candidates] --> J[Paired gate + operator approval]
+ J --> K[Pinned serving / rollback]
 ```
 
-The same sequence runs in two places on purpose: a **GitHub Actions workflow** (06:00 UTC daily — what actually keeps the site live with zero laptop dependency) and a **local Airflow DAG** (`docker-compose` or the kind cluster) as the demoable orchestration artifact.
+Binary sport plugins do not coerce football's three-outcome model into another sport. Existing local governance separates candidate registration from approval, preserves loaded artifact identity and supports exact rollback. The weaker temporal-stack replacement remains rejected.
 
-## Verifiable Prediction History
+## Historical results
 
-The core claim of any prediction project — "we called it beforehand" — is usually unfalsifiable. Here it isn't:
+Dates and parameters were frozen at 1fcaa39 before new-sport scores were inspected. Each date is scored before its outcomes update ratings. Earlier evaluation dates may inform later ones: this is retrospective prequential evaluation, not a globally untouched prospective study.
 
-- **Every prediction is committed to this repository's public history before the match starts.** The daily pipeline writes match predictions into [`dashboard/data/upcoming_matches.json`](dashboard/data/upcoming_matches.json) and commits; GitHub's SHA history timestamps it. The Spain-over-France semifinal call (model: Spain 40%, France 30% — market: France 40%) was public from commit [`89a1898`](https://github.com/dilipna/wc26-mlops/commit/89a1898ec378662cf3b5d56ae60453064bd3e823), three days before kickoff.
-- **The ledger is hash-chained.** [`data/proof/prediction_ledger.json`](data/proof/prediction_ledger.json) covers every WC26 prediction; each entry embeds the SHA-256 of the previous one, so a quiet edit anywhere breaks every hash after it.
-- **An append-only external mirror** (Supabase `match_predictions`, insert-only by schema) holds the raw timestamped snapshots the graded numbers come from.
+| Sport | Games | Elo log loss | Constant log loss | Elo summed Brier | Constant summed Brier |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| basketball | 1311 | 0.607606 | 0.682653 | 0.418985 | 0.489515 |
+| nfl | 251 | 0.654006 | 0.689788 | 0.457445 | 0.496618 |
+| cricket | 73 | 0.696754 | 0.691819 | 0.503685 | 0.498672 |
 
-### How to verify our predictions (3-step audit)
+Lower losses are better. Elo has lower point losses for basketball/NFL on these intervals. **Cricket's constant baseline performs better; that negative result is retained.** No significance, future superiority or betting-profit claim follows. New sports condition on a decisive winner; ties/no-results are excluded and counted.
 
-1. **Open any entry's provenance link** in [the ledger](data/proof/prediction_ledger.json) (or the "Verified Track Record" section of the live site) — it shows the prediction inside the committed file at a commit GitHub timestamped *before* kickoff. Compare the probabilities.
-2. **Check the commit trail is machine-written**: the [Actions run history](https://github.com/dilipna/wc26-mlops/actions/workflows/daily_pipeline.yml) shows each daily commit produced by a scheduled public run — rewriting it would break every fork, clone, and the Actions log itself.
-3. **Recompute the hash chain locally**: `python scripts/build_proof_ledger.py --verify` re-derives every hash from genesis and exits non-zero on any mismatch.
+Coverage: NBA through June 2015, NFL through December 2015, IPL through May 2023. Every workbench shows its exact data date. [Protocol](docs/multisport-replay-protocol.json) · [Sources/licenses](data/multisport/sources.json).
 
-## Tech stack
+## Reproduce offline
 
-| Tool | Version | Purpose |
-|---|---|---|
-| Python | 3.10 | pipeline, models, serving |
-| XGBoost / scikit-learn | 3.2.0 / 1.4.1 | Layer 1 stacked ensemble (meta-learned blend) |
-| MLflow | 3.2.0 | experiment tracking + model registry (a new version registered daily) |
-| Airflow | 2.9.3 | local orchestration DAG (LocalExecutor) |
-| GitHub Actions | — | CI + the scheduled cloud pipeline that keeps the site live |
-| Evidently | 0.4.40 | daily feature-drift reports vs the training distribution |
-| FastAPI + OpenTelemetry | 0.115 / 1.29 | serving API with request tracing (`/predict`, `/explain` with real SHAP, `/champions`) |
-| Supabase (Postgres) | — | durable, append-only prediction snapshots |
-| Docker / kind | — | containerized training/serving/orchestration; `make k8s-up` local cluster |
-| Next.js + Tailwind + Recharts | 16 / 4 / 3 | the public dashboard, statically rebuilt daily |
-| Vercel + Render | — | dashboard + serving API hosting, redeployed via deploy hooks |
-| pytest | 8.1 | 60+ tests, gating every CI run and every daily pipeline run |
-
-## Validation — backtested before trusted
-
-Before touching live 2026 data, the exact two-layer pipeline was replayed against the 2018 and 2022 World Cups (full per-checkpoint data in [`data/backtest/`](data/backtest/)):
-
-| Year | Champion | P(champion): post-group → post-R16 → post-QF → post-SF | Rising? |
-|------|----------|---------------------------------------------------------|---------|
-| 2018 | France | 0.061 → 0.128 → 0.306 → 0.622 | Yes |
-| 2022 | Argentina | 0.216 → 0.211 → 0.495 → 0.650 | Yes |
-
-Averaged across all checkpoints in both tournaments, the model beats the FIFA-ranking baseline on **Brier (−0.0035)** and **log-loss (−0.0987)** (negative = model better). Live 2026 performance — accuracy and Brier versus the bookmaker market, per match — is graded daily in the [ledger](data/proof/prediction_ledger.json) and on the [live site](https://fifa2026mlops.vercel.app/#proof).
-
-## Benchmarked against Nate Silver's PELE
-
-**One-minute summary, including the test behind every p-value: [docs/pele-benchmark-summary.md](docs/pele-benchmark-summary.md).**
-
-This compares our match forecasts with those from Silver Bulletin's PELE ("Predictive Elo with Lineup Equilibria") for the 2026 World Cup. On PELE's side, every forecast is the version Silver Bulletin published before kickoff, recovered from Datawrapper's version history using each version's publish timestamp. On our side, forecasts are either git-committed before kickoff (live track) or a leakage-safe replay trained only on data up to the opening match. Scoring uses RPS, Brier and log loss, with paired bootstrap CIs and randomization tests.
-
-| Track | n | Ours (RPS ↓) | PELE | Bookmakers | Ours − PELE |
-|---|---|---|---|---|---|
-| Live, both pre-kickoff (knockouts) | 21 | **0.139** | 0.149 | 0.156 | −0.010, p = 0.47 |
-| Replay, full tournament | 102 | 0.155 | **0.149** | — | +0.005, p = 0.48 |
-
-- **Neither track separates the two models.** Detecting the full-tournament gap at 80% power would take about 1,545 matches (roughly 15 World Cups).
-- **No reliable calibration gap.** Decile ECE is 0.055 for PELE and 0.073 for ours, but the bootstrap 95% CI of the difference is [−0.021, +0.059].
-- **A 50/50 blend beats ours alone on log loss only** (p = 0.045; RPS p = 0.19). It is not better than PELE alone (p = 0.43).
-- **Scoring:** proper 3-outcome scoring (home win / draw / away win), so draws are a real outcome. Knockout scores include extra time, and a shootout counts as a draw.
-
-Details and code: [`scripts/compare_vs_pele.py`](scripts/compare_vs_pele.py), [`data/benchmarks/pele_comparison.json`](data/benchmarks/pele_comparison.json), [DECISIONS.md](DECISIONS.md) (2026-09-14), and the [live site](https://fifa2026mlops.vercel.app/pele).
-
-## Setup from a clean clone
-
-**Dashboard only (zero credentials, zero Docker) — the fastest path:**
-
-```bash
-git clone https://github.com/dilipna/wc26-mlops && cd wc26-mlops
-cd dashboard && npm install && npm run dev   # http://localhost:3000, from committed data
+```powershell
+python scripts/build_multisport_replays.py
+python -m pytest tests/test_match_replay.py tests/test_multisport_artifacts.py -q
+python -m pytest tests/ -q --basetemp validation/test-run
 ```
 
-**Python pipeline:**
+Use Python 3.10 with the compatible project scientific environment. The new replay core uses the standard library. Existing Linux/Windows dependency boundaries are documented in the governance report; do not regenerate the Linux lock from Windows. Artifact tests rebuild all predictions, ratings and losses from committed scores and verify public-byte fingerprints.
 
-```bash
-pip install -r requirements-lock.txt          # exact transitive pins (resolved in python:3.10-slim)
-python -m pytest tests/ -q                    # test suite
-python scripts/export_dashboard_data.py       # regenerate dashboard JSON from committed logs
-python scripts/daily_update.py                # full daily run -- needs ODDS_API_KEY in .env (see .env.example)
-```
+Optional online ingestion: scripts/fetch_multisport_snapshots.py. Evaluation does not refetch data. NBA/NFL sources are upstream-commit-pinned. Cricsheet's rolling ZIP is hashed and retained in local recovery evidence. Normalized data includes attribution, exclusions and upstream notices.
 
-**Full backend stack (Airflow + MLflow + serving):**
+## Inspect the engineering
 
-```bash
-make backend    # docker compose: Airflow http://localhost:8080 (admin/admin), MLflow :5000, API :8000
-# or on Kubernetes (kind):
-make k8s-up     # local kind cluster: Airflow :8081, MLflow :5001, API :8001
-make k8s-down
-```
+- [Governed promotion and rollback](docs/governed-promotion.md)
+- [Rejected temporal experiment](docs/temporal-stack-results.md)
+- [PELE benchmark and qualifications](docs/pele-benchmark-summary.md)
+- [Multi-sport design](docs/multisport-design.md)
+- [Fifteen-idea decisions](docs/extension-decisions.md)
 
-Secrets go in `.env` (never committed) — copy [`.env.example`](.env.example). Without credentials, every external integration degrades gracefully: the dashboard builds from committed data, the pipeline skips ingestion with a clear message, MLflow/Supabase calls no-op.
-
-## Repo map
-
-```
-data/proof/            hash-chained prediction ledger (the receipts)
-data/predictions/      timestamped P(champion) log -- one row per team per day per series
-reports/drift/         dated Evidently drift reports, committed daily
-src/models/            layer1_ensemble (stacked) + layer2_simulation (Monte Carlo)
-src/serving/           FastAPI + OpenTelemetry
-src/verification/      prediction grading + ledger chain logic (unit-tested)
-src/orchestration/     Airflow DAG
-scripts/               every runnable entry point
-dashboard/             Next.js site -- sports_config.json drives multi-sport nav
-k8s/                   kind cluster manifests (make k8s-up)
-DECISIONS.md           dated log of every non-trivial technical decision
-PROJECT_BRAIN.md       cross-session working state + runbook
-```
+Browser tests run only on GitHub runners; no local desktop/browser control. Current validation and later CI results belong in the release report. Presence of MLflow, Airflow, Render, Supabase, Prometheus/Grafana and Kubernetes configurations does not certify current cloud health. The new workbenches require none of those services. Local football serving fails without an approved artifact instead of training a replacement during an outage.

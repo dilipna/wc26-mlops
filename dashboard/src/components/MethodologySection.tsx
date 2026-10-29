@@ -29,7 +29,7 @@ export default function MethodologySection() {
       {STEPS.map((step, i) => (
         <motion.div
           key={step.title}
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.55, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}

@@ -1,0 +1,650 @@
+{
+  "schema": 1,
+  "capturedAt": "2026-10-27T02:04:47.317Z",
+  "feeds": [
+    {
+      "schema": 1,
+      "league": "nba",
+      "date": "2026-10-25",
+      "events": [
+        {
+          "id": "tsdb-2601696",
+          "league": "nba",
+          "kind": "duel",
+          "title": "Atlanta Hawks vs Houston Rockets",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T00:30:00Z",
+          "venue": "State Farm Arena",
+          "home": "Atlanta Hawks",
+          "away": "Houston Rockets",
+          "homeScore": 114,
+          "awayScore": 121,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "Atlanta Hawks Quarters: 26 22 33 33 Houston Rockets Quarters: 30 29 33 29",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2601696"
+        },
+        {
+          "id": "tsdb-2601697",
+          "league": "nba",
+          "kind": "duel",
+          "title": "Chicago Bulls vs Washington Wizards",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T00:00:00Z",
+          "venue": "United Center",
+          "home": "Chicago Bulls",
+          "away": "Washington Wizards",
+          "homeScore": 120,
+          "awayScore": 124,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "Chicago Bulls Quarters: 27 35 20 38 Washington Wizards Quarters: 28 29 40 27",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2601697"
+        },
+        {
+          "id": "tsdb-2601698",
+          "league": "nba",
+          "kind": "duel",
+          "title": "Dallas Mavericks vs San Antonio Spurs",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T00:00:00Z",
+          "venue": "American Airlines Center",
+          "home": "Dallas Mavericks",
+          "away": "San Antonio Spurs",
+          "homeScore": 106,
+          "awayScore": 122,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "Dallas Mavericks Quarters: 31 29 29 17 San Antonio Spurs Quarters: 32 36 24 30",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2601698"
+        }
+      ],
+      "fetchedAt": "2026-10-26T20:58:04.696Z",
+      "servedAt": "2026-10-26T20:58:04.696Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-25&l=4387"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "nba",
+      "date": "2026-10-26",
+      "events": [
+        {
+          "id": "tsdb-2601707",
+          "league": "nba",
+          "kind": "duel",
+          "title": "Sacramento Kings vs Memphis Grizzlies",
+          "date": "2026-10-26",
+          "startsAt": "2026-10-26T01:00:00Z",
+          "venue": "Golden 1 Center",
+          "home": "Sacramento Kings",
+          "away": "Memphis Grizzlies",
+          "homeScore": 112,
+          "awayScore": 123,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "Sacramento Kings Quarters: 28 31 31 22 Memphis Grizzlies Quarters: 25 42 29 27",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2601707"
+        },
+        {
+          "id": "tsdb-2601708",
+          "league": "nba",
+          "kind": "duel",
+          "title": "Charlotte Hornets vs Washington Wizards",
+          "date": "2026-10-26",
+          "startsAt": "2026-10-26T23:00:00Z",
+          "venue": "Spectrum Center",
+          "home": "Charlotte Hornets",
+          "away": "Washington Wizards",
+          "homeScore": null,
+          "awayScore": null,
+          "state": "scheduled",
+          "providerStatus": "NS",
+          "resultText": "Charlotte Hornets Quarters: Washington Wizards Quarters:",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2601708"
+        },
+        {
+          "id": "tsdb-2601709",
+          "league": "nba",
+          "kind": "duel",
+          "title": "Cleveland Cavaliers vs Minnesota Timberwolves",
+          "date": "2026-10-26",
+          "startsAt": "2026-10-26T23:00:00Z",
+          "venue": "Rocket Arena",
+          "home": "Cleveland Cavaliers",
+          "away": "Minnesota Timberwolves",
+          "homeScore": null,
+          "awayScore": null,
+          "state": "scheduled",
+          "providerStatus": "NS",
+          "resultText": "Cleveland Cavaliers Quarters: Minnesota Timberwolves Quarters:",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2601709"
+        }
+      ],
+      "fetchedAt": "2026-10-26T20:58:08.319Z",
+      "servedAt": "2026-10-26T20:58:08.319Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-26&l=4387"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "epl",
+      "date": "2026-10-25",
+      "events": [
+        {
+          "id": "tsdb-2494070",
+          "league": "epl",
+          "kind": "duel",
+          "title": "Manchester United vs Bournemouth",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T14:00:00Z",
+          "venue": "Old Trafford",
+          "home": "Manchester United",
+          "away": "Bournemouth",
+          "homeScore": 0,
+          "awayScore": 3,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2494070"
+        },
+        {
+          "id": "tsdb-2494071",
+          "league": "epl",
+          "kind": "duel",
+          "title": "Liverpool vs Brighton and Hove Albion",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T14:00:00Z",
+          "venue": "Anfield",
+          "home": "Liverpool",
+          "away": "Brighton and Hove Albion",
+          "homeScore": 2,
+          "awayScore": 0,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2494071"
+        },
+        {
+          "id": "tsdb-2494074",
+          "league": "epl",
+          "kind": "duel",
+          "title": "Crystal Palace vs Newcastle United",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T14:00:00Z",
+          "venue": "Selhurst Park",
+          "home": "Crystal Palace",
+          "away": "Newcastle United",
+          "homeScore": 0,
+          "awayScore": 2,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2494074"
+        }
+      ],
+      "fetchedAt": "2026-10-26T20:58:11.531Z",
+      "servedAt": "2026-10-26T20:58:11.531Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-25&l=4328"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "epl",
+      "date": "2026-10-26",
+      "events": [],
+      "fetchedAt": "2026-10-26T20:58:14.737Z",
+      "servedAt": "2026-10-26T20:58:14.737Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-26&l=4328"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "nfl",
+      "date": "2026-10-25",
+      "events": [
+        {
+          "id": "tsdb-2475468",
+          "league": "nfl",
+          "kind": "duel",
+          "title": "New Orleans Saints vs Pittsburgh Steelers",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T13:30:00Z",
+          "venue": "Stade de France",
+          "home": "New Orleans Saints",
+          "away": "Pittsburgh Steelers",
+          "homeScore": 10,
+          "awayScore": 16,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "New Orleans Saints Quarter 1: 0 3 Quarter 2 10 10 Quarter 3 0 3 Quarter 4 0 0 Overtime",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2475468"
+        },
+        {
+          "id": "tsdb-2475469",
+          "league": "nfl",
+          "kind": "duel",
+          "title": "Atlanta Falcons vs San Francisco 49ers",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T17:00:00Z",
+          "venue": "Mercedes-Benz Stadium",
+          "home": "Atlanta Falcons",
+          "away": "San Francisco 49ers",
+          "homeScore": 29,
+          "awayScore": 20,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "Atlanta Falcons Quarter 1: 3 7 Quarter 2 9 7 Quarter 3 7 0 Quarter 4 10 6 Overtime",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2475469"
+        },
+        {
+          "id": "tsdb-2475470",
+          "league": "nfl",
+          "kind": "duel",
+          "title": "Tennessee Titans vs Cleveland Browns",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T17:00:00Z",
+          "venue": "Nissan Stadium Nashville",
+          "home": "Tennessee Titans",
+          "away": "Cleveland Browns",
+          "homeScore": 24,
+          "awayScore": 27,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "Tennessee Titans Quarter 1: 14 7 Quarter 2 0 10 Quarter 3 0 0 Quarter 4 10 10 Overtime",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2475470"
+        }
+      ],
+      "fetchedAt": "2026-10-26T20:58:17.913Z",
+      "servedAt": "2026-10-26T20:58:17.913Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-25&l=4391"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "nfl",
+      "date": "2026-10-26",
+      "events": [
+        {
+          "id": "tsdb-2475479",
+          "league": "nfl",
+          "kind": "duel",
+          "title": "Seattle Seahawks vs Kansas City Chiefs",
+          "date": "2026-10-26",
+          "startsAt": "2026-10-26T00:20:00Z",
+          "venue": "Lumen Field",
+          "home": "Seattle Seahawks",
+          "away": "Kansas City Chiefs",
+          "homeScore": 20,
+          "awayScore": 3,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "Seattle Seahawks Quarter 1: 0 0 Quarter 2 10 0 Quarter 3 3 3 Quarter 4 7 0 Overtime",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2475479"
+        }
+      ],
+      "fetchedAt": "2026-10-26T20:58:21.116Z",
+      "servedAt": "2026-10-26T20:58:21.116Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-26&l=4391"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "mlb",
+      "date": "2026-10-25",
+      "events": [
+        {
+          "id": "tsdb-2619528",
+          "league": "mlb",
+          "kind": "duel",
+          "title": "Milwaukee Brewers vs Tampa Bay Rays",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T00:00:00Z",
+          "venue": "American Family Field",
+          "home": "Milwaukee Brewers",
+          "away": "Tampa Bay Rays",
+          "homeScore": 5,
+          "awayScore": 4,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "Milwaukee Brewers Innings: 2 0 0 1 0 1 1 0 Hits: 11 - Errors: 1 Tampa Bay Rays Innings: 4 0 0 0 0 0 0 0 0 Hits: 7 - Errors: 1",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2619528"
+        }
+      ],
+      "fetchedAt": "2026-10-26T20:58:24.365Z",
+      "servedAt": "2026-10-26T20:58:24.365Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-25&l=4424"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "mlb",
+      "date": "2026-10-26",
+      "events": [],
+      "fetchedAt": "2026-10-26T20:58:27.523Z",
+      "servedAt": "2026-10-26T20:58:27.523Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-26&l=4424"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "nhl",
+      "date": "2026-10-25",
+      "events": [
+        {
+          "id": "tsdb-2591661",
+          "league": "nhl",
+          "kind": "duel",
+          "title": "Utah Mammoth vs Tampa Bay Lightning",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T00:00:00Z",
+          "venue": "Delta Center",
+          "home": "Utah Mammoth",
+          "away": "Tampa Bay Lightning",
+          "homeScore": 5,
+          "awayScore": 4,
+          "state": "unknown",
+          "providerStatus": "AOT",
+          "resultText": "",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2591661"
+        },
+        {
+          "id": "tsdb-2591662",
+          "league": "nhl",
+          "kind": "duel",
+          "title": "Calgary Flames vs Detroit Red Wings",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T02:00:00Z",
+          "venue": "Scotiabank Saddledome",
+          "home": "Calgary Flames",
+          "away": "Detroit Red Wings",
+          "homeScore": 4,
+          "awayScore": 1,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2591662"
+        },
+        {
+          "id": "tsdb-2591663",
+          "league": "nhl",
+          "kind": "duel",
+          "title": "Seattle Kraken vs Minnesota Wild",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T02:00:00Z",
+          "venue": "Climate Pledge Arena",
+          "home": "Seattle Kraken",
+          "away": "Minnesota Wild",
+          "homeScore": 1,
+          "awayScore": 5,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2591663"
+        }
+      ],
+      "fetchedAt": "2026-10-26T20:58:30.930Z",
+      "servedAt": "2026-10-26T20:58:30.930Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-25&l=4380"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "nhl",
+      "date": "2026-10-26",
+      "events": [
+        {
+          "id": "tsdb-2591667",
+          "league": "nhl",
+          "kind": "duel",
+          "title": "Nashville Predators vs Colorado Avalanche",
+          "date": "2026-10-26",
+          "startsAt": "2026-10-26T00:00:00Z",
+          "venue": "Bridgestone Arena",
+          "home": "Nashville Predators",
+          "away": "Colorado Avalanche",
+          "homeScore": 6,
+          "awayScore": 2,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2591667"
+        },
+        {
+          "id": "tsdb-2591668",
+          "league": "nhl",
+          "kind": "duel",
+          "title": "Vancouver Canucks vs Minnesota Wild",
+          "date": "2026-10-26",
+          "startsAt": "2026-10-26T02:00:00Z",
+          "venue": "Rogers Arena",
+          "home": "Vancouver Canucks",
+          "away": "Minnesota Wild",
+          "homeScore": 2,
+          "awayScore": 4,
+          "state": "finished",
+          "providerStatus": "FT",
+          "resultText": "",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2591668"
+        },
+        {
+          "id": "tsdb-2591669",
+          "league": "nhl",
+          "kind": "duel",
+          "title": "New York Rangers vs Los Angeles Kings",
+          "date": "2026-10-26",
+          "startsAt": "2026-10-26T23:00:00Z",
+          "venue": "Madison Square Garden",
+          "home": "New York Rangers",
+          "away": "Los Angeles Kings",
+          "homeScore": null,
+          "awayScore": null,
+          "state": "scheduled",
+          "providerStatus": "NS",
+          "resultText": "",
+          "podium": [],
+          "sourceUrl": "https://www.thesportsdb.com/event/2591669"
+        }
+      ],
+      "fetchedAt": "2026-10-26T20:58:34.121Z",
+      "servedAt": "2026-10-26T20:58:34.121Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-26&l=4380"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "f1",
+      "date": "2026-10-25",
+      "events": [
+        {
+          "id": "jolpica-2026-18",
+          "league": "f1",
+          "kind": "race",
+          "title": "United States Grand Prix",
+          "date": "2026-10-25",
+          "startsAt": "2026-10-25T20:00:00Z",
+          "venue": "Circuit of the Americas",
+          "home": "",
+          "away": "",
+          "homeScore": null,
+          "awayScore": null,
+          "state": "finished",
+          "providerStatus": "Classification returned",
+          "resultText": "",
+          "podium": [
+            {
+              "position": 1,
+              "name": "Andrea Kimi Antonelli",
+              "team": "Mercedes"
+            },
+            {
+              "position": 2,
+              "name": "Charles Leclerc",
+              "team": "Ferrari"
+            },
+            {
+              "position": 3,
+              "name": "Max Verstappen",
+              "team": "Red Bull"
+            }
+          ],
+          "sourceUrl": "https://api.jolpi.ca/ergast/f1/2026/18/results.json"
+        }
+      ],
+      "fetchedAt": "2026-10-26T20:58:50.673Z",
+      "servedAt": "2026-10-26T20:58:50.673Z",
+      "state": "fresh",
+      "provider": "Jolpica-F1",
+      "sourceUrls": [
+        "https://api.jolpi.ca/ergast/f1/2026.json?limit=100",
+        "https://api.jolpi.ca/ergast/f1/2026/18/results.json?limit=100"
+      ],
+      "coverage": "Race schedules and published classifications. No live lap timing; community updates may be delayed.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "f1",
+      "date": "2026-10-26",
+      "events": [],
+      "fetchedAt": "2026-10-26T20:58:54.680Z",
+      "servedAt": "2026-10-26T20:58:54.680Z",
+      "state": "fresh",
+      "provider": "Jolpica-F1",
+      "sourceUrls": [
+        "https://api.jolpi.ca/ergast/f1/2026.json?limit=100"
+      ],
+      "coverage": "Race schedules and published classifications. No live lap timing; community updates may be delayed.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "atp",
+      "date": "2026-10-25",
+      "events": [],
+      "fetchedAt": "2026-10-27T02:04:39.033Z",
+      "servedAt": "2026-10-27T02:04:39.033Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-25&l=4464"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "atp",
+      "date": "2026-10-26",
+      "events": [],
+      "fetchedAt": "2026-10-27T02:04:41.092Z",
+      "servedAt": "2026-10-27T02:04:41.092Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-26&l=4464"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "shield",
+      "date": "2026-10-25",
+      "events": [],
+      "fetchedAt": "2026-10-27T02:04:43.261Z",
+      "servedAt": "2026-10-27T02:04:43.261Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-25&l=5530"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    },
+    {
+      "schema": 1,
+      "league": "shield",
+      "date": "2026-10-26",
+      "events": [],
+      "fetchedAt": "2026-10-27T02:04:45.314Z",
+      "servedAt": "2026-10-27T02:04:45.314Z",
+      "state": "fresh",
+      "provider": "TheSportsDB",
+      "sourceUrls": [
+        "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-10-26&l=5530"
+      ],
+      "coverage": "Free-tier sample: up to three events per league and UTC date. This is not the complete schedule. Scores may be delayed or corrected.",
+      "warning": null
+    }
+  ]
+}

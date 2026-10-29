@@ -1,0 +1,6 @@
+
+# Replay snapshots and public receipts have portable source bytes.
+data/multisport/*.csv text eol=lf
+dashboard/public/replays/*.json text eol=lf
+docs/multisport-replay-protocol.json text eol=lf
+dashboard/public/proof/*.json -text

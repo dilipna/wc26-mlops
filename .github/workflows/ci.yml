@@ -12,13 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
           cache: "pip"
           cache-dependency-path: requirements-lock.txt
       - run: pip install -r requirements-lock.txt
-      - run: python -m pytest tests/ -q
+      - run: mkdir -p validation
+      - run: python -m pytest tests/ -q --basetemp validation/ci-tests
+      - run: pip install ruff==0.14.0
+      - run: ruff check src/core/match_replay.py src/sports/replays.py scripts/fetch_multisport_snapshots.py scripts/build_multisport_replays.py tests/test_match_replay.py tests/test_multisport_artifacts.py
 
   dashboard:
     name: Dashboard lint + build
@@ -28,11 +34,46 @@ jobs:
         working-directory: dashboard
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "npm"
           cache-dependency-path: dashboard/package-lock.json
-      - run: npm ci
+      - run: npm ci --no-audit --no-fund
+      - run: npm audit --omit=dev --audit-level=moderate
+      - run: node --test scripts/hosting-policy.test.mjs tests/matchday.test.mjs
+      - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
+
+  browser:
+    name: Multi-sport browser contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser:ci
+        env:
+          SPOPS_EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: multisport-browser-evidence
+          path: dashboard/e2e-results/

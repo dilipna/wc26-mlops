@@ -15,7 +15,7 @@ export default function StatsStrip({
       {stats.map((s, i) => (
         <motion.div
           key={s.label}
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: i * 0.08 }}
