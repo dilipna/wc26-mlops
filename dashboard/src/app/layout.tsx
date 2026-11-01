@@ -1,27 +1,30 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "flag-icons/css/flag-icons.min.css";
 import "./globals.css";
+import "./matchday.css";
+import "./platform.css";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 
 // Space Grotesk is the site's typeface -- sans, display, and serif all
 // resolve to it (see globals.css). IBM Plex Mono is kept for the
 // tabular/technical mono labels only.
-const spaceGrotesk = Space_Grotesk({
+const spaceGrotesk = localFont({
+  src: "../../public/fonts/SpaceGrotesk.woff2",
   variable: "--font-space-grotesk",
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
+  display: "swap",
 });
-
-const plexMono = IBM_Plex_Mono({
+const plexMono = localFont({
+  src: "../../public/fonts/IBMPlexMono.woff2",
   variable: "--font-plex-mono",
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "WC26 Predictor — Who Wins the World Cup?",
+  title: "SpOps — Matchday & Sports Model Lab",
   description:
-    "A live, daily-updating World Cup 2026 win-probability tracker: a stacked ML ensemble + Monte Carlo bracket simulation, tracked against bookmaker odds and validated against the 2018 & 2022 World Cups.",
+    "Explore current sports score snapshots, ask source-grounded match questions, save games and watch official highlights. Reproduce historical forecasts in the separate model lab.",
 };
 
 export default function RootLayout({
@@ -34,7 +37,16 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <a href="#page-content" className="platform-skip">
+          Skip to content
+        </a>
+        <Nav />
+        <div id="page-content" tabIndex={-1}>
+          {children}
+        </div>
+        <Footer />
+      </body>
     </html>
   );
 }

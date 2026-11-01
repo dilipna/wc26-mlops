@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 // accent, foreground opacities) -- no new visual language.
 
 export const fadeIn = {
-  initial: { opacity: 0, y: 24 },
+  initial: false as const,
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-60px" },
   transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },

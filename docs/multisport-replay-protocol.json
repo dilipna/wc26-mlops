@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "status": "Frozen before new sport evaluation; no metric-driven tuning",
+  "model": {
+    "name": "date-batched Elo baseline",
+    "initial_rating": 1500,
+    "k": 24,
+    "scale": 400,
+    "home_advantage": {
+      "basketball": 75,
+      "nfl": 55,
+      "cricket": 0
+    },
+    "same_date_policy": "Score all games from pre-date ratings; accumulate updates only after the full date batch.",
+    "season_reset": false
+  },
+  "sports": {
+    "basketball": {
+      "train_start": "2010-07-01",
+      "evaluation_start": "2014-07-01",
+      "evaluation_end_exclusive": "2015-07-01",
+      "data": "FiveThirtyEight historical NBA Elo game archive; use scores only, not supplied forecasts/ratings."
+    },
+    "nfl": {
+      "train_start": "2010-01-01",
+      "evaluation_start": "2015-01-01",
+      "evaluation_end_exclusive": "2016-01-01",
+      "data": "FiveThirtyEight nfl-elo-game historical match archive; use scores only."
+    },
+    "cricket": {
+      "train_start": "2008-01-01",
+      "evaluation_start": "2023-01-01",
+      "evaluation_end_exclusive": "2024-01-01",
+      "data": "Cricsheet IPL JSON match metadata; no ball-by-ball features."
+    }
+  },
+  "outcomes": "Two outcomes conditional on a decisive winner. Ties/no results excluded and counted; no drawn-game probability or tournament-champion probability implied.",
+  "baseline": "Constant side-A win frequency fitted on pre-evaluation games only, clipped to [0.01,0.99].",
+  "evaluation": "Prequential: freeze parameters, score each date before updating with that date outcomes. Report binary log loss, summed two-class Brier, sample size and calibration bins; retain every scored match.",
+  "eligibility": "No automatic production promotion or superiority claim; report baseline comparison including negative results.",
+  "scope": "Retrospective public historical replay, not prospective untouched evaluation or current live forecasts. Existing football model and completed temporal decision unchanged."
+}

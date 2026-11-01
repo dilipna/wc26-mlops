@@ -1,34 +1,83 @@
+"use client";
 import Link from "next/link";
-import SportTabs from "./SportTabs";
+import { usePathname } from "next/navigation";
+import { LEAGUES } from "@/lib/matchday/core";
 
 export default function Nav() {
+  const path = usePathname();
+  const models = [
+    "/models",
+    "/basketball",
+    "/nfl",
+    "/cricket",
+    "/football",
+    "/pele",
+    "/nascar",
+  ].includes(path);
   return (
-    <div
-      className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-4 px-6 py-5 sm:px-8"
-      style={{ background: "linear-gradient(180deg, rgba(9,9,9,0.9), rgba(9,9,9,0))" }}
-    >
-      <div className="flex items-center gap-4 sm:gap-6">
-        <div className="hidden font-mono text-[10px] italic tracking-wide text-secondary lg:block">
-          AN MLOPS PROJECT BY DILIP
-        </div>
-        <SportTabs />
-      </div>
-      <div className="flex items-center gap-4 sm:gap-7">
-        <div className="hidden gap-7 text-xs uppercase tracking-[0.12em] text-foreground/55 md:flex">
-          <a href="#leaderboard" className="hover:text-foreground transition-colors">Favorites</a>
-          <a href="#country" className="hover:text-foreground transition-colors">Country</a>
-          <a href="#fixtures" className="hover:text-foreground transition-colors">Fixtures</a>
-          <a href="#proof" className="hover:text-foreground transition-colors">Proof</a>
-          <a href="#stack" className="hover:text-foreground transition-colors">Stack</a>
-        </div>
-        <Link
-          href="/admin"
-          title="Read-only internal admin dashboard"
-          className="rounded-md border border-foreground/20 px-3 py-1.5 text-[11px] uppercase tracking-[0.12em] text-foreground/70 transition-colors hover:border-foreground/50 hover:text-foreground"
+    <header className="site-nav platform-nav">
+      <div className="platform-nav-top">
+        <Link href="/" className="platform-brand" aria-label="SpOps home">
+          <span className="platform-brand-icon" aria-hidden="true">
+            s.
+          </span>
+          SpOps
+          <span className="platform-brand-caption">SPORTS INTELLIGENCE</span>
+        </Link>
+        <form
+          action="/"
+          method="get"
+          className="platform-search"
+          role="search"
+          aria-label="Search matchday"
         >
-          Admin Dashboard
+          <select
+            name="league"
+            aria-label="Competition to search"
+            defaultValue="nba"
+          >
+            {LEAGUES.map((l) => (
+              <option key={l.key} value={l.key}>
+                {l.name}
+              </option>
+            ))}
+          </select>
+          <input
+            name="q"
+            type="search"
+            maxLength={160}
+            aria-label="Search matchday games"
+            placeholder="Find a team or game"
+          />
+          <button type="submit" aria-label="Search selected competition">
+            Search <span aria-hidden="true">↗</span>
+          </button>
+        </form>
+        <Link href="/?view=saved#watchlist" className="platform-saved-link">
+          <span aria-hidden="true">☆</span> Watchlist
         </Link>
       </div>
-    </div>
+      <div className="platform-nav-bottom">
+        <nav aria-label="Main navigation">
+          <Link href="/" aria-current={path === "/" ? "page" : undefined}>
+            Matchday
+          </Link>
+          <Link href="/models" aria-current={models ? "page" : undefined}>
+            Model labs
+          </Link>
+          <Link href="/#spotlights">Highlights</Link>
+          <Link
+            href="/engineering"
+            aria-current={path === "/engineering" ? "page" : undefined}
+          >
+            Proof & method
+          </Link>
+        </nav>
+        <div className="platform-nav-note">
+          <span />
+          Independent project · source-backed snapshots
+        </div>
+      </div>
+    </header>
   );
 }

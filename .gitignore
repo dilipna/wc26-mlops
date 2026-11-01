@@ -11,3 +11,7 @@ data/live/*
 data/monitoring/*.html
 .vercel
 reports/preview/
+data/model_lifecycle/
+
+# Reproducible local validation stores, logs and temporary trusted models
+/validation/

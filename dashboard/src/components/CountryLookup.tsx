@@ -52,7 +52,7 @@ export default function CountryLookup({ teams }: { teams: TeamStatus[] }) {
       {team && (
         <motion.div
           key={team.team}
-          initial={{ opacity: 0, y: 12 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="mt-7 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"

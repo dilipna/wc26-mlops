@@ -1,0 +1,84 @@
+{
+  "source_sha": "da0ce65a6911d41c9b4b37475259a86028558b98",
+  "raw_matches": 49484,
+  "normalized_matches": 31375,
+  "history_start": "1992-01-01",
+  "pre1992_rows_out_of_scope": 18108,
+  "exact_duplicate_rows_removed": 1,
+  "train_start": "2015-01-01",
+  "train_end_exclusive": "2016-01-01",
+  "selection_end_exclusive": "2017-01-01",
+  "configuration": {
+    "n_estimators": 8,
+    "max_depth_incumbent": 2,
+    "max_depth_candidate": 1,
+    "n_jobs": 1
+  },
+  "bootstrap": {
+    "policy": "strict-logloss-and-brier-v1",
+    "candidate_id": "bc35e0c855c53043b402401aeccc3d179f98833da3aa523f4fe009b795b44bad",
+    "incumbent": {
+      "generation": 0,
+      "model_id": null
+    },
+    "start": "2016-01-01",
+    "end_exclusive": "2017-01-01",
+    "n_matches": 920,
+    "input_duplicates_removed": 1,
+    "history_sha256": "159ed64cbc6720e13bdfa62a6d50d37557c55a95fdb859ad9a36b144a38e351a",
+    "rankings_sha256": "89ab9f0035660e90edc94323eae9d43b34bb7c4411aac7950cbd39ec2439ed3f",
+    "selection_sha256": "0408031a5b5dfe2b3fc5cc7fcab9c7904d8c23dfc3b756c0d6c4d05af7330671",
+    "candidate": {
+      "log_loss": 0.9120704804438007,
+      "brier": 0.5374558022855221,
+      "predictions_sha256": "c9d70f8ff93d50ede12389bb690e1357ab581829b7c094415a0b647387974c77"
+    },
+    "incumbent_metrics": null,
+    "eligible": true,
+    "approved": true,
+    "scope": "Chronological operational selection; not an unbiased final accuracy estimate or significance test"
+  },
+  "comparison": {
+    "policy": "strict-logloss-and-brier-v1",
+    "candidate_id": "e11491453c717a444b725fa8b49ab20607f6662236f858b3517ca003dfa58c0f",
+    "incumbent": {
+      "generation": 1,
+      "model_id": "bc35e0c855c53043b402401aeccc3d179f98833da3aa523f4fe009b795b44bad"
+    },
+    "start": "2016-01-01",
+    "end_exclusive": "2017-01-01",
+    "n_matches": 920,
+    "input_duplicates_removed": 1,
+    "history_sha256": "159ed64cbc6720e13bdfa62a6d50d37557c55a95fdb859ad9a36b144a38e351a",
+    "rankings_sha256": "89ab9f0035660e90edc94323eae9d43b34bb7c4411aac7950cbd39ec2439ed3f",
+    "selection_sha256": "0408031a5b5dfe2b3fc5cc7fcab9c7904d8c23dfc3b756c0d6c4d05af7330671",
+    "candidate": {
+      "log_loss": 0.914400739447751,
+      "brier": 0.5389323134402174,
+      "predictions_sha256": "7c929c9ff5c29a5f91132b357c83996c6d426b89d2c21df3248170c192c240a5"
+    },
+    "incumbent_metrics": {
+      "log_loss": 0.9120704804438007,
+      "brier": 0.5374558022855221,
+      "predictions_sha256": "c9d70f8ff93d50ede12389bb690e1357ab581829b7c094415a0b647387974c77"
+    },
+    "eligible": false,
+    "approved": false,
+    "scope": "Chronological operational selection; not an unbiased final accuracy estimate or significance test"
+  },
+  "separate_process_reload": {
+    "model_id": "bc35e0c855c53043b402401aeccc3d179f98833da3aa523f4fe009b795b44bad",
+    "classes": [
+      0,
+      1,
+      2
+    ]
+  },
+  "final_approved_id": "bc35e0c855c53043b402401aeccc3d179f98833da3aa523f4fe009b795b44bad",
+  "limits": [
+    "Retrospective historical rehearsal; not a new untouched forecasting benchmark",
+    "Small CPU configuration validates the lifecycle, not tuned predictive quality",
+    "Default StackingClassifier CV remains non-temporal; no unbiased model-selection claim",
+    "No cloud, MLflow service, live API or deployment exercised"
+  ]
+}

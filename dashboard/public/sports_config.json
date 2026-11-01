@@ -4,20 +4,23 @@
       "id": "fifa_wc26",
       "name": "FIFA World Cup 2026",
       "short": "FIFA",
-      "path": "/",
+      "path": "/football",
       "is_active": true,
-      "is_live": true,
+      "is_live": false,
       "end_date": "2026-07-19",
-      "start_date": "2026-06-11"
+      "start_date": "2026-06-11",
+      "status": "archive"
     },
     {
       "id": "nfl_2026",
-      "name": "NFL 2026 Season",
+      "name": "NFL historical model lab",
       "short": "NFL",
       "path": "/nfl",
       "is_active": true,
       "is_live": false,
-      "start_date": "2026-09-10"
+      "start_date": "2026-09-10",
+      "status": "historical-replay",
+      "replay_id": "nfl"
     },
     {
       "id": "nascar_2026",
@@ -25,7 +28,28 @@
       "short": "NASCAR",
       "path": "/nascar",
       "is_active": true,
-      "is_live": true
+      "is_live": false,
+      "status": "illustrative"
+    },
+    {
+      "id": "nba_replay",
+      "name": "Basketball / NBA historical model lab",
+      "short": "NBA",
+      "path": "/basketball",
+      "is_active": true,
+      "is_live": false,
+      "status": "historical-replay",
+      "replay_id": "basketball"
+    },
+    {
+      "id": "ipl_replay",
+      "name": "Cricket / IPL historical model lab",
+      "short": "Cricket",
+      "path": "/cricket",
+      "is_active": true,
+      "is_live": false,
+      "status": "historical-replay",
+      "replay_id": "cricket"
     }
   ]
 }

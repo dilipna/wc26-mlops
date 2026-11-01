@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SpOps Admin — internal platform status (read-only)",
+  title: "Platform records — SpOps",
   description:
-    "Read-only internal view of SpOps's football module: system health, MLOps pipeline, model registry, training, monitoring, data quality, predictions, and observability.",
+    "Read-only stored football-module reports, model registry and engineering evidence. These records are not live infrastructure monitoring.",
 };
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <>{children}</>;
 }

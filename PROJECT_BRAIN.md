@@ -92,6 +92,12 @@ and true, but almost none of it is visible anywhere a hiring manager would actua
 
 ## 3. Current status
 
+**October 26 matchday expansion:** Prior release 0dd9387 is deployed and verified (CI40391625163, staged40395409703, production40395958829). User now requests current sports, grounded game Q&A, dynamic presentation and athlete videos. Develop locally first on improve/multisport-release; preserve all historical models and evidence. Free on-demand public feeds only, no paid calls, schedules, accounts or desktop control. New feature publication/deployment requires the established final exact-release approval.
+
+**October 26, 2026 redevelopment override:** User authorized this chat to focus on WC26 next, and explicitly requested more sports. Active isolated branch: improve/multisport-release. Existing governance and rejected temporal-stack experiments remain preserved. Current goal: real historical basketball, NFL and cricket replay adapters; honest date/status labels; useful matchup/replay/export UX; portable local demo; then CI and approved public release. No new paid APIs, live-data schedule, cloud service, account changes or desktop control. Historical July/September status below is archival and does not certify current deployment health.
+
+
+
 Legend: ✅ done and verified · 🚧 built but incomplete/unverified/needs work · ⬜ not started
 
 **Core prediction system (Tier 1, CLAUDE.md scope)**
@@ -1567,3 +1573,56 @@ current state, rather than assuming it was.
   wait for 06:00 UTC or trigger it manually via `workflow_dispatch` from the Actions tab.
   **Next session should check the Actions tab for a real green run before trusting this is
   actually keeping the site fresh.**
+
+
+## October 26 redevelopment — active work and acceptance
+
+This is the current extension of section 8, superseding its historical “finished” states for new requirements.
+
+- [x] Inspect preserved branches and all project instructions; install dashboard dependencies without changing the lock.
+- [x] Freeze new-sport replay parameters and chronology before evaluation (docs/multisport-replay-protocol.json).
+- [x] Ingest attributed, bounded public basketball/NFL/cricket snapshots; retain hashes, notices and exclusions.
+- [x] Implement date-batched replay, training-only constant baseline, retained cricket negative result and receipts.
+- [x] Implement matchup/replay/export journey and historical labels. Mobile/keyboard browser acceptance is prepared, not executed yet.
+- [ ] Integrate governed lifecycle evidence without changing prior model adoption decisions.
+- [ ] Run regression, security, CI and GitHub-only browser checks; inspect existing hosting mapping read-only.
+- [ ] Prepare source/recovery evidence, exact release approval and verified production deployment. No public release is approved yet.
+
+Known fragility: default sandbox temp storage caused baseline model-artifact write failures; all 27 lifecycle tests pass with an explicit workspace basetemp. Full baseline rerun pending. No local browser execution or desktop control. Current NASCAR placeholder is marked live despite absent model backing; correct before publication.
+
+Session log: October 26, 2026 — started isolated multi-sport redevelopment at user request. Completed prior model-governance and temporal experiments retained. No data metrics inspected before new protocol freeze.
+
+
+Current redevelopment checkpoint: basketball 6,329 normalized games / 1,311 evaluation games; NFL 1,599 / 251; IPL 1,005 / 73. Frozen Elo point losses beat the constant comparator in basketball/NFL but not cricket; no tuning or superiority assertion follows. 134 Python tests pass, including 18 new replay/artifact/plugin checks. Updated scorebook workbenches, integrity-checked static data, model receipts, as-of controls, result reveal, calibration tables and reports. All fifteen ideas reviewed in docs/extension-decisions.md with partial/non-applicable scopes. Next.js 16.4.3 and compatible tooling replace vulnerable dashboard dependencies; npm audit reports zero findings. Font fetch dependency removed; tracing root explicitly bounded to dashboard. Existing domain mapping read-only confirmed: asmq333/dashboard, project prj_cHo5yalpFWMaHkKiAXsIGZvy0h0C, repository dilipna/wc26-mlops (ID 1286605636), alias fifa2026mlops.vercel.app currently dpl_GgsKcVXkiJCHzvnageT1JV3N8xsh. No deployment/settings/schedule changes. Remaining: final preview/recovery, public approval, actual CI/browser screenshots, then staged and production checks. No local browser installation/control.
+
+
+## October 26 local acceptance — public release gate remains pending
+
+Final implementation tests: 134 passed, 21 upstream deprecation warnings. All 18 new replay/artifact/plugin checks pass. TypeScript and ESLint pass; frozen npm install succeeds after explicit generated-folder access, and full npm audit reports zero vulnerabilities. Exact-source development HTTP check passes eight routes, three artifact hashes and independently recomputed losses, two original historical receipts, font bytes and unknown-route 404. Local preview http://127.0.0.1:3260/ runs Next dev with webpack, process session 48239. No local browser was launched or installed; 23 GitHub-only browser cases are prepared.
+
+Known fragility / release blocker: clean production prerender writes receive Windows EPERM in this managed environment, with either supported bundler. No successful clean final production build is claimed. Generated caches were preserved only inside this project's validation directory; no unrelated files or OS permissions were changed. Experimental worker-count/dist-directory workarounds were reverted. Linux production-build CI plus source-build and actual staging-browser gates must pass before any promotion.
+
+Next 16.4 dev rewrote its managed AGENTS block. Original guide instructions were retained unchanged outside its managed markers, and agentRules:false prevents future auto-rewrites/removal. No guide requirement was relaxed. Old ledger backdating claims were qualified: git dates are not independent publication witnesses and a hash chain is relative to a trusted head. Original records and scoring remain unchanged.
+
+Recovery/source/evidence packages and exact approval candidate are under the task's outputs/wc26-release-* directories. Public repository main remains e55b1be; no source push, PR, CI dispatch, Vercel staging/promotion, backend deployment, account setting, paid feed or schedule reactivation has occurred. Approval request must name the final source SHA and condition website promotion on all Linux/staging gates. Latest source SHA belongs in the external release report to avoid a self-referential committed identity.
+
+
+### October 26 matchday expansion — local implementation checkpoint
+
+Current status: eight current-competition adapters and matchday UI, structured source-grounded question assistant, browser watchlist/spoilers, note/calendar/deep-link tools, consent-based official videos and original sport-specific vector animation implemented locally. Historical models/evidence unchanged; football archive moved to explicit /football route. Production remains verified 0dd9387 until a new approved release.
+
+Known fragility points: free feeds are sampled/delayed, date coverage can be empty, provider availability and regional video playback can change, process caches/quotas are not globally durable, browser storage is not cloud retention. Server and export boundaries documented in docs/matchday-platform.md. No new scheduler, paid model/feed, secret or desktop control.
+
+Session log: verified real public source records and official video publisher metadata; 36 data/chat/cache/export tests plus eight hosting-policy tests and 134 Python regressions passed. TypeScript, scoped ESLint and production build passed; actual local production HTTP passed nine pages, all eight current feed adapters (including genuine empty responses), historical fingerprints and rejected API inputs. 34 GitHub-only browser cases are prepared, not yet run. Public publication requires the user's final exact-release approval.
+
+
+### Approved matchday publication and query correction — October 26, 2026
+
+User approved 1ddd134 publication to existing PR1, full CI with corrections confined to the release, and gated existing-project website release. Initial source was pushed; CI40439392550 passed Node/types/lint/Linux builds and Python while browser acceptance was pending. Vercel preview built successfully. Production remains prior verified0dd9387 until all current gates pass; main untouched.
+
+Current status: correcting reproduced query wording failures: bounded betting-intent terms no longer reject "between", filler words no longer prevent "What was the final score?", and "Which games" routes to loaded schedule evidence. Three red/green regressions retained; 47 Node tests now pass locally. Existing browser phrasing case expanded. Known fragility remains sampled/delayed free coverage, external publisher playback and per-instance cache limits; user-query text remains local. Final exact-source CI/stage/production checks and evidence are still mandatory. No additional approval is needed for these corrections under the approved release scope.
+
+
+Acceptance review follow-up: initial CI40439392550 passed all34 browser cases, zero skips/failures/flakes. Desktop/mobile screenshot review exposed selected-detail context persisting after filters and persistent notification overlap. Corrected detail selection to follow visible filtered games, clear stale discussion on search/filter changes, and provide dismissible notices with a ten-second expiry (copy-link fallback remains until dismissed). Existing responsive browser journeys now assert these behaviors. Natural-language regressions now47 Node tests. Corrections remain confined to the approved release; production unchanged pending current-source gates.
+
+Answer provenance follow-up: each stored answer now keeps its own league/date/fetch timestamp instead of borrowing a later refreshed feed's timestamp. Added a browser regression for this temporal context boundary. Final browser suite is35 cases; Node47. Initial passed34-case evidence remains separately retained.

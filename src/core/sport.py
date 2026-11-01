@@ -11,10 +11,10 @@ builders apply.
 
 A second sport is added by writing `src/sports/<name>/` implementing this
 Protocol and calling `register()` -- not by touching the generic modules
-above. No second sport exists yet (see PROJECT_BRAIN.md); this interface
-exists so football's config is explicit and centralized rather than
-scattered as inline string literals, not because a second sport is
-imminent.
+above. Basketball, NFL and cricket now register explicit two-outcome historical
+replay plugins in src.sports.replays. The existing football training and
+serving path remains three-outcome; adding configuration does not make
+those football-specific models interchangeable.
 
 Deliberately a `Protocol`, not an ABC: nothing else in this codebase uses
 class-based interfaces (see the `Callable`-alias convention in

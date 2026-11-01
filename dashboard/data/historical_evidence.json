@@ -1,0 +1,12 @@
+{
+  "governance-rehearsal.json": {
+    "sha256": "5b3a69e6353edd1ecd18a214bef1a4ee10712cf53a69f15c393be291037b67d9",
+    "source_sha": "da0ce65a6911d41c9b4b37475259a86028558b98",
+    "scope": "Retained historical CPU experiment, not a fresh run or cloud-health claim."
+  },
+  "temporal-comparison.json": {
+    "sha256": "a7a9b052af9bd9909db83f975fce41d5ee25d09697c5366192669a9c24288ff9",
+    "source_sha": "8afced74365712662399cd59e6e0ecbe2a277c03",
+    "scope": "Retained historical CPU experiment, not a fresh run or cloud-health claim."
+  }
+}

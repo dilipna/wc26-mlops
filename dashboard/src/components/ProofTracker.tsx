@@ -39,7 +39,7 @@ function GradedCard({ match, delay }: { match: GradedMatch; delay: number }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
@@ -89,21 +89,21 @@ function CalibrationChart({ calibration }: { calibration: ProofTrackerData["cali
       <div className="font-mono mb-4 text-[11px] uppercase tracking-widest text-foreground/40">
         Calibration -- when our AI says X%, does it happen X% of the time?
       </div>
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {calibration.map((bucket, i) => (
           <div key={bucket.bucket_label} className="text-center">
             <div className="flex h-24 items-end justify-center gap-1">
               <motion.div
-                initial={{ height: 0 }}
-                whileInView={{ height: `${bucket.predicted_mid * 100}%` }}
+                initial={false}
+                animate={{ height: `${bucket.predicted_mid * 100}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: i * 0.08 }}
                 className="w-3.5 rounded-t-sm bg-foreground/25"
                 title={`Predicted ~${(bucket.predicted_mid * 100).toFixed(0)}%`}
               />
               <motion.div
-                initial={{ height: 0 }}
-                whileInView={{ height: bucket.actual_rate !== null ? `${bucket.actual_rate * 100}%` : "0%" }}
+                initial={false}
+                animate={{ height: bucket.actual_rate !== null ? `${bucket.actual_rate * 100}%` : "0%" }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: i * 0.08 + 0.1 }}
                 className="w-3.5 rounded-t-sm"

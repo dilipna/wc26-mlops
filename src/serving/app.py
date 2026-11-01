@@ -1,10 +1,8 @@
 """FastAPI model-serving layer (PROJECT_BRAIN #12 item 2): score any
 fixture on demand, and the current P(champion) per team from the live
-Layer 2 Monte Carlo simulation. Loads the latest Layer 1 model from the
-MLflow registry (wc26-layer1-stacked-ensemble) when reachable; falls
-back to training one locally from historical + live results otherwise
--- the API should never hard-fail just because MLflow is down, same
-best-effort philosophy as tracking.py.
+Layer 2 Monte Carlo simulation. Loads the explicitly approved local Layer 1
+artifact. An unavailable/corrupt local approval fails startup.
+MLflow is supplementary; it cannot change serving selection.
 
 Run: uvicorn src.serving.app:app --host 0.0.0.0 --port 8000
 Docs: http://localhost:8000/docs
@@ -45,6 +43,7 @@ from src.features.team_timeline import build_timelines  # noqa: E402
 from src.ingestion import live_results_store  # noqa: E402
 from src.ingestion.team_names import canonical  # noqa: E402
 from src.models.layer1_ensemble import tracking  # noqa: E402
+from src.models.layer1_ensemble.lifecycle import ModelStore, governance_history  # noqa: E402
 from src.models.layer1_ensemble.ensemble import Layer1Ensemble, load_tuned_xgb_params  # noqa: E402
 from src.models.layer2_simulation import live_bracket  # noqa: E402
 from src.serving.otel import instrument  # noqa: E402
@@ -61,23 +60,18 @@ class ModelState:
 
     def __init__(self) -> None:
         self.today = datetime.now(timezone.utc).date()
-        self.matches = live_results_store.load_combined_matches()
+        self.matches = governance_history(live_results_store.load_combined_matches())
         self.rankings = load_fifa_rankings()
         self.timelines = build_timelines(self.matches)
 
-        stack, source = tracking.load_latest_stack()
-        self.model_source = source
-        registry_info = tracking.get_registry_info()
-        self.model_version = f"v{registry_info['version']}" if registry_info else f"local-{self.today.isoformat()}"
-        self.ensemble = Layer1Ensemble(
-            self.matches,
-            self.timelines,
-            self.rankings,
-            TRAIN_START,
-            self.today,
-            stack=stack,
-            xgb_params=load_tuned_xgb_params(),
-        )
+        self.ensemble, approval = ModelStore().load_approved()
+        self.model_source = "approved_local_artifact"
+        self.model_version = approval['model_id']
+        self.training_cutoff = date.fromisoformat(approval['train_end_exclusive'])
+        # Weights and SHAP training background stay pinned. As-of features may
+        # incorporate newer known results without retraining the estimator.
+        self.ensemble.timelines = self.timelines
+        self.ensemble.rankings = self.rankings
 
         self._champion_cache: dict | None = None
 
@@ -195,6 +189,8 @@ def predict(req: PredictRequest, state: ModelState = Depends(get_model_state)):
         raise HTTPException(404, f"Unknown team(s) -- check spelling against historical results: {home}, {away}")
 
     as_of = req.as_of or state.today
+    if getattr(state, 'training_cutoff', date.min) > as_of:
+        raise HTTPException(422, "Requested date precedes model training cutoff")
     p_loss, p_draw, p_win = state.ensemble.match_probs(home, away, as_of, neutral=req.neutral)
     b_loss, b_draw, b_win = state.ensemble.baseline_match_probs(home, away, as_of, neutral=req.neutral)
     outcome = max(("home_win", p_win), ("draw", p_draw), ("away_win", p_loss), key=lambda kv: kv[1])[0]
@@ -221,6 +217,8 @@ def explain(req: PredictRequest, state: ModelState = Depends(get_model_state)):
         raise HTTPException(404, f"Unknown team(s) -- check spelling against historical results: {home}, {away}")
 
     as_of = req.as_of or state.today
+    if getattr(state, 'training_cutoff', date.min) > as_of:
+        raise HTTPException(422, "Requested date precedes model training cutoff")
     result = state.ensemble.shap_values_for_match(home, away, as_of, neutral=req.neutral)
     return {**result, "model_version": state.model_version}
 

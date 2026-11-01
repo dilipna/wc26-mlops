@@ -1014,3 +1014,26 @@ realistic but is more precision than Phase 0's validation goal requires.
 
 **Revisit:** if Phase 0 backtest results look off specifically in matches that historically
 went to penalties, consider weighting the split by rating instead of a flat 50/50.
+
+
+## 2026-10-26 — evaluated multi-sport replay rather than unlabeled live placeholders
+
+User explicitly requested more sports as the next focused redevelopment. Added attributed NBA, NFL and IPL score snapshots and binary sport plugins without coercing football's three-outcome model. Parameters/dates frozen at 1fcaa39 before scores. Entire dates are scored before updates; baseline uses training data only. Cricket's inferior Elo result is retained. Public controls are as-of historical scenarios, never current fixture/champion probabilities. Removed unbacked NASCAR tables and live badges. No paid feeds, LLM calls, schedule reactivation or extra hosted backend. Prepared browser receipt/retry/integrity/mobile contracts for GitHub-only execution.
+
+Security audit found vulnerable original Next.js/transitives. Upgraded to patched 16.4.3 and compatible lint tooling; audit now zero. Bounded tracing/Turbopack root to dashboard to avoid traversing the user's broader home directory. Self-hosted existing OFL fonts with license notices. Build identity, frozen npm install and replay hashes guard source/deployment consistency. Release remains local pending exact-source public approval.
+
+
+### October 26 acceptance follow-up
+
+Local production prerender is blocked by managed Windows output-directory EPERM despite successful compilation/types; supported webpack and fresh scoped caches reproduce it. Keep original Next output configuration rather than weakening build checks. A development preview works and passes HTTP/data checks. Production acceptance moves to the existing Linux CI and actual staged-browser gates, with explicit public-release approval first. No desktop browser is used locally.
+
+Preserve the original Next guide instructions outside generated markers with agentRules disabled; keep repository instructions stable. Qualify old ledger timestamp wording without rewriting stored records. Cross-platform numeric reconstruction permits only absolute 1e-10 rounding, while IDs/outcomes/bytes and recorded state hashes remain exact.
+
+
+## 2026-10-26 — source-grounded matchday rather than fabricated live coverage
+
+User requested active world sports, a results chatbot, dynamic visuals and athlete videos. Added a current-match desk alongside the separate historical model lab. Eight curated competitions use documented free sources with bounded caching, typed normalization and explicit unavailable/empty states. TheSportsDB free date queries are a sample, not full live coverage; Jolpica handles race classifications separately. Cricket results are never inferred from aggregate runs. No old model is claimed to predict a current game.
+
+The assistant deterministically retrieves loaded records, cites sources, refuses missing/ambiguous/mismatched-date answers, and respects spoiler settings. No LLM call, new API secret or paid runtime is required. Official videos are click-to-load external embeds with publisher links, no downloaded assets or autoplay. Watchlists stay in browser storage; calendar/Markdown exports carry source boundaries. Current feedback/query traces are inspection aids, not claims of full ReAct, MCP or all-fifteen-agent implementation.
+
+Existing release approval for 0dd9387 does not publish new feature work. Prepare local checks, recovery and preview first, then request exact candidate approval for PR/CI and gated existing-project website release. No main merge, schedule/account/hosting-setting changes or desktop control.
